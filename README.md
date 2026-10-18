@@ -1,1 +1,1 @@
-# Intelligent-Fraud-Dispute-Managemen
+# Intelligent-Fraud-Dispute-Management
