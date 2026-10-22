@@ -2,36 +2,34 @@
     <sys_hub_flow action="INSERT_OR_UPDATE">
         <access>public</access>
         <acls/>
-        <active>false</active>
+        <active>true</active>
         <allow_high_security_roles>false</allow_high_security_roles>
         <annotation/>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=209000</attributes>
         <authored_on_release_version/>
         <callable_by_client_api>false</callable_by_client_api>
         <category/>
-        <compiler_build/>
         <copied_from/>
         <copied_from_name/>
         <description>On case_status = under_investigation: ensure investigation tasks, notify the customer, run the bfd_team_lead high-value approval sub-process when required, and move to action_taken once mandatory tasks are complete.</description>
         <display_name_after_preview/>
         <flow_priority>HIGH</flow_priority>
         <generation_source>fluent</generation_source>
-        <internal_name/>
+        <internal_name>bfd_flow_investigation</internal_name>
         <label_cache>[{"name":"Updated_1.current.sys_id","label":"Trigger - Record Updated➛x_1755386_safetr_0_bfd_fraud_dispute_case Record➛Sys Id","type":"string","base_type":"string","usedInstances":{"61a6074b-2b10-43e3-a167-135cf2d6ea3b":["caseSysId"],"02182208-4844-454a-94f3-62821e59cdad":["caseSysId"],"bc651c7e-d4ce-478a-9281-8feae65ce0a8":["caseSysId"],"1c852478-3428-4d0b-932d-ba4e3e6b5637":["caseSysId"],"4c6ff638-83a3-42bc-b320-32e90f86e177":["caseSysId"],"c967ff28-7dfa-4780-9b6c-612cbc7212e5":["caseSysId"],"2e4d2a16-a958-4d79-9ea2-cc5755b71623":["caseSysId"]},"attributes":{}},{"name":"Updated_1.current","label":"Trigger - Record Updated➛x_1755386_safetr_0_bfd_fraud_dispute_case Record","type":"reference","base_type":"reference","usedInstances":{"ff775aaa-e5ba-4fcb-a3ce-2193b7153b37":["record"],"c4bd3a29-c157-4147-bbd0-102e3fac998f":["record"],"77bc13bf-01c1-4d54-9305-7618496b1c20":["record"],"ac9e98a9-0aab-45c5-bd3c-2c70b8eea8d0":["record"],"b35b0b6b-4d14-40ec-ba89-d482d535731f":["record"]},"attributes":{}},{"name":"e46e1200-39b6-4f61-851d-2d81e052306d.Record","label":"e46e1200-39b6-4f61-851d-2d81e052306d➛Record","type":"reference","base_type":"reference","usedInstances":{"ff775aaa-e5ba-4fcb-a3ce-2193b7153b37":["notification"]},"attributes":{}},{"name":"bc651c7e-d4ce-478a-9281-8feae65ce0a8.approvalRequired","label":"bc651c7e-d4ce-478a-9281-8feae65ce0a8➛approvalRequired","type":"string","base_type":"string","usedInstances":{"3f914144-1b3c-4f23-94f9-66e7cc3cfd5e":["condition"]},"attributes":{}},{"name":"b10e4f1c-9a23-48c1-9fd8-6b2c1cd83d6a.Record.user","label":"b10e4f1c-9a23-48c1-9fd8-6b2c1cd83d6a➛Record➛user","type":"reference","base_type":"reference","usedInstances":{"77bc13bf-01c1-4d54-9305-7618496b1c20":["approval_conditions"]},"attributes":{}},{"name":"77bc13bf-01c1-4d54-9305-7618496b1c20.approval_state","label":"77bc13bf-01c1-4d54-9305-7618496b1c20➛approval_state","type":"choice","base_type":"choice","usedInstances":{"f94dbe52-22d7-4460-b223-ade1bf238e38":["condition"],"62cc8add-b75a-41c9-85fb-5abbd690b11a":["condition"]},"attributes":{}},{"name":"2e4d2a16-a958-4d79-9ea2-cc5755b71623.complete","label":"2e4d2a16-a958-4d79-9ea2-cc5755b71623➛complete","type":"string","base_type":"string","usedInstances":{"62ae69df-13a4-48f3-881d-2a0c3e3865e8":["condition"]},"attributes":{}}]</label_cache>
-        <latest_snapshot/>
-        <master_snapshot/>
+        <master_snapshot>5dafc05e83409b103a19c7a6feaad31d</master_snapshot>
         <master_snapshot_digest/>
         <name>bfd_flow_investigation</name>
         <natlang/>
         <outputs/>
         <pre_compiled>false</pre_compiled>
-        <remote_trigger_id/>
+        <remote_trigger_id>92af045e83409b103a19c7a6feaad367</remote_trigger_id>
         <run_as>system</run_as>
         <run_with_roles/>
         <sc_callable>false</sc_callable>
         <show_draft_actions>false</show_draft_actions>
         <show_triggered_flows>false</show_triggered_flows>
-        <status>draft</status>
+        <status>published</status>
         <substatus/>
         <sys_class_name>sys_hub_flow</sys_class_name>
         <sys_created_by>admin</sys_created_by>
@@ -39,7 +37,7 @@
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>5b7af7709d9f44fc9b41d4a22fb39c83</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>3</sys_mod_count>
         <sys_name>bfd_flow_investigation</sys_name>
         <sys_overrides/>
         <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
@@ -47,7 +45,7 @@
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_update_name>sys_hub_flow_5b7af7709d9f44fc9b41d4a22fb39c83</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:12</sys_updated_on>
         <type>flow</type>
         <updation_source/>
         <version>2</version>
@@ -55,9 +53,307 @@
     </sys_hub_flow>
     <sys_translated_text action="delete_multiple" query="documentkey=5b7af7709d9f44fc9b41d4a22fb39c83"/>
     <sys_variable_value action="delete_multiple" query="document_key=5b7af7709d9f44fc9b41d4a22fb39c83"/>
+    <sys_flow_record_trigger action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <condition table="x_1755386_safetr_0_bfd_fraud_dispute_case">case_status=under_investigation<item endquery="false" field="case_status" goto="false" newquery="false" operator="=" or="false" value="under_investigation"/>
+        </condition>
+        <name/>
+        <on_delete>false</on_delete>
+        <on_insert>false</on_insert>
+        <on_update>true</on_update>
+        <published_version/>
+        <run_flow_in>background</run_flow_in>
+        <run_on_extended>false</run_on_extended>
+        <run_when_setting>both</run_when_setting>
+        <run_when_user_list/>
+        <run_when_user_setting>any</run_when_user_setting>
+        <sys_class_name>sys_flow_record_trigger</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:12</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>92af045e83409b103a19c7a6feaad367</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_overrides/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:12</sys_updated_on>
+        <table>x_1755386_safetr_0_bfd_fraud_dispute_case</table>
+        <trigger_definition/>
+    </sys_flow_record_trigger>
+    <sys_trigger_runner_mapping action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <data>{"run_flow_in":"background","run_when_user_list":[],"run_when_setting":"both","run_when_user_setting":"any","run_on_extended":"false"}</data>
+        <identifier>5b7af7709d9f44fc9b41d4a22fb39c83</identifier>
+        <identifier_type>flow</identifier_type>
+        <runner>FDTriggerRunner</runner>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:12</sys_created_on>
+        <sys_id>9eaf045e83409b103a19c7a6feaad367</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:12</sys_updated_on>
+        <trigger display_value="">92af045e83409b103a19c7a6feaad367</trigger>
+    </sys_trigger_runner_mapping>
+    <sys_trigger_runner_mapping action="delete_multiple" query="identifier=5b7af7709d9f44fc9b41d4a22fb39c83^sys_idNOT IN9eaf045e83409b103a19c7a6feaad367"/>
     <sys_hub_flow_stage action="delete_multiple" query="flow=5b7af7709d9f44fc9b41d4a22fb39c83"/>
     <sys_flow_cat_variable_model action="delete_multiple" query="id=5b7af7709d9f44fc9b41d4a22fb39c83"/>
-    <sys_hub_flow_input action="delete_multiple" query="model=5b7af7709d9f44fc9b41d4a22fb39c83"/>
+    <sys_hub_flow_input action="delete_multiple" query="model=5b7af7709d9f44fc9b41d4a22fb39c83^sys_idNOT IN5caf005e83409b103a19c7a6feaad3a4,90af005e83409b103a19c7a6feaad3f4,d8af005e83409b103a19c7a6feaad3dc"/>
+    <sys_hub_flow_input action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <array>false</array>
+        <array_denormalized>false</array_denormalized>
+        <attributes>element_mapping_provider=com.glide.flow_design.action.data.FlowDesignVariableMapper,test_input_hidden=true,uiType=table_name</attributes>
+        <audit>false</audit>
+        <calculation><![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]></calculation>
+        <choice/>
+        <choice_field/>
+        <choice_table/>
+        <column_label/>
+        <comments/>
+        <create_roles/>
+        <default_value/>
+        <defaultsort/>
+        <delete_roles/>
+        <dependent/>
+        <dependent_on_field/>
+        <display>false</display>
+        <dynamic_creation>false</dynamic_creation>
+        <dynamic_creation_script/>
+        <dynamic_default_value/>
+        <dynamic_ref_qual/>
+        <element>table_name</element>
+        <element_reference>false</element_reference>
+        <foreign_database/>
+        <formula/>
+        <function_definition/>
+        <function_field>false</function_field>
+        <help/>
+        <hint/>
+        <internal_type display_value="">table_name</internal_type>
+        <label>Table Name</label>
+        <mandatory>false</mandatory>
+        <max_length>200</max_length>
+        <model display_value="bfd_flow_investigation">5b7af7709d9f44fc9b41d4a22fb39c83</model>
+        <model_id>5b7af7709d9f44fc9b41d4a22fb39c83</model_id>
+        <model_table>sys_hub_flow</model_table>
+        <name>var__m_sys_hub_flow_input_5b7af7709d9f44fc9b41d4a22fb39c83</name>
+        <next_element/>
+        <order>101</order>
+        <primary>false</primary>
+        <read_only>false</read_only>
+        <read_only_option/>
+        <read_roles/>
+        <reference/>
+        <reference_cascade_rule/>
+        <reference_floats>false</reference_floats>
+        <reference_key/>
+        <reference_qual/>
+        <reference_qual_condition/>
+        <reference_type/>
+        <sizeclass/>
+        <spell_check>false</spell_check>
+        <staged>false</staged>
+        <sys_class_name>sys_hub_flow_input</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:03</sys_created_on>
+        <sys_id>5caf005e83409b103a19c7a6feaad3a4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package/>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:03</sys_updated_on>
+        <table_reference>false</table_reference>
+        <text_index>false</text_index>
+        <unique>false</unique>
+        <use_dependent_field>false</use_dependent_field>
+        <use_dynamic_default>false</use_dynamic_default>
+        <use_reference_qualifier>simple</use_reference_qualifier>
+        <virtual>false</virtual>
+        <virtual_type>script</virtual_type>
+        <widget/>
+        <write_roles/>
+        <xml_view>false</xml_view>
+    </sys_hub_flow_input>
+    <sys_hub_action_input_action_instance action="delete_multiple" query="action_input=5caf005e83409b103a19c7a6feaad3a4"/>
+    <sys_hub_flow_input action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <array>false</array>
+        <array_denormalized>false</array_denormalized>
+        <attributes>child_label=FDChangeDetails,child_name=FDChangeDetails,child_type=object,child_type_label=Object,co_type_name=FDCollection,element_mapping_provider=com.glide.flow_design.action.data.FlowDesignVariableMapper,pwd2droppable=true,uiType=array.object,uiTypeLabel=Array.Object</attributes>
+        <audit>false</audit>
+        <calculation><![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]></calculation>
+        <choice/>
+        <choice_field/>
+        <choice_table/>
+        <column_label/>
+        <comments/>
+        <create_roles/>
+        <default_value/>
+        <defaultsort/>
+        <delete_roles/>
+        <dependent/>
+        <dependent_on_field/>
+        <display>false</display>
+        <dynamic_creation>false</dynamic_creation>
+        <dynamic_creation_script/>
+        <dynamic_default_value/>
+        <dynamic_ref_qual/>
+        <element>changed_fields</element>
+        <element_reference>false</element_reference>
+        <foreign_database/>
+        <formula/>
+        <function_definition/>
+        <function_field>false</function_field>
+        <help/>
+        <hint/>
+        <internal_type display_value="String">string</internal_type>
+        <label>Changed Fields</label>
+        <mandatory>false</mandatory>
+        <max_length>4000</max_length>
+        <model display_value="bfd_flow_investigation">5b7af7709d9f44fc9b41d4a22fb39c83</model>
+        <model_id>5b7af7709d9f44fc9b41d4a22fb39c83</model_id>
+        <model_table>sys_hub_flow</model_table>
+        <name>var__m_sys_hub_flow_input_5b7af7709d9f44fc9b41d4a22fb39c83</name>
+        <next_element/>
+        <order>100</order>
+        <primary>false</primary>
+        <read_only>false</read_only>
+        <read_only_option/>
+        <read_roles/>
+        <reference/>
+        <reference_cascade_rule/>
+        <reference_floats>false</reference_floats>
+        <reference_key/>
+        <reference_qual/>
+        <reference_qual_condition/>
+        <reference_type/>
+        <sizeclass/>
+        <spell_check>false</spell_check>
+        <staged>false</staged>
+        <sys_class_name>sys_hub_flow_input</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:04</sys_created_on>
+        <sys_id>90af005e83409b103a19c7a6feaad3f4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package/>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:04</sys_updated_on>
+        <table_reference>false</table_reference>
+        <text_index>false</text_index>
+        <unique>false</unique>
+        <use_dependent_field>false</use_dependent_field>
+        <use_dynamic_default>false</use_dynamic_default>
+        <use_reference_qualifier>simple</use_reference_qualifier>
+        <virtual>false</virtual>
+        <virtual_type>script</virtual_type>
+        <widget/>
+        <write_roles/>
+        <xml_view>false</xml_view>
+    </sys_hub_flow_input>
+    <sys_hub_action_input_action_instance action="delete_multiple" query="action_input=90af005e83409b103a19c7a6feaad3f4"/>
+    <sys_hub_flow_input action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <array>false</array>
+        <array_denormalized>false</array_denormalized>
+        <attributes>element_mapping_provider=com.glide.flow_design.action.data.FlowDesignVariableMapper,timeFromCreateToActivate=190000,uiType=document_id</attributes>
+        <audit>false</audit>
+        <calculation><![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]></calculation>
+        <choice/>
+        <choice_field/>
+        <choice_table/>
+        <column_label/>
+        <comments/>
+        <create_roles/>
+        <default_value/>
+        <defaultsort/>
+        <delete_roles/>
+        <dependent>table_name</dependent>
+        <dependent_on_field>table_name</dependent_on_field>
+        <display>false</display>
+        <dynamic_creation>false</dynamic_creation>
+        <dynamic_creation_script/>
+        <dynamic_default_value/>
+        <dynamic_ref_qual/>
+        <element>current</element>
+        <element_reference>false</element_reference>
+        <foreign_database/>
+        <formula/>
+        <function_definition/>
+        <function_field>false</function_field>
+        <help/>
+        <hint/>
+        <internal_type display_value="">document_id</internal_type>
+        <label>Record</label>
+        <mandatory>true</mandatory>
+        <max_length>200</max_length>
+        <model display_value="bfd_flow_investigation">5b7af7709d9f44fc9b41d4a22fb39c83</model>
+        <model_id>5b7af7709d9f44fc9b41d4a22fb39c83</model_id>
+        <model_table>sys_hub_flow</model_table>
+        <name>var__m_sys_hub_flow_input_5b7af7709d9f44fc9b41d4a22fb39c83</name>
+        <next_element/>
+        <order>100</order>
+        <primary>false</primary>
+        <read_only>false</read_only>
+        <read_only_option/>
+        <read_roles/>
+        <reference/>
+        <reference_cascade_rule/>
+        <reference_floats>false</reference_floats>
+        <reference_key/>
+        <reference_qual/>
+        <reference_qual_condition/>
+        <reference_type/>
+        <sizeclass/>
+        <spell_check>false</spell_check>
+        <staged>false</staged>
+        <sys_class_name>sys_hub_flow_input</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:03</sys_created_on>
+        <sys_id>d8af005e83409b103a19c7a6feaad3dc</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package/>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:03</sys_updated_on>
+        <table_reference>false</table_reference>
+        <text_index>false</text_index>
+        <unique>false</unique>
+        <use_dependent_field>true</use_dependent_field>
+        <use_dynamic_default>false</use_dynamic_default>
+        <use_reference_qualifier>simple</use_reference_qualifier>
+        <virtual>false</virtual>
+        <virtual_type>script</virtual_type>
+        <widget/>
+        <write_roles/>
+        <xml_view>false</xml_view>
+    </sys_hub_flow_input>
+    <sys_hub_action_input_action_instance action="delete_multiple" query="action_input=d8af005e83409b103a19c7a6feaad3dc"/>
     <sys_hub_flow_output action="delete_multiple" query="model=5b7af7709d9f44fc9b41d4a22fb39c83"/>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=5b7af7709d9f44fc9b41d4a22fb39c83"/>
     <sys_hub_trigger_instance_v2 action="delete_multiple" query="flow=5b7af7709d9f44fc9b41d4a22fb39c83^sys_idNOT IN24ed92a244ea4da7b3601452844febef"/>
@@ -72,21 +368,21 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>24ed92a244ea4da7b3601452844febef</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:05</sys_updated_on>
         <trigger_definition display_value="Updated">bb695e60c31322002841b63b12d3aea5</trigger_definition>
-        <trigger_inputs>H4sIAAAAAAAAA71X224bNxD9FYJPLaACDoqkhYA+NEkDCEgaoHbahyAgRsvZFVFqqJJDyQtD/15wL/bebCvW2k+CeJsz55whZ7/eSPamKNCvKDBQhpdlWGm5lHIhLazRyqW8grVFuZCGGD2BvSp3KJeS07Ai2KY5jTskjcT11mzjTIYfTWC5/PptIbdAGtj5Ui7ZR1xI5zV6uXx1cbGQ1RHNeXIh92Bj+n+tXv3y+vXPv75RAXJkry7UOtcq9xC10ibsIqPKIFThTdhZKP9++tYPBm2Td8i82fHvGZs9ymUONmDKyFjtkep8duBhi5xSuJE8wccgpz6Vx+PiFN7/iiT+2SCJLwG9qMgciVBYo1HZeu50EZqkJlTwkdRhg6RiQN8e3EoyZvp0AqszOlk+Tmgvt4fgPUgYMHuzjowhHQ16n9hOGJIR5fF7tbjEEIxLv8yGirEiNeuPqHEj85bBajvUXC1k/rEJ+JlsKVLU3Pk6n9XdwhZF2rDaQtEokV+ixYxTdg3p+ZfQ/ffJhJBA1wMp81sY5EidAuVPRz89L5K14003fBv5reNNjwQgfR+ccCae766WcGuHfT+NQb30R8+/dG7ddj+gEyw8X43k1h3Eis4vC6ByZIJ0tiEBVIrMEeM1z2i73HksvIuk74vbXzGX2yH79+GwdyvEDxpziJZ/fEF7JxjKUNfZXchDf0/MPY/L73BN+28+T38m8cc1J9NqUT3g4Xx7VyAGgjsSWfQeiaurDduY3MaczeppZBzdll0IbevyUj5zpNqMO15roQ5sNhh+Hof1ET3qiHkM986RNly/qEOPtVNhpl4v68RqCU9dsQoMHMNvkTR6ZWiPgU0BzcqBFCdvmEGkLgETOUxx2FflAMRBsVOgteocd1uQW6fRvu9w2yimDO0iB3nsMK8cdVr8GFB1REnnPanPn62xnHpBna9ez9Q8z3ifOELl8smW0eSiIQC1WJeCNyhyZ607GCoqHHNebOSSKEMw750gx8K/CJynfWeN28davUGt9QafsXkcYHrMqPM9tVf1qvPNH8n8F1FlG6CifjtbN3xwXiBkG1EvEfWSWashG3w+ZXMej3v05SihNCjiTgPPGQvsAcowKmyTVwXVdAq2TKVFtRVeonTaKzmwB8ai7FTNSPZBAd03P38tTYCcMvrx+O1/S38z1YQTAAA=</trigger_inputs>
+        <trigger_inputs>H4sIAAAAAAAA/+1YUW/bNhD+K4KeVsADXBTdhrxt6wIE6FagybaHriBo8iQTo0mPPNrRgvz3HSXKViS5VdOo2bA82TqSuu/uvu9I6t1Njk6VJbgL45EbAZeVv5D5WZ4vcs1XoOnvFV9poGdlEJzh+qraApkxmpnhmzgmYQtGgsFmqVhbJeC18vT87v0i33AjOVpX5WfoAizywtnNFWy2miO9q+Dak9E6CS4/e75cLvL6vckJvXDHdYjP1+z5ty9fvvjuG+Z5AejYkq0KyQrHg2RS+W1AYIL7GhM9al79do+lYq20dGAa9FvuCA1GbDeDrPSA4khyUlwUFVxjTJM8hNxJTLI44PKN0VVnyrVXf0O9PnhgnVSnGcXl2u7fQgGEWMC5MrW7NKit4PrwxJHqvaJIPcVye3tI0rkCncruhVNb/F6g2rWluV1M4cnbYLLf12CyXz24rC7+gDSlVhKYbsamk6YN9GOsqWnSgZaK44Jhe0LGKH+u9d5SasiUaQQYDfdDDnEkBf9WauRc7mKZYx6jYvO5uHIJ3isbfxGVKYeMaVjxEbbcUKDwV4gx1sko2lLWL+MNPjK/Tu5jFrOIobCuqd/FcWKLKS642PAyUYI8aBDYqVBBKztPPytaRiEc83AClLGGTQH2izVff0lcK4vrLpgWxw9kv5MgYuYpcP4z0d1P933Z+QObdndj6yk9WT9F7UPCnnaOPQr/n9VeaLsnEj20wLmpBpSNnpQhllaZsOTsGmeTDMkDSmeDkadQ3J0xj265+PPDII4zsq8kFDxofPbYQo3YqA12NdqNo6/U7thEvR4pN+r2SZ3HVL0x2U8p6Kw+2fqHFmqNvEdPaqMiOEoH1ltKm/YMWwQziTaOD7HQztsB1B7oH1UjdFA4cPGokxZ/TyKteaI6Rkt+0veTWJrM/WiNVNicwvr6aIf8LHebVBrRAdASIt5aGUHG4P8Iy+ULGWK6qMvtwKMqeZre48vEVRPo1E3KCEwcyc9s/EnfF+5Lnz036BlaxqVkHcSHBraxEvSrTnUTZyhv24A+v+3UnjR0+DQw5117psvT2NmKrgPxXBXvtbP1Z2uA2WL0WqSKLCWHutaqynANhEnTnk5vrlHNt20YGwvah/bKZjSQuS8C7mFuR/VHieEVqSl3r0k0xk/+HHL6dtRz/rSvHNN31cx6aBkHo8jMxJqbsjlVtdw9JzUDF+usmZI1U2bUteh97BDzOYMduGoQbDRmYSujVObyzPWeV37Qvqg7xEaRzpdkIEmYRgSP1hLavcujo5ll1ekGA9b0GsNgfGKPOJL8NIb/SlOY3gPe/wOCSQpMahkAAA==</trigger_inputs>
         <trigger_outputs/>
         <trigger_type>record_update</trigger_type>
         <updation_source/>
     </sys_hub_trigger_instance_v2>
     <sys_hub_action_instance_v2 action="delete_multiple" query="flow=5b7af7709d9f44fc9b41d4a22fb39c83^sys_idNOT IN021822084844454a94f362821e59cdad,1c85247834284d0b932dba4e3e6b5637,2e4d2a16a9584d799ea2cc5755b71623,4c6ff63883a342bcb32032e90f86e177,61a6074b2b1043e3a167135cf2d6ea3b,77bc13bf01c14d5493057618496b1c20,ac9e98a90aab45c5bd3c2c70b8eea8d0,b10e4f1c9a2348c19fd86b2c1cd83d6a,b35b0b6b4d1440ecba89d482d535731f,bc651c7ed4ce478a92818feae65ce0a8,c4bd3a29c1574147bbd0102e3fac998f,c967ff287dfa47809b6c612cbc7212e5,e46e120039b64f61851d2d81e052306d,ff775aaae5ba4fcba3ce2193b7153b37"/>
     <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
-        <action_type display_value="bfd_action_log_communication">b5954ac6bd4e4ad085087d8fda347411</action_type>
+        <action_type display_value="bfd_action_log_communication">458fc41e83409b103a19c7a6feaad31c</action_type>
         <action_type_parent display_value="bfd_action_log_communication">b5954ac6bd4e4ad085087d8fda347411</action_type_parent>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
         <comment/>
         <compiled_snapshot/>
         <display_text/>
@@ -98,19 +394,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>021822084844454a94f362821e59cdad</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:05</sys_updated_on>
         <ui_id>02182208-4844-454a-94f3-62821e59cdad</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA9WSQWvDMAyF/4rwOQR27W279Ty2McYIqq0kGo4dLKWZCfnvIx1lKbm09LSjhPTe5yd/TCZgR2ZnLAo9Z9k7U5gj+mHpTdNL71DJVQ+lHVKioKVkqdjNsymMY+k95tfrpsUm7vXRKh/J7Gr0QoXpMWFHSsnsJqO5X3REE4fGzHPxB9diCORXaNQh+y3DuX2PmQyHL7K6MtuHI4lyg8oxwBAcpREz1DFBjkOCJbsty5Vb96B2JIINrVDfz8rAAiGOv76AJ3ngC6SRtYVlXnqyjJ5FQQm7Et4IRvYebAyKVhde4BpGgkDkAEPWlkMDGNwyU3PqQFuCOKiNHcEhn0r67skqOUgk0Q8n0+WHlNuw/g33PefSxE1DidxTXp3sULuq9nGsLl65u6gqUUxKbhvcjdu343/+AGOJEAkkBAAA</values>
+        <values>H4sIAAAAAAAA/+2WbYvbOBDHv4rw67DYseXYedduKRR6V7i9B0opYSyNEhVZ9lnyZn1hv/uN4jztpbAb6EEW+s4az4z+o/mN5S+byEKN0TwS4PBucB9kNInuwfTBttn80UrwKBfJjei7Dq2/cYNbaPn4SG5Su9bA8OfLvFvoaCePXTTfRGKljSSPaP7l6yTSksJLUFkuq6oQZZKJdFrkM57wtKr4VEKcZJTCQIWGXG9JKxtTk/U7BfihDSbnO22Xu/XHXfDd3th0MohJJhE+eLQSSYUC43AS1WCpkqYbornvejJ0CPKTNcPBY6Wtp2SUZoWmHZ9qeHD6H9o4nYYIhVSgwPHdYbnYndpoVu/AAynqhe+7natYNVqgG49GooLe+NtT2+jwqfW6sWOIh8rsoxvT1/bX8UyiQ4J9k8jSOxKBbag41LArSN2tmvVve5Xvtd0ezu6laQSYwwo8HWHV+6Bn8ziJqBO3Bpw7bkrVLv7uQ8goYbfZYtQbQkSnW/9GeH2Pu7yPkyOLK7CWmnUkEWvQ5hy5vfk5tooyyWdKVEkl84xnVSlkqniZlgLSEjM4Zeuw95mYS6ia/niqsvhqqTq0ZzS/+36Xrh8811ffUPgT8D7Ye3ReLyEcC+uDuDUMTDUdG5q+Y+Grc87lC6Ne8ElUeS44iCLO0lJCImexhIJDJTiflSfY3h2Un5VyCbbpj8d2yvnVcvsqoKzROVjiCZSf9wwx7Zht1iNhDLYJmH4C31r7FQv+rkWhwWjnmUeob9hfSC+NYaKxnkIDmUwrtkZmESUDO3hq7JIeZPBRuquZXyEl86KpkVXDdokPlJhufdaho9Pebhp+A27Ox+LV6H52MLlKIZ2mOc+LjIOqsCwQuAJQuQqzcxzMXw7dO2vnJYOZ/R/3SXy9N8qrmExKv1ySEPl2OJnOSsmFMs168QTo+ZPVwnno/BaU/8zIhdHP/vlkWR7n8SwvyjSDTBU855hjUs54iWkcn5D6+74ampAjrk9rvARZ/vMuuRJiv/4LiV6v1OcNAAA=</values>
     </sys_hub_action_instance_v2>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=021822084844454a94f362821e59cdad"/>
     <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
-        <action_type display_value="bfd_action_log_approval_decision">745ba47276f24059ae70cd19a8385b96</action_type>
+        <action_type display_value="bfd_action_log_approval_decision">ec7f001e83409b103a19c7a6feaad31a</action_type>
         <action_type_parent display_value="bfd_action_log_approval_decision">745ba47276f24059ae70cd19a8385b96</action_type_parent>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
         <comment/>
         <compiled_snapshot/>
         <display_text/>
@@ -122,19 +418,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>1c85247834284d0b932dba4e3e6b5637</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:05</sys_updated_on>
         <ui_id>1c852478-3428-4d0b-932d-ba4e3e6b5637</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA5WOsQrDMAxE/0WzCXTN1rFzaZdSgrDVIkgcISkBY/zvIUsJdGnXu+Pde1TIOBH0ENHoWuySIMCK47Jntd4koVMaTl1cVCl7Z8UGTq1BgMQmI5b7b2uLyuLn6LwS9C8cjQIIKk7kpNBX8CI7x1w5v6G18JFLFNl4zgc3FNF5pfTtcWj+/3xuikqAZBIBAAA=</values>
+        <values>H4sIAAAAAAAA/+1SwWrcMBD9laKzCfba3Y33VjYECqWBbttLCGYsjWqBLKuSvI1r9t87jrzehRTaQnKrT9LTzJv3xu9+ZAZaZFvGweN+8O8FS9gBdD9h4/jFCggoquyK986hCVd+8JUSxyOVCeWthuHr31VbcDQpoGPbkfFGaUEVbHv/kDAlqH0jYb0Wb7MivcailliiECVfyWvgKFOZE4WGGjWV7kjrm0hN6G8MhMFOkA9OmW/z/cPcvD+BnROTmCxh+BjQCCQVErTHhLVgyEnnBrYNrifAIYg7o4elolEmEBnRNKhtPLXw6NVPGpyvpg6JZJBjfFuu1by1CMsbCECKeh56N5fyplMcfVyNQAm9DrtLLBbc2aA6E1sC1PrU3em+NR/jTthCcPpJhPSeRKCdHE8eZkNy33Q/Pp1U3irztJz5UXcc9HKDQCus+zDpGVlQLd66rt3RjgJ+7t7xoA50omFZmdLHjgmjn7XT4P1ZFy2k+t5PrFHlrKeKlqYW7pQNT2w4jz4mS1wFcuUn/+e0grWuO6B4nsyLlz+lMC+LuszTYpNmoliLokQpN3kt83WaS77BixTenCU8F/UvCVy9fAKL9H8CXyWBD78Ak5j0rjIFAAA=</values>
     </sys_hub_action_instance_v2>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=1c85247834284d0b932dba4e3e6b5637"/>
     <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
-        <action_type display_value="bfd_action_check_mandatory_tasks">19872d6d588244938350d682b10600ee</action_type>
+        <action_type display_value="bfd_action_check_mandatory_tasks">1e6f0cda83409b103a19c7a6feaad340</action_type>
         <action_type_parent display_value="bfd_action_check_mandatory_tasks">19872d6d588244938350d682b10600ee</action_type_parent>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
         <comment>bfd_CaseUtils.mandatoryTasksComplete</comment>
         <compiled_snapshot/>
         <display_text/>
@@ -146,19 +442,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>2e4d2a16a9584d799ea2cc5755b71623</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:06</sys_updated_on>
         <ui_id>2e4d2a16-a958-4d79-9ea2-cc5755b71623</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA43MMQrDMAxG4bv8swl09daxc2mXUoKw1GJwjJGUgDG+e8kNuj4+3mug0iaISGRy73ZjBBxU9rON8WhMLrxelrSrSvXFuq2Z50QAZ2uF+vM/bUlz82vyfAjih4pJQCOlTVwUccB7Oz/mmusXc75/VhuF9Z4AAAA=</values>
+        <values>H4sIAAAAAAAA/41RQU7DMBD8CvI5Qm0hUHpDRUhICCQKXBCKNvaGWHLsYK+BEPXvrHFaOHAgJ3s8OzszeRqFhQ7FSkgIuBnClRKFeAMTEzaOD70CQlXND2X0Hi0dhiFUWm23TFM69AaGx/+xe/C8idCL1Shkq41ihlg9PRdCKx5fLkuQWMrFbLk4rmcIJ2f1/LQsAXGJclGyhIEaDVPX7PUgSzP6RwAa+gQF8tq+TPfraXizA51Xycy8EPhBaBWyiwZMwEJ0YDmJ84NYkY8MeAR1a82wZ7TaEouxTIumz6cOPoL+5MVHizTRIAeUmN/212pqLcPNBRCwoygp+okqW6clhlyNwgaiofVvLBNue9LO5hGC2uymnYmdvcmdiL3A7icxEgObwD4lThmmQM2mde93O5eX2n6XMz0aJ8Hsb0BcYR0p+RkF6Q4vvevW3BHhvTuXpN/4xMvmZzP+xLYQ/LPWBkL48cWFVK8xqWaXk58qR0oj0uuevtVwWr19/gJN5MK+sAIAAA==</values>
     </sys_hub_action_instance_v2>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=2e4d2a16a9584d799ea2cc5755b71623"/>
     <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
-        <action_type display_value="bfd_action_revert_requested_action">3d857acab6dc4b75b98f2d0db6324ec4</action_type>
+        <action_type display_value="bfd_action_revert_requested_action">076f8cda83409b103a19c7a6feaad347</action_type>
         <action_type_parent display_value="bfd_action_revert_requested_action">3d857acab6dc4b75b98f2d0db6324ec4</action_type_parent>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
         <comment>Clear provisional credit / reset card_action</comment>
         <compiled_snapshot/>
         <display_text/>
@@ -170,19 +466,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>4c6ff63883a342bcb32032e90f86e177</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:06</sys_updated_on>
         <ui_id>4c6ff638-83a3-42bc-b320-32e90f86e177</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA43MMQrDMAxG4bv8swl09daxc2mXUoKw1GJwjJGUgDG+e8kNuj4+3mug0iaISGRy73ZjBBxU9rON8WhMLrxelrSrSvXFuq2Z50QAZ2uF+vM/bUlz82vyfAjih4pJQCOlTVwUccB7Oz/mmusXc75/VhuF9Z4AAAA=</values>
+        <values>H4sIAAAAAAAA/41Ry07DMBD8FeRzVNHyKO0NFSEhIZAocEFVtLE3xJJjB3sNhKj/zrpOCwcO5BLveHZ2dvwyCAstiqWQEHDdhxslCvEOJiZsGJ46BYSqnE5k9B4tTUIfSq22W6YpHToD/fP/2B14nkToxXIQstFGMUMsXzaF0Irb5/PTc6XqRXVewemikhdzPJvjFPiH1Wx2wRIGKjRMXbHXoyzN6B8LUN8lKJDX9nWsb8fm9R50XiUz00LgJ6FVyC5qMAEL0YLlTZzvxZJ8ZMAjqHtr+gOj0ZZYjGUaNF0+tfAZ9BcPPpmljhp5QYn57lCWY2oZrq+AgB1FSdGPVNk4LTHkaBTWEA2tfmOZcN+Rdja3EFRm3+1MbO1dzkQcBPaPxEgMbAK7tHHaYVyoXjfu42Hv8lrbXTjjpXESzKEC4girSMnPIEi3eO1du+KMCB/dpST9ziceNl0c8ye2heDHWhkI4ccXB1K+xaSaXY5+yrxSapFed7RTw3H0dvMNuXjxibACAAA=</values>
     </sys_hub_action_instance_v2>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=4c6ff63883a342bcb32032e90f86e177"/>
     <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
-        <action_type display_value="bfd_action_ensure_investigation_tasks">4ed0b6973f774ff08bba8f9b86d90663</action_type>
+        <action_type display_value="bfd_action_ensure_investigation_tasks">7b6fccda83409b103a19c7a6feaad355</action_type>
         <action_type_parent display_value="bfd_action_ensure_investigation_tasks">4ed0b6973f774ff08bba8f9b86d90663</action_type_parent>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
         <comment>Identity verification, transaction review, card actions, chargeback, etc.</comment>
         <compiled_snapshot/>
         <display_text/>
@@ -194,19 +490,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>61a6074b2b1043e3a167135cf2d6ea3b</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:05</sys_updated_on>
         <ui_id>61a6074b-2b10-43e3-a167-135cf2d6ea3b</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA43MMQrDMAxG4bv8swl09daxc2mXUoKw1GJwjJGUgDG+e8kNuj4+3mug0iaISGRy73ZjBBxU9rON8WhMLrxelrSrSvXFuq2Z50QAZ2uF+vM/bUlz82vyfAjih4pJQCOlTVwUccB7Oz/mmusXc75/VhuF9Z4AAAA=</values>
+        <values>H4sIAAAAAAAA/41RQU7DMBD8CvI5qiil0PaGipCQEJUocEEo2tgbYsmxg70GQtS/s8Zp4cCBnOzx7OzM5GkQFloUKyEh4LYP10oU4g1MTNgwPHQKCFU5ncjoPVqahD6UWu12TFM6dAb6x/+xO/C8idCL1SBko41ihlg9PRdCKx5X1Wm1WJ7Pa6wXp8uZrADkXMkzVZ3jcjE7YQkDFRqmrtnrUZZm9I8A1HcJCuS1fRnvN+Pwdg86r5KZaSHwg9AqZBc1mICFaMFyEud7sSIfGfAIamNNf2A02hKLsUyDpsunFj6C/uTFs5M0USMHlJjfDtdybC3D9SUQsKMoKfqRKhunJYZcjcIaoqH1bywTNh1pZ/MIQWX2087E1t7mTsRBYP+TGImBTWCXEqcMY6B627j3u73LK22/yxkfjZNgDjcgrrCKlPwMgnSLV961a+6I8N5dSNJvfOJl0+Uxf2JXCP5ZawMh/PjiQsrXmFSzy9FPmSOlEel1R99qOK7ePX8BLs5+5bACAAA=</values>
     </sys_hub_action_instance_v2>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=61a6074b2b1043e3a167135cf2d6ea3b"/>
     <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
         <action_type display_value="Ask For Approval">f8f2e9920b10030085c083eb37673abd</action_type>
         <action_type_parent display_value="">f8f2e9920b10030085c083eb37673abd</action_type_parent>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
         <comment>bfd_team_lead sign-off</comment>
         <compiled_snapshot/>
         <display_text/>
@@ -218,19 +514,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>77bc13bf01c14d5493057618496b1c20</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:05</sys_updated_on>
         <ui_id>77bc13bf-01c1-4d54-9305-7618496b1c20</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA81Ty07rMBD9lWjWSUVaKCW77lgjwYYga2JPqMF5MLYrqsj/juJCCSpX6hUsWM7r6JwzM/cDtNgQFKA8CYWOIIUtGj+mhhJQOt21JRQlMD2RdCWkJYx9wu16igWUzqM5FGJuCPvYM74DzCfh56zCnY2dVm5IebPPfskIgxWZ93yAFJS2vcHd3d9maSXr3q2l01uCokZjKYUeGRtyxFAMMMJD8Ymw56sbghDSw16w77nbohGya5UeednJitaxSvYmyrbrdnd7PwxVfkbndS6zK5wvsvOVzLOrWq2yZTWXuVSrhVri7IZkx2rmLXEID8e+/ib0yWYc1LI3ZL8Y4bAy0+t8FfnlxcVitRQWa3IszkRVK1EzeiVGLd6RkGjpWNr/jJ5MPfITkeyUNkcvpl813PbjqpXIZ9IzU+vCd2f9j7aT+ahO+oZaJ7T6/qCY0HbthNm1ftxkMUg6TjZjxNo+J/v3SphevGayyeiVI2yEIVTJB96xhB/jnf5DjnX7CCE8vAF+l5S70QQAAA==</values>
+        <values>H4sIAAAAAAAA/+1X32/iOBD+V5CfgUsICaFv1aJq93S3K/XHvpQqMvYEvGeS1E665RD/+01sA1no0mu7SFu1LwiPZ8Yzn7/Psa+XJKNzICeEV5BwWgJpkzsqq9q0HBPKSpFnY3IyJgq+ASvHpD0mtV9SLgowE+hTUbmZMLblyo4rRV2CXmO4jeV0oY2nZjPglbTWHyyJpBOQzr7C8rjQhaSLr65KtBRUYRMlKHKyJGwmJFeQkZPrmzYRHF1YmPZgOOx5E9/zAs+LQ+bFAUyCQTQIaDrEFGYRdB1V0BpZGPaBqctGy6Yyi4OYr+f+ckkunIPJ9MeldcgVrwsM2wTuS8g4YGUplRraZE4zTJWrxcaigPIvmdwaZiIrbbMzkIX9N6f3WvyLFfW9OiIF7Jo5SDbDxMFlzSlWRC9KVeGeKefKZrlgoC1eHFJayfJD02YdvhT11tmQkk7kOjqX1Tz7bLEimwSN3ak0FgFF3XLdg2sovZjl38/XVZ6JzKDjJmXOqNyMaFkqManKup4lAQlzTJTMaVGIbJoUKr8TJhhrmXenEgfdVObfcVEtplnXcriLCNPuGdpHxvyVKlF38TemwWAsUyT4F5PVKxOECMiqTfRCf5BU622DiGxyWxkn065rLLHY1CFMiaI8xVXvwPWwam90tl4jYXnGRV2Zbkju1MyCPjdi06fZ4up6uUTaQj/1WWdIe0GnHzO/M0x53IkmPeYzHgc8ot1zYEixLqKtVqubfZ38ytSPCa5/UHAADcGdo070Vm0Pw+OEt5lULqgpulM32VpndILrHxZcvdFP1Vvsee+Ke6nijiEui9JWTveJPwjDII4STVMoVeIlk5QnqaIVN9uELSaMatiXy1NCH5PDhB2SA2MNOVy6DnYacgIww8TM/Uh+E9b6TJtfGv+JXxqrhEeI/07735D2ypzPzZvb8qqoLyc88busUth5uXre1WkQH6Su1zzJ11XsVuXIy3NWGUAF32HvyM20Po229PV+/bkd9F4RfW2Dr569FoL/fy3CHdUYuOXyRzGddcyglavWrB4pof9p2XpbCm4roUC36tO5BDpPJHKitbnK7ZH+xfkekwz0oyDEn0EaeH7P92KI4pgNPcriKAr7QUMy2zvLuuufwrF+e+AeZ9Pd98ba6KTTO8Ibw4/e0tlficsdvK1lD/HjvUauMnFbwaeaUVFvEg29mHd46k3wkh6EHcrA60DkhxDyiIV+cNzHSipA8md9QDz/0AeExw+p4cyt9rMqnBbM8KHbkInfuQ0dQxOv7B3wtr4o3/JKZS+iLjtIXWge5H/axXaZu1vDc4gbvBP3LRD35j8T3W8OixUAAA==</values>
     </sys_hub_action_instance_v2>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=77bc13bf01c14d5493057618496b1c20"/>
     <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
         <action_type display_value="Update Record">f9d01dd2c31332002841b63b12d3aea1</action_type>
         <action_type_parent display_value="">f9d01dd2c31332002841b63b12d3aea1</action_type_parent>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
         <comment/>
         <compiled_snapshot/>
         <display_text/>
@@ -242,19 +538,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>ac9e98a90aab45c5bd3c2c70b8eea8d0</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:05</sys_updated_on>
         <ui_id>ac9e98a9-0aab-45c5-bd3c-2c70b8eea8d0</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA53QywoCMQwF0H/pehBFfDDgwoUf4EI3oiG2GSh2OiVNRRn67zIK4gNFXCbcCyfZtMpjTapUgntHcB0KdUSXuuUJBpPRaDgdQ8SKhKEP+8pAxZgMGBtDEgKNset0o8Pz+o9q1GyDzLXYI6myQhepUAEZaxJiVbZKzuEFmXNxtzPphs2Du21XwaCQgUFPJ2bykvO78VPsZ49pdKrJC1jzBLo64gOoOxSioKQ4Qy228SB4IL9bLN9Z38O/P4vq4FAIboictxdTs84k7gEAAA==</values>
+        <values>H4sIAAAAAAAA/+1V204bMRD9FeTnKNrNkhTyVpEiVWpBhZYXSq1Ze5ZY9V7qC5BG+feO15vNChCgSkhFap4yMz7jc8bH3ss1q6BENmcOco28DUbsBrQPyTuevptOs4MZt1CgMzzheSF5YcBLLpVtvEMuwAZMCDWsLv4C2oChfR0aNl8zsVRaGqzY/PJqxJSkXvlUJulhOhNZmmWTJJkc7Kf5LMvTicwAxSG10JCjpqVfgwyKH1PlVs2juU9D7N5JLNRGBj7TZMTwzmElkZgUoC2OWAmVBFebFZs74ylhEORppVf9iqWqHHWkPkvUTfxXwp1Vv4nBQRIQBZJIgbHWh7wbY0wXC3BwTnsI5023VCxrJdDG8UgswGt3NMzFBaeNU3UVIa3iDl1rX1YncTqsb7A9Ncp4SySwCYqDhk5Qcb6sb8+2LI9V1U6nK+pagO4jcM6onI7XhuNEjSU14iU0jaqueWPqG9WCiUs5vtYUjAtd39KmVl1XYxCB+JgGDONjyi/a9AUYFVR8pjYE3oyYXdkjDdbutNAQ+S8fmERlnQYexxAgwqjGvacNbrCjuxn1N8CgoEMfuH+9/tYQDZQ8HQtvSLnbbB46/QUG3senDIzpwMBnWxb3WXXulbXw7UCVvGffRVfZ+7jY+Td9Bf/uvyX/RoFv3r6DR+tZI7f+tQMjh2eWWwfO2+8+STIZSXIHP7H68eHLQ0+/APGc55PJk57HgeePFWppd57vBWxfbCyJHH0voqB7r3ZX3Lvoir3zX8H66Sxpf/8vwL93Aa7+AIKyYsnNCAAA</values>
     </sys_hub_action_instance_v2>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=ac9e98a90aab45c5bd3c2c70b8eea8d0"/>
     <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
         <action_type display_value="Look Up Record">9d09f99587003300663ca1bb36cb0ba3</action_type>
         <action_type_parent display_value="">9d09f99587003300663ca1bb36cb0ba3</action_type_parent>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
         <comment>Resolve a bfd_team_lead approver at runtime</comment>
         <compiled_snapshot/>
         <display_text/>
@@ -266,19 +562,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>b10e4f1c9a2348c19fd86b2c1cd83d6a</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:05</sys_updated_on>
         <ui_id>b10e4f1c-9a23-48c1-9fd8-6b2c1cd83d6a</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA6WSwUoDQQyG3yXnpShSlYUefAkvoiGdydCB2cmSZIul9N1lV2m3toeK1+Qn3/8nedtDpY6hBRN19F3P0MCWynCskQVoIGbrC+1eLzsWNPf+EjxvGdpExbiBnpQ6dlZo9zBNbSFsJAeGw6E5QoPUmD1LtRlVpfBiFKw+8f5puXx4fkSjxK54t1iniM7UYWGKH4OxLmhCr1wHvjT6v2G3ZzsFmedDtBowSnVMlAtKRVYVPaUdQb9Nf9duZq9FClM9Azuty9kld4ZjPtyQ4biTKye9IrnZw8TDCT63kRN2Q/HcF0blIBoNSRmTDDXiuGupM5eDMaas5j/iS5NXFH//v/cvp3GcrfYCAAA=</values>
+        <values>H4sIAAAAAAAA/+VYUW/bOAz+K4af05wdJ3HSt0OLAAN2K7D2+rLbCbQlN8IpsifJbdOi/32ULTtG4iXNtQE27CkxRYnkR36k5S/PvoQV8899nStDzLpg/sC/B1G2MtApiijXhYD1rVsBz+TeE8oLULjfMOWfP/vpkguqmPTPv3wd+Jyi4oQG82w+n8ziIIiiIJhOoxTCJImmaRIkSYhHCEiYQNVrtObd1B70OFX9nKONnKfN80e39aIR5opaV6KBzx4Nk5ShDxkIzQb+CiQFk6t1K1EM6JUUG8GSS4On4TlLJor63woeNX9Cy9HI7sgYxpeyeq19JA6eWpxdgoFro8rUlMqp1m5rROa5DbgFsQdvF0jwMtjoP1l92NanrLshfEHkKcugFObi/9kMj7U5sjbrAK8Kw3PMvx/ZDEEimvBzUa7kpzqrfuvhbU+h1SuXP6i3UiPYrLCptblyicuul/nD5yYbCy4rv9yiyFMQ7RMYo3hSGovLs59RknEmKOFScGktYdpsITHBVmiBrKAouLwjhcrveXUqxrIa3gl8GGYif7BY8Ds5hNRGPsQSg+EC5ZeV+BYUtyj8hcfg5oE1uMStzh7RqeKFIQ+c3jGzsd5o0dw8gPivb91VHGkSVYXnvwx8vdYXArTegI1lSr6VFoMaeoceqRJVbam8+BMjuGcOKFsDjoRpLim3welOGahcsKFV+KdEYtNHEsaTSTSbEg0ZM4oEwwSdNAxWRCDN/sW8qQqje7fDRbLVV97r2ENtiU72tSWYd9rSRTf8PkiaxrQt+9h3QMOxEzSocRAE79Oi+lrILsWPYvgudW2m3sDc0xD0eP7UEBwkESFapshn3JYBF7iXMKVy1aFUuEuHV1ZzyiAZj2AaR2EYBGFA42AWx+FsmmRTiMdZp5ovc2mJMoqNZ/3wcuk1fhz21FV6kiNLQW6V+Q36+sei6kJtmU9OUua/UJG/dT6V/GYb81rUi/qphlbJ/5b8W8k+2GKbsWA0C2l6NovD+Gyc0enZnMLkDObJJI4oS8fZaeZQnYfOm8haE9v/yRI0sYNjlz99KgdHw3zvaBh3yHTjPNpy0NGkeiTV2hZT7IL3qV5oXvROwJTZ78SUk72wcYG1Qupk6rxUFZT3JBWlrhYUSF2fdZKq5xlZIXC8QPOKpVgumoBiJMtLSYkzvCGFRTXjShunvMuJzwxzLLHxi7VnlsyrtL1W+xA9wr30SLpvTh8yr3Hdna89dN2rXPda148L9Jhr4PgnHj+bK9bCzmGbCaynopPKZur2XQUPJHFPNbzynvhKp8J3dertF8m+8u+9UB7w9ZdoTqdoN9VNvAZ5t3W8pj3s/d4DtNMermzSvWS99bmnNe6YXt/Pe8bowi5sjdHR7z5Gf8pb1eBH31ne+br19TvPzFObzxQAAA==</values>
     </sys_hub_action_instance_v2>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=b10e4f1c9a2348c19fd86b2c1cd83d6a"/>
     <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
         <action_type display_value="Update Record">f9d01dd2c31332002841b63b12d3aea1</action_type>
         <action_type_parent display_value="">f9d01dd2c31332002841b63b12d3aea1</action_type_parent>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
         <comment/>
         <compiled_snapshot/>
         <display_text/>
@@ -290,19 +586,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>b35b0b6b4d1440ecba89d482d535731f</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:06</sys_updated_on>
         <ui_id>b35b0b6b-4d14-40ec-ba89-d482d535731f</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA53QywoCMQwF0H/pehBFfDDgwoUf4EI3oiG2GSh2OiVNRRn67zIK4gNFXCbcCyfZtMpjTapUgntHcB0KdUSXuuUJBpPRaDgdQ8SKhKEP+8pAxZgMGBtDEgKNset0o8Pz+o9q1GyDzLXYI6myQhepUAEZaxJiVbZKzuEFmXNxtzPphs2Du21XwaCQgUFPJ2bykvO78VPsZ49pdKrJC1jzBLo64gOoOxSioKQ4Qy228SB4IL9bLN9Z38O/P4vq4FAIboictxdTs84k7gEAAA==</values>
+        <values>H4sIAAAAAAAA/+1V204bMRD9FeTnKNrNkhTyVpEiVWpBhZYXSq1Ze5ZY9V7qC5BG+feO15vNChCgSkhFap4yMz7jc8bH3ss1q6BENmcOco28DUbsBrQPyTuevptOs4MZt1CgMzzheSF5YcBLLpVtvEMuwAZMCDWsLv4C2oChfR0aNl8zsVRaGqzY/PJqxJSkXvlUJulhOhNZmmWTJJkc7Kf5LMvTicwAxSG10JCjpqVfgwyKH1PlVs2juU9D7N5JLNRGBj7TZMTwzmElkZgUoC2OWAmVBFebFZs74ylhEORppVf9iqWqHHWkPkvUTfxXwp1Vv4nBQRIQBZJIgbHWh7wbY0wXC3BwTnsI5023VCxrJdDG8UgswGt3NMzFBaeNU3UVIa3iDl1rX1YncTqsb7A9Ncp4SySwCYqDhk5Qcb6sb8+2LI9V1U6nK+pagO4jcM6onI7XhuNEjSU14iU0jaqueWPqG9WCiUs5vtYUjAtd39KmVl1XYxCB+JgGDONjyi/a9AUYFVR8pjYE3oyYXdkjDdbutNAQ+S8fmERlnQYexxAgwqjGvacNbrCjuxn1N8CgoEMfuH+9/tYQDZQ8HQtvSLnbbB46/QUG3senDIzpwMBnWxb3WXXulbXw7UCVvGffRVfZ+7jY+Td9Bf/uvyX/RoFv3r6DR+tZI7f+tQMjh2eWWwfO2+8+STIZSXIHP7H68eHLQ0+/APGc55PJk57HgeePFWppd57vBWxfbCyJHH0voqB7r3ZX3Lvoir3zX8H66Sxpf/8vwL93Aa7+AIKyYsnNCAAA</values>
     </sys_hub_action_instance_v2>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=b35b0b6b4d1440ecba89d482d535731f"/>
     <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
-        <action_type display_value="bfd_action_check_approval_required">74bdf435f6154851b3eab5f07814f030</action_type>
+        <action_type display_value="bfd_action_check_approval_required">a97f401e83409b103a19c7a6feaad3bb</action_type>
         <action_type_parent display_value="bfd_action_check_approval_required">74bdf435f6154851b3eab5f07814f030</action_type_parent>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
         <comment>bfd_CaseUtils.highValueApprovalRequired (threshold 500)</comment>
         <compiled_snapshot/>
         <display_text/>
@@ -314,19 +610,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>bc651c7ed4ce478a92818feae65ce0a8</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:05</sys_updated_on>
         <ui_id>bc651c7e-d4ce-478a-9281-8feae65ce0a8</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA43MMQrDMAxG4bv8swl09daxc2mXUoKw1GJwjJGUgDG+e8kNuj4+3mug0iaISGRy73ZjBBxU9rON8WhMLrxelrSrSvXFuq2Z50QAZ2uF+vM/bUlz82vyfAjih4pJQCOlTVwUccB7Oz/mmusXc75/VhuF9Z4AAAA=</values>
+        <values>H4sIAAAAAAAA/41RwU7jMBT8lZXPEWpKgbY3VISEhECi7F4Qil7tZ2LJsYP9zBKi/vs+47TLgQM52eN582YmT6Nw0KFYCwkRt0O8UaISb2BTxsbxd6+AUDX1iUwhoKOTOMTGqP2eacrE3sLw52fsHgJvIgxiPQrZGquYIdZPz5UwKhtQ56dS6yXM5WKxmNWgZ6v6YqWX8zM8X4JmCQs7tEzdsNdfRZrRbwLQ0GcoUjDuZbrfTsPbA+iDymbqSuA7oVPILjTYiJXowHESHwaxppAYCAjq3tnhyGiNIxZjmRZtX04dvEfzwYtP53lCIweUWN6O12ZqrcD6CgjYUZKUwkSVrTcSY6lGoYZkafMVK4T7nox3ZYRgZw/T3qbO3ZVOxFHg8JMYSZFNYJ8T5wxTIL1t/d+Hg8tr4z7LmR6tl2CPNyCucJco+xkFmQ6vg+823BHho7+UZN74xMvq1Yw/sa8E/6yNhRj/++JCmteUVYvLyU9TIuURGUxPn2o4rd4//wOl+wN6sAIAAA==</values>
     </sys_hub_action_instance_v2>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=bc651c7ed4ce478a92818feae65ce0a8"/>
     <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
         <action_type display_value="Update Record">f9d01dd2c31332002841b63b12d3aea1</action_type>
         <action_type_parent display_value="">f9d01dd2c31332002841b63b12d3aea1</action_type_parent>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
         <comment/>
         <compiled_snapshot/>
         <display_text/>
@@ -338,19 +634,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>c4bd3a29c1574147bbd0102e3fac998f</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:05</sys_updated_on>
         <ui_id>c4bd3a29-c157-4147-bbd0-102e3fac998f</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA53QwUoDQQwG4HeZ8yIt0lYWPHjwATy0F9GQTrIyMDsbMpnFssy7y7ZQqkUsHv+QH77kdXIJe3atM9xHhmNo3IixzMNPWG5Wq/uHNWTs2BQWsO8IOsVCQCFLMQaPee7MMeJh949q9hrEnryFkV3bYczcOEHFno3VtZOzg/xA1tqc7cp+ULpwT9NWCI0Jlne+qHKyWq+Nv63d7KHBl56TQaBvoKMjX4DmQyEbWsmPwolC+gAU0WHE+P78ck37u3D707iXiMZwwtT69gV4Ssj99gEAAA==</values>
+        <values>H4sIAAAAAAAA/+1V204bMRD9FeTnKNrNkjTkrSJFqtSCCm1egFqz9iyx5L3Ul5A0yr93vLvZrAABqoRUpOYpM+MzPmd87L3esgJyZDPmINXI62DAVqB9SK55/GE8TqYTbiFDZ3jE00zyzICXXCpbeYdcgA2YEGrYLP4CWoGhfR0aNtsysVRaGizY7Pp2wJSkXulYRvFJPBFJnCSjKBpNj+N0kqTxSCaA4oRaaEhR09LvQQbFT6lym+rJ3Jc+9ui8KZRGBj7jaMBw7bCQSEwy0BYHLIdCgivNhs2c8ZQwCPKi0JtuxVIVjjpSnyXqqvmXw9qq38RgGgVEhiRSYFPrQt6OsUlnc3BwRXsI5027VCxLJdA245GYgdfutJ9rFlxUTpVFA6kVt+hS+7w4b6bDugb7U6OMt0QCq6A4aGgFZVfL8v5yz/JMFfV02qIuBeguAueMSul4bThO1JhTI55DVanijlemXKkaTFzy4Z2mYJjp8p42tequGIIIxIc0YBieUX5epxdgVFDxldoQeDdgdmNPNVh70EJD5L98YNIoazXwZgwBIoyq3EfaYIUt3d2guwEGBR16z/3b7Y+KaKDk8VB4Q8rdbvfY6a8w8DE+Z2CMewa+3LN4yKp1ryyFrweq5AP7ztvK0ef5wb/xG/j3+D35txH47u3be7ReNHLtX9szcnhmuXXgvL3xUZTI0DqoITakB/TPT98e+/qVqJe8H42e9T72vH+mUEt78H4nZP9yY04E6bvRCHvwerfFo0Vb7G7AG1yBeBLVv/8X4d+7CLd/ALiRrBvVCAAA</values>
     </sys_hub_action_instance_v2>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=c4bd3a29c1574147bbd0102e3fac998f"/>
     <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
-        <action_type display_value="bfd_action_log_approval_decision">745ba47276f24059ae70cd19a8385b96</action_type>
+        <action_type display_value="bfd_action_log_approval_decision">ec7f001e83409b103a19c7a6feaad31a</action_type>
         <action_type_parent display_value="bfd_action_log_approval_decision">745ba47276f24059ae70cd19a8385b96</action_type_parent>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
         <comment/>
         <compiled_snapshot/>
         <display_text/>
@@ -362,19 +658,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>c967ff287dfa47809b6c612cbc7212e5</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:06</sys_updated_on>
         <ui_id>c967ff28-7dfa-4780-9b6c-612cbc7212e5</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA5WOsQrCQBBE/2XrI2CbztJatBEJy+0qK8l57G4Cx3H/HtJIwEbbmeHNu1VIODH0ENH4XOxEEGDBcd6yWi+Z0JmGQxdnVU7eWbFBqDUIQGJ5xHL9bW1RJfsxuiwM/QNH4wAZFSd2VugreMkbx1wlPaG18JEjjmLyTjs35RdHZ/r22DX/f95XcZEmzhIBAAA=</values>
+        <values>H4sIAAAAAAAA/+1SXWvcMBD8K0XPJthn9y6+t3AhUCgN9Nq+hGDW0qpWkWVXH2lcc/+968jnO0ihLTRv8ZM02p2dWc/dyAy0yLaMg8P94N4JlrAH0GHCxvFzL8CjqLILHqxF4y/c4ColDgcqE8r1GoYvf1fdg6VJHi3bjow3SguqYNu7+4QpQe0bCeu1eJsV6SUWtcQShSj5Sl4CR5nKnCg01KipdEda30RqQn9jwA/9BDlvlfk639/Pzfsj2FkxickSho8ejUBSIUE7TFgLhpx0dmBbbwMBFkHcGj0sFY0ynsiIpkHdx1MLj079pMH5auqQSAY5xrflWs1bi7C8Bg+kKHAf7FzKm05xdHE1AiUE7XfnWCy47b3qTGzxUOtjd6dDaz7EnbCF4PiTCAmORGA/OZ48zIbkvul+fDyqvFHmaTnzo+446OUGnlZYBz/pGZlXLd7Yrt3Rjjx+6q64Vw90omFZmdLHDgmjn7XT4NxJFy2k+h4m1qhy1lNFS1MLt6r3T2w4jz4kS1wFcuUm/6e0WvyGnOL3PJlnL39KYV4WdZmnxSbNRLEWRYlSbvJa5us0l3yDZym8Pkl4LupfErj6/wks0tcEvkgC738B35oWJDIFAAA=</values>
     </sys_hub_action_instance_v2>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=c967ff287dfa47809b6c612cbc7212e5"/>
     <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
         <action_type display_value="Look Up Record">9d09f99587003300663ca1bb36cb0ba3</action_type>
         <action_type_parent display_value="">9d09f99587003300663ca1bb36cb0ba3</action_type_parent>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
         <comment/>
         <compiled_snapshot/>
         <display_text/>
@@ -386,19 +682,19 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>e46e120039b64f61851d2d81e052306d</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:05</sys_updated_on>
         <ui_id>e46e1200-39b6-4f61-851d-2d81e052306d</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA5WRQWrDQAxF76K1T2DIopfophShzGhawXhmkGSDCbl7sGkSF6fgbvX/139IHxcoNDD0YFUdfW4MHUyUx8eMLEAHUaxlmt/3igWV5m/BZWLoE2XjDhopDeys0F9g3dpD+K4SGK7X7lEaaoniUottWhftdE4RS3VJM0qZ2Fy+aDGiOalz3CMdjR3nfcJtmZ3O+deRZuOJiyMPJBkpLJEXF/vDdhhn7cUVYosjCYcxu7TMqByqRkNSxlTHEp81d9rRGJOo+Y95D/rC8f8Xf94AuRUM/lkCAAA=</values>
+        <values>H4sIAAAAAAAA/+VY32/jKBD+Vyw/pzk7v5z07dQq0kp7W2nb68veCmEDCToCXsDpplX/9xts7PgSN2mujbTVPbWGgfnmm28GyLenUOIVDS9Do7RFdpPTsBeusSiaMWwyGCLc5AJv7v0MDqwKHmE8xxrWW6rDy6cwW3JBNJXh5bfvvZATMByTaMZms/E0iaLhMIomk2GG4zQdTrI0StMYthA4pQJMb8FbcFch6ABV/rkEH4pn9fdnv/SqHlSaOCjDXkh/WioJBQwMC0N74QpLgq3Sm2ZEU0xupNgOLLm0sBvss6Qir/5b4Z+GP4Ln4cCtYBTiy2g113wiT081zK6xxbdWF5kttDetYBtg5qkJuCGxg28fSPTc29o/Onu8a09oe0H8DMwTynAh7NV/8xmf6nPgfFYB3uSWK8h/OHQZwqmow1eiWMkvVVbDBuF9h9CqmesX9FYYIJvmLrUuVz5x7HapHr7W2ZhzWeLyk0JlWDRf2FrN08I6Xp5CRhDjVBDEpeDSeYK0OSFRQVfgAa1wnnO5QLlWa17uCrGs+gsBH30m1IPjgi9kH2cu8j5IDPfnMH5dDt9jzR0Lf8A2sLjnHC5hqfeHTKZ5btEDJwtqt95rK6LsAxZ/d817xaE6UWV44XMvNBtzJbAxW7JBpuhH4TioqPfsoTJR5ZISxe8QwZp6opwGfBFmShLugjMtGbi5vwqoaZICGKksZxsIak2N5QvsrJGxWFsowL3mcdLaYw2GjA81GDxrNZirdiBdwdUtZnfsc9cGdbWcodWMoih6n2bT1Qz2i/WkWt0vQifKN9TgeUrt9EqoKDhaDpVZqyFuDF27TegKc4EqcPuif8nsqL5nB/U9aun7ziPbAepVXX6icu7fqi6XBV+qifrcOYOqpx9J0289WM52fnABWkFVMo0qdEnlGmWiMOWExtJ4cZ3jMOAMrYA4noN7TTOQi0FYU8RUIclW1XVxOFYZ18Z64/26+EohxzJQIKPALmlQWgeN9bHyiA+WR9pu/59YUEP3+5sAoAcl9KCBflqgp9xKR2c5Kt77VjqH9lRmAvSUt1JJtVb6hZvpkSQeUMMrr62vBBW/K6i332u75N95vz2C9UM0p3O0m/JhUJG83zpe0x4OPj8xabWHG5f0IN3svD4b577Sq+dCxzE6dxM7x+jg/36M/pJXw95Lz76z3RkRMjKD1xwsY+72By+cunPVbSja13f1pDsu8ozidDTAk2QYx1EURySJpkkSTycpm+BkxFoiv1bSvbwGiQ0cEGg4QQ3kOFRfAalSgmK5I/87IPC3uUfs5T/+hQ+8D3GLLPjdLufVUCfr56qWgv8p+Y+CfnJim9JoMI1JdjFN4uRixMjkYkbw+ALP0nEyJDQbsff8GeL7P34wPrCiFAAA</values>
     </sys_hub_action_instance_v2>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=e46e120039b64f61851d2d81e052306d"/>
     <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
         <action_type display_value="Send Notification">0d8dd9f10f11101051218e8ebc767e27</action_type>
         <action_type_parent display_value="">0d8dd9f10f11101051218e8ebc767e27</action_type_parent>
-        <attributes/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
         <comment/>
         <compiled_snapshot/>
         <display_text/>
@@ -410,20 +706,20 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>ff775aaae5ba4fcba3ce2193b7153b37</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>1</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:05</sys_updated_on>
         <ui_id>ff775aaa-e5ba-4fcb-a3ce-2193b7153b37</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA53QzWrDMAwH8HfxOSlx0mRZbnuFwXYZwyiWDIbEMbJcVkLefaSHse4Duh0l9Bc/6WVVAWZSgxIYJzKXolAnmPLefDP6rm2bvjMJHAmbyowOjWPIaNCnmIWMhbRn9nKC8/M/osmyj/JgxZ9IDQ6mRIWKwDCTEKthVXKOX5DbVnzYmezC+Mm9rk8RQQiNPtjMTEG27bvxt7GbPbjYPFMQ4/EKFBbxzlsQv4QrFh070nVVlc392JVH1+mybzWWNfaaqrZuqg4Pj5dzfgb/dcHNpzA5Ygp2/+zrO6ksRDUXAgAA</values>
+        <values>H4sIAAAAAAAA/9WV227UMBCGXwXlerOKk81he4eoKiFBkVrgBlXWxB53LTkHHKe0VH13xkm6zZZtgZYicbczzoz/OXzrL9dBDRUGB4GD0iAfjEVwAab3zkvO8jRNiox3oNBZHvFSSa4s9JJL3bW9Qy6g8zHeNHD1+QmhLVi616ENDq4DsdFGWqyDgy9ni0BLylWwQsq1YpFijEUsSlnMCiywFHmWYxJTCgMlGvr0oy+D7H1Vuat2r+/dPPbV8XjQWOn1xIsALx3WEkmIAtPhIqigluAae7X1WAT5oTbkcLYne6NrRwkpzQZNO/6q4LLT30lAEfkAhVSjwPFsa/Kpi6NbHYKDU0opXG+nT8Wm0QK7sTsSFfTGvZn7xg8+tE439RgyFDxFN6av6uOxOcE2we3QyNN3JAJbX7GvYSpQnW6abye3Ko90PTRnOjSNALO1wDmrS5pu56fZ6497uj569/YdDVZ0M6+gbXV9zlvbXOjhNhJfLc8NGUtlmm+kstPn9RKEr3RJE4HlEfkPB/dnsNqnfU9pKNhf+anWX3t86xdKlGWpSlyHrBQiXOVYhEUMeYhpJBIVJ1GUq+BmEXRX3RsDXXfXMJoU/9r7csf2TY3iY699iLC6da9J1AVOPblZbCmzKGixZoRdX39qSTpKzpait9Red3PzM02/AclKPgZJXMwgOblVcV/VRIhsRD8MQct7iBxOJ6/eHt4xwv6QkcnxKCRJ/B9BMkL/fEZ2+74LyW7n/wklkkV5so5EmMdpEq4iAWFZyDKEMlbpapUVWcmeQMnsn+CXvNSN00oLGOY0pwZXGbI4isJkXWbhSmUsLFImw1gWDKOUEM7kctzzp/L0+KMz5+l4V+V+7RNbd0u9S9bJzD9xlTzO1bh1z8OKRocXfjJYgTZ83JIHWLtX5V/m7iElOzCCUij8n6XSaCStEx9iXoRRdYpgxebI3+SnOT5PD5A7n+rO3Gnd6eKfaJ5Pu0PHJ/nc88lVYyvwMxyU/CvaV2uGeRIX4TqL6U3EJA1LmSQhozcSEVDF8mVoP/sB9A/1eoUKAAA=</values>
     </sys_hub_action_instance_v2>
     <sys_hub_alias_mapping action="delete_multiple" query="source_id=ff775aaae5ba4fcba3ce2193b7153b37"/>
     <sys_hub_sub_flow_instance_v2 action="delete_multiple" query="flow=5b7af7709d9f44fc9b41d4a22fb39c83"/>
     <sys_hub_flow_logic_instance_v2 action="delete_multiple" query="flow=5b7af7709d9f44fc9b41d4a22fb39c83^sys_idNOT IN3f9141441b3c4f2394f966e7cc3cfd5e,62ae69df13a448f3881d2a0c3e3865e8,62cc8addb75a41c985fb5abbd690b11a,f94dbe5222d74460b223ade1bf238e38"/>
     <sys_hub_flow_logic_instance_v2 action="INSERT_OR_UPDATE">
-        <attributes/>
-        <block/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <block display_value="">78af405e83409b103a19c7a6feaad399</block>
         <comment/>
         <connected_to/>
         <decision_table/>
@@ -439,18 +735,18 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>3f9141441b3c4f2394f966e7cc3cfd5e</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>2</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:05</sys_updated_on>
         <ui_id>3f914144-1b3c-4f23-94f9-66e7cc3cfd5e</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA6WPzUsDMRDF/5Uy50Ss9GMNeOhNr1K8SJFpMtsOZpOYjy1l2f9dtm5hQQTF28zvPWbe68CXHEpOW79JiQ8O1OtOQIuRcW8pfa2GNCf2bjuwJzf4R+HssGE9RScf32vrT1PG17kDNqAABDhsCBRo7wxn9u7tAobPtgzCIx+O8rLMMIToW7SzSB+FIxkQYDgFi+eX37n1ka2JNJYLGLGhTBFU1wtIOnLIG525JVA12kS9+DnoJGPX7fVqOddrkmahSS7WFcr7u2ouq5qQVktNt1jdXBM9j4H6/iHHQt9b/Pven3vu+k+wiu0NAQIAAA==</values>
+        <values>H4sIAAAAAAAA/+1V0U7bMBT9FeTntErSppS+IRDaJDYkQLwMFN3YN601Jw62A3RV/33XcVLQVrRV43Fv9rHvveec+CgbplvXtM7e6lNr5bJmi28PEZO1x2i9YVKwBWMRq6FCWnFdC+mkrvMOiNgTqNYffJLL1ajbHEHTGE3LI4OPrTQo6JqQtlGwvvu723wllTDYs2nA0CyHhi02vxx17MoYyuSEJ3ySziZpHKfzaVLMJkWSigkgTKihggIVXT0b6B9ddsj7uty68bh1RtbLfn/Zd7kZQG2EZ5XEEcMXh7Ug9osSlMWIVVALcNqsd4hBEFe1egVWsnbB3RWqJqwqeLHyB41Os8yXlEhiOYbD3Tbv/QxweQ4OiFTLXWv6q3ylJUcbbBJYQqvc2VssXLhqvOhQ4qBQQ7VWbVV/Dd6wXYPh8xHSWiKBjdfsRfSKypuVfr4eWF7IuvOnP1Sag9rtwJGLRes8nw1DhRU1yit6DuRt7t+E7IqJSzVeKtqMS6Wfaah/p2PgnviYLIbxBeHnHXwHRnoVX6gNFQeaBVjJ8+5NUzuyCdk2YnZtzxRY+yqS3M0fW08xSO7F5cEfX8KNbNwpTX7CXsc2ej8ib9Kx2RR8liX8GEdiynE0PZ7D6CSdJ6N5iYCzjGMM8/GQhes+CtvtfRvHE9Fx/i1EH9P0sKydQFZmSZztz9p0ti9r+605JGDpHwLmpRycrziO/wfsnwMmbR5i0Wvrhn9gvh58iMLMnddcWqJ267HPw5/KH6zpmUn+FnrW5rsX9YptfwJn5VnG8wYAAA==</values>
         <workflow_reference/>
     </sys_hub_flow_logic_instance_v2>
     <sys_hub_flow_logic_instance_v2 action="INSERT_OR_UPDATE">
-        <attributes/>
-        <block/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <block display_value="">f8af405e83409b103a19c7a6feaad3a9</block>
         <comment/>
         <connected_to/>
         <decision_table/>
@@ -466,18 +762,18 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>62ae69df13a448f3881d2a0c3e3865e8</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>2</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:06</sys_updated_on>
         <ui_id>62ae69df-13a4-48f3-881d-2a0c3e3865e8</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA52PzWrDQAyEX8XobBfixnFt6MHH3kMvIQRlV2lF9sfsyglm8bsXtwn40ELbmzQzSN8k8IP0g8St72LkNwftbp/DBQPj0VD8WjUpjuzddtZe3Jy/GaNDy2opXX04n4y/LjW+zwlYQwuQg0NL0ILyTrOwd4dPYf5shtnojMksOo3iw5gJxnPMlLe9IZljmmNvcHz9XVq9s9GBbuV6DGhJKECbphyiCtxLp4QvBO0JTaQp/xl0wZhSSWtd4mpTYFM9FWtdN0VDWBZKVXVVHevVpnx8uINM07OE4Rv6f9/5c6/99AEXD2lg8QEAAA==</values>
+        <values>H4sIAAAAAAAA/+1VXW/aMBT9K8jPAeWDQOENUVWa1K3SWvVlq6Ib2wGrTpzFDi2L+O+7jpOAOqoNdY97s4997z3nxEdpiKpNWRv9oFZai01Blt+ePCIKi+G6IYKRJSEeKSDnuKKqYMIIVSQt4JEdyNoerKQc5VAwMKrajwzoZz2iKi8lN/YaE7qUsH/8u9t0KySreMemhApnGV6RZfPmqGWX+ZAFCxrQKJxFoe+HV9MgnUVpELIIOETYUELKJV5d9/RHty3yvi6zLy2uTSWKTbe/7brc96CqmGUV+B7hr4YXjCOfDKTmHhnkDUjFgd0V8ghsRWGcu1suS7fK4VWLnzg6jGNbknEUS7k7HLZJ56eDs2swgKRqauqqu0q3SlCunU2MZ1BLsz7F3IW70op2JQZS2VcrWefFF+cNGRr0nw+RWiMJXlrNVkSnKLvfqpevPcsbUbT+dIdSUZDDDgy6mNbG8mkIlzzHRkkOZYneJmWldqItRi75ZCNxM8mkesGh9p1OgFriE7QYJjeIX7fwI1TCqviMbbDY0UxBC5q0bxrboU2cHDyi93otQeujSHQ3+VFbik5yJy5x/tgSWonSrHDyjnc6Dt77ETlJR9OEfMpCCGZjWMRX4ymbL8YLDuGY0ngex+k8mIXRpI/A4fC99v2ItVx/C8/Hml2WrQXEWRz48flsTWfnsnXeiksCFf4hUFbKxXnyff9/oD4cKKETF4NOWzv8H+bpyYbGzRy8pkIjtQeLfer/TPZgj89M0FPoRVXPVtQRO/wCkQysAuMGAAA=</values>
         <workflow_reference/>
     </sys_hub_flow_logic_instance_v2>
     <sys_hub_flow_logic_instance_v2 action="INSERT_OR_UPDATE">
-        <attributes/>
-        <block/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <block display_value="">b0af405e83409b103a19c7a6feaad3a4</block>
         <comment/>
         <connected_to/>
         <decision_table/>
@@ -493,18 +789,18 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>62cc8addb75a41c985fb5abbd690b11a</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>2</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:05</sys_updated_on>
         <ui_id>62cc8add-b75a-41c9-85fb-5abbd690b11a</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA62PQWvDMAyF/4vOzojXtFkDO/S46yi7jFIUW1m1ObaxnZRi8t9Htg4Co4fBbtL3hN57GdyQ/JDi3u1i5DcLzetBwIiBsTUUv1dNiiM7u5/Zk53vr8LFYs9qic4ufHTGnZeMf+YMrKEBEGCxJ2hAOas5sbPHLzA7m2EWnumdVCINAjRHb/Dy8ltRJzY60DW0x4A9JQrQ5ElAVIF92qnEI0HToYk0idsBFt4513Wr5KrtilIqWVR6XRXbVbku6o18qLabVqr78g69D25Ec4wJE03TY7iZ+R8+/rnrYfoElX7U/t0BAAA=</values>
+        <values>H4sIAAAAAAAA/+1VTW/bMAz9K4POjiHb+WhyK1IUGNCtQFv0shUGLcuJNlnyLDlpZuS/j7LsJNgaDMVy3E16FMn3nkm4JbqxVWPNk742RqwUWXx5CYhQDsNzS0ROFoQEREHJ8cS0yoUVWqUdEJANyMYFHvg3zizPEcqFqSTsnv+MsLWQec37LhXUWMPymiza30Jd14JCEc1ZxJJ4msSUxlfjKJsmWRTnCXCIsaCEjEt8uhxofbjrkPN87a5yuLG1UKv+ftdXeRxAXeeOVUQDwl8tVzmyXxQgDQ9ICSoHq+vdAak55PdKHoG1UNa7tuay8qcSXo34ia3jycSlFBzFMu6Dh2vae+fh4gYsIKmG2abun7K1Fowbb1POC2ikXZ5i/sF95UT7FAuZHLK1bEr12XtDDgWGT4VIY5AEr5xmJ6JXVDyu9fZhYHkrVOdPH5SagTzcwKKLWWMdn5ZwyUsslJZQVehtWtV6I7pk5FKGK4mXsJB6i03d/IXAHPEQLYbwFvGbDn6GWjgVn7AMJnuaGRjB0m5WsRzaxMk+IGZnlhKMOYpEd9MfjaPoJffiUu+PS2G1qOw1dt7wXsc+OD/6J1PftrNZxqIkK0Y0YtFonE/Go3lCJ6PZNLoaz6dZxGIaImvUDTI1Fizf7782lCY47edW5lJlL7pv0Vv79rY971my+C9L5r7ru3eMUvp/yf55yYRJ/Wr02rrmF9yxF7dIvufBayYMUnty2MfhL+QCOxwzwU6hra6/O1FHbP8LU46rxM8GAAA=</values>
         <workflow_reference/>
     </sys_hub_flow_logic_instance_v2>
     <sys_hub_flow_logic_instance_v2 action="INSERT_OR_UPDATE">
-        <attributes/>
-        <block/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <block display_value="">f0af405e83409b103a19c7a6feaad39f</block>
         <comment/>
         <connected_to/>
         <decision_table/>
@@ -520,20 +816,973 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2026-10-22 10:14:37</sys_created_on>
         <sys_id>f94dbe5222d74460b223ade1bf238e38</sys_id>
-        <sys_mod_count>0</sys_mod_count>
+        <sys_mod_count>2</sys_mod_count>
         <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2026-10-22 10:14:37</sys_updated_on>
+        <sys_updated_on>2026-10-22 10:18:05</sys_updated_on>
         <ui_id>f94dbe52-22d7-4460-b223-ade1bf238e38</ui_id>
         <updation_source/>
-        <values>H4sIAAAAAAAAA62PwWrDMAyG30VnZ8Rr2qyGHXLcvewySlFsZxNzbGM7KcX43Ue6DgKjh8Fu0vcL6VMGNyU/pXhwXYz0bkG8HRnMGAh7o+N3q7SkSM4eFvZil/lbcLE4klyjswufg3HnNaOfOgMpEAAMLI4aBEhnFSVy9nQFy2UzLUHnfXCzVsBAUfQGL6+/E/lBRgV9k/YYcNRJBxC5MIgykE+dTDRrEAOaqAu7L7C6nXPb9pJv+qGqueRVo7ZNtd/U26rd8admv+u5fKwf8CqC5hQTJl3KM951/oeNf/71WL4ATDkskN0BAAA=</values>
+        <values>H4sIAAAAAAAA/+1VUWvbMBD+K0PPjpHtOGnyFlIKg26FtfRlK+YsyYmYbHmWnDYL+e87WXYStoQR1se9Sd/p7r77fB/eEd3aurXmSS+MkauKzL++BERWDsPzjkhO5oQEpIJS4InpiksrdZV1QEA2oFoXWNR1ozeCI8SlqRVsn/+MsLVUvBF9lxoarGFFQ+a730Jd14JCEc1YxJJ4ksSUxjfjKJ8keRTzBAQkWFBBLhQ+XQ60Ptx3yGW+dls73NhGVqv+ft9XeRxA3XDHKqIBEW9WVBzZzwtQRgSkhIqD1c32gDQC+EOljsBaVtarthaq9qcS3oz8ia3jNHUphcBhmfDBwzXrtfNwcQsWkFTLbNv0T9laSyaMl4mLAlpll6eYf/BQu6F9ioVcDdlatWX12WtDDgWGT4VIa5CEqN3Mboh+ouJxrV+/DCzvZNXp0weVZqAON7CoYt5ax2dHhBIlFspKqGvUNnOrILtk5FKGK4WXsFD6FZu6/QuBOeIhSgzhHeK3HfwMjXRTfMIymOxp5mAky7pdxXIokyD7gJitWSow5jgkqpv9aB1FP3I/XOb1cSmskbVdYOeN6OfYB5dX/2Trd7vpNGdRkhcjGrFoNObpeDRLaDqaTqKb8WySRyymIXQWAJUZC1bs999aShMOFy3zXmWv89sM0iKNaHreb+PJOb+dl+cak8V/MZn7rld7jFL632T/bDJpMm+Nfrau+Tt67MUZyfc8aM2kQWpPDvs4/IVcYItrJtkp9Kqb726oI7b/BWQohQTPBgAA</values>
         <workflow_reference/>
     </sys_hub_flow_logic_instance_v2>
     <sys_hub_pill_compound action="delete_multiple" query="attached_to=5b7af7709d9f44fc9b41d4a22fb39c83"/>
     <sys_hub_flow_variable action="delete_multiple" query="model=5b7af7709d9f44fc9b41d4a22fb39c83"/>
     <sys_choice action="delete_multiple" query="name=var__m_sys_hub_flow_variable_5b7af7709d9f44fc9b41d4a22fb39c83"/>
+    <sys_documentation action="INSERT_OR_UPDATE">
+        <element>changed_fields</element>
+        <help/>
+        <hint/>
+        <label>Changed Fields</label>
+        <language>en</language>
+        <name>var__m_sys_hub_flow_input_5b7af7709d9f44fc9b41d4a22fb39c83</name>
+        <plural/>
+        <sys_class_name>sys_documentation</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:04</sys_created_on>
+        <sys_id>5caf005e83409b103a19c7a6feaad3fb</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:04</sys_updated_on>
+        <url/>
+        <url_target/>
+    </sys_documentation>
+    <sys_documentation action="INSERT_OR_UPDATE">
+        <element>table_name</element>
+        <help/>
+        <hint/>
+        <label>Table Name</label>
+        <language>en</language>
+        <name>var__m_sys_hub_flow_input_5b7af7709d9f44fc9b41d4a22fb39c83</name>
+        <plural/>
+        <sys_class_name>sys_documentation</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:03</sys_created_on>
+        <sys_id>d4af005e83409b103a19c7a6feaad3d8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:03</sys_updated_on>
+        <url/>
+        <url_target/>
+    </sys_documentation>
+    <sys_documentation action="INSERT_OR_UPDATE">
+        <element>current</element>
+        <help/>
+        <hint/>
+        <label>Record</label>
+        <language>en</language>
+        <name>var__m_sys_hub_flow_input_5b7af7709d9f44fc9b41d4a22fb39c83</name>
+        <plural/>
+        <sys_class_name>sys_documentation</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:03</sys_created_on>
+        <sys_id>d4af005e83409b103a19c7a6feaad3e3</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:03</sys_updated_on>
+        <url/>
+        <url_target/>
+    </sys_documentation>
     <sys_choice action="delete_multiple" query="name=var__m_sys_hub_flow_input_5b7af7709d9f44fc9b41d4a22fb39c83"/>
     <sys_choice action="delete_multiple" query="name=var__m_sys_hub_flow_output_5b7af7709d9f44fc9b41d4a22fb39c83"/>
-    <sys_flow_trigger_plan action="delete_multiple" query="plan_id=5b7af7709d9f44fc9b41d4a22fb39c83"/>
+    <sys_hub_flow_snapshot action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <acls/>
+        <active>true</active>
+        <allow_high_security_roles>false</allow_high_security_roles>
+        <annotation/>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <authored_on_release_version>-1</authored_on_release_version>
+        <callable_by_client_api>false</callable_by_client_api>
+        <category/>
+        <copied_from/>
+        <copied_from_name/>
+        <description>On case_status = under_investigation: ensure investigation tasks, notify the customer, run the bfd_team_lead high-value approval sub-process when required, and move to action_taken once mandatory tasks are complete.</description>
+        <flow_priority>HIGH</flow_priority>
+        <internal_name>bfd_flow_investigation</internal_name>
+        <label_cache>[{"name":"Updated_1.current.sys_id","label":"Trigger - Record Updated➛x_1755386_safetr_0_bfd_fraud_dispute_case Record➛Sys Id","type":"string","base_type":"string","usedInstances":{"61a6074b-2b10-43e3-a167-135cf2d6ea3b":["caseSysId"],"02182208-4844-454a-94f3-62821e59cdad":["caseSysId"],"bc651c7e-d4ce-478a-9281-8feae65ce0a8":["caseSysId"],"1c852478-3428-4d0b-932d-ba4e3e6b5637":["caseSysId"],"4c6ff638-83a3-42bc-b320-32e90f86e177":["caseSysId"],"c967ff28-7dfa-4780-9b6c-612cbc7212e5":["caseSysId"],"2e4d2a16-a958-4d79-9ea2-cc5755b71623":["caseSysId"]},"attributes":{}},{"name":"Updated_1.current","label":"Trigger - Record Updated➛x_1755386_safetr_0_bfd_fraud_dispute_case Record","type":"reference","base_type":"reference","usedInstances":{"ff775aaa-e5ba-4fcb-a3ce-2193b7153b37":["record"],"c4bd3a29-c157-4147-bbd0-102e3fac998f":["record"],"77bc13bf-01c1-4d54-9305-7618496b1c20":["record"],"ac9e98a9-0aab-45c5-bd3c-2c70b8eea8d0":["record"],"b35b0b6b-4d14-40ec-ba89-d482d535731f":["record"]},"attributes":{}},{"name":"e46e1200-39b6-4f61-851d-2d81e052306d.Record","label":"e46e1200-39b6-4f61-851d-2d81e052306d➛Record","type":"reference","base_type":"reference","usedInstances":{"ff775aaa-e5ba-4fcb-a3ce-2193b7153b37":["notification"]},"attributes":{}},{"name":"bc651c7e-d4ce-478a-9281-8feae65ce0a8.approvalRequired","label":"bc651c7e-d4ce-478a-9281-8feae65ce0a8➛approvalRequired","type":"string","base_type":"string","usedInstances":{"3f914144-1b3c-4f23-94f9-66e7cc3cfd5e":["condition"]},"attributes":{}},{"name":"b10e4f1c-9a23-48c1-9fd8-6b2c1cd83d6a.Record.user","label":"b10e4f1c-9a23-48c1-9fd8-6b2c1cd83d6a➛Record➛user","type":"reference","base_type":"reference","usedInstances":{"77bc13bf-01c1-4d54-9305-7618496b1c20":["approval_conditions"]},"attributes":{}},{"name":"77bc13bf-01c1-4d54-9305-7618496b1c20.approval_state","label":"77bc13bf-01c1-4d54-9305-7618496b1c20➛approval_state","type":"choice","base_type":"choice","usedInstances":{"f94dbe52-22d7-4460-b223-ade1bf238e38":["condition"],"62cc8add-b75a-41c9-85fb-5abbd690b11a":["condition"]},"attributes":{}},{"name":"2e4d2a16-a958-4d79-9ea2-cc5755b71623.complete","label":"2e4d2a16-a958-4d79-9ea2-cc5755b71623➛complete","type":"string","base_type":"string","usedInstances":{"62ae69df-13a4-48f3-881d-2a0c3e3865e8":["condition"]},"attributes":{}}]</label_cache>
+        <master>true</master>
+        <name>bfd_flow_investigation</name>
+        <natlang/>
+        <outputs/>
+        <parent_flow display_value="bfd_flow_investigation">5b7af7709d9f44fc9b41d4a22fb39c83</parent_flow>
+        <remote_trigger_id/>
+        <run_as>system</run_as>
+        <run_with_roles/>
+        <sc_callable>false</sc_callable>
+        <status>published</status>
+        <sys_class_name>sys_hub_flow_snapshot</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:08</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>5dafc05e83409b103a19c7a6feaad31d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_overrides/>
+        <sys_package/>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:08</sys_updated_on>
+        <type>flow</type>
+        <version>2</version>
+    </sys_hub_flow_snapshot>
+    <sys_translated_text action="delete_multiple" query="documentkey=5dafc05e83409b103a19c7a6feaad31d"/>
+    <sys_variable_value action="delete_multiple" query="document_key=5dafc05e83409b103a19c7a6feaad31d"/>
+    <sys_hub_flow_stage action="delete_multiple" query="flow=5dafc05e83409b103a19c7a6feaad31d"/>
+    <sys_flow_cat_variable_model action="delete_multiple" query="id=5dafc05e83409b103a19c7a6feaad31d^sys_idNOT IN99afc05e83409b103a19c7a6feaad31e"/>
+    <sys_flow_cat_variable_model action="INSERT_OR_UPDATE">
+        <id>5dafc05e83409b103a19c7a6feaad31d</id>
+        <name>bfd_flow_investigation</name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:08</sys_created_on>
+        <sys_id>99afc05e83409b103a19c7a6feaad31e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:08</sys_updated_on>
+    </sys_flow_cat_variable_model>
+    <sys_flow_cat_variable action="delete_multiple" query="flow_catalog_model=99afc05e83409b103a19c7a6feaad31e"/>
+    <sys_hub_flow_input action="delete_multiple" query="model=5dafc05e83409b103a19c7a6feaad31d^sys_idNOT IN11afc05e83409b103a19c7a6feaad320,21afc05e83409b103a19c7a6feaad35c,6dafc05e83409b103a19c7a6feaad343"/>
+    <sys_hub_flow_input action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <array>false</array>
+        <array_denormalized>false</array_denormalized>
+        <attributes>element_mapping_provider=com.glide.flow_design.action.data.FlowDesignVariableMapper,timeFromCreateToActivate=190000,uiType=document_id</attributes>
+        <audit>false</audit>
+        <calculation><![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]></calculation>
+        <choice/>
+        <choice_field/>
+        <choice_table/>
+        <column_label/>
+        <comments/>
+        <create_roles/>
+        <default_value/>
+        <defaultsort/>
+        <delete_roles/>
+        <dependent>table_name</dependent>
+        <dependent_on_field>table_name</dependent_on_field>
+        <display>false</display>
+        <dynamic_creation>false</dynamic_creation>
+        <dynamic_creation_script/>
+        <dynamic_default_value/>
+        <dynamic_ref_qual/>
+        <element>current</element>
+        <element_reference>false</element_reference>
+        <foreign_database/>
+        <formula/>
+        <function_definition/>
+        <function_field>false</function_field>
+        <help/>
+        <hint/>
+        <internal_type display_value="">document_id</internal_type>
+        <label>Record</label>
+        <mandatory>true</mandatory>
+        <max_length>200</max_length>
+        <model display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</model>
+        <model_id>5dafc05e83409b103a19c7a6feaad31d</model_id>
+        <model_table>sys_hub_flow_snapshot</model_table>
+        <name>var__m_sys_hub_flow_input_5dafc05e83409b103a19c7a6feaad31d</name>
+        <next_element/>
+        <order>100</order>
+        <primary>false</primary>
+        <read_only>false</read_only>
+        <read_only_option/>
+        <read_roles/>
+        <reference/>
+        <reference_cascade_rule/>
+        <reference_floats>false</reference_floats>
+        <reference_key/>
+        <reference_qual/>
+        <reference_qual_condition/>
+        <reference_type/>
+        <sizeclass/>
+        <spell_check>false</spell_check>
+        <staged>false</staged>
+        <sys_class_name>sys_hub_flow_input</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:08</sys_created_on>
+        <sys_id>11afc05e83409b103a19c7a6feaad320</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package/>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:08</sys_updated_on>
+        <table_reference>false</table_reference>
+        <text_index>false</text_index>
+        <unique>false</unique>
+        <use_dependent_field>true</use_dependent_field>
+        <use_dynamic_default>false</use_dynamic_default>
+        <use_reference_qualifier>simple</use_reference_qualifier>
+        <virtual>false</virtual>
+        <virtual_type>script</virtual_type>
+        <widget/>
+        <write_roles/>
+        <xml_view>false</xml_view>
+    </sys_hub_flow_input>
+    <sys_hub_action_input_action_instance action="delete_multiple" query="action_input=11afc05e83409b103a19c7a6feaad320"/>
+    <sys_hub_flow_input action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <array>false</array>
+        <array_denormalized>false</array_denormalized>
+        <attributes>element_mapping_provider=com.glide.flow_design.action.data.FlowDesignVariableMapper,test_input_hidden=true,uiType=table_name</attributes>
+        <audit>false</audit>
+        <calculation><![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]></calculation>
+        <choice/>
+        <choice_field/>
+        <choice_table/>
+        <column_label/>
+        <comments/>
+        <create_roles/>
+        <default_value/>
+        <defaultsort/>
+        <delete_roles/>
+        <dependent/>
+        <dependent_on_field/>
+        <display>false</display>
+        <dynamic_creation>false</dynamic_creation>
+        <dynamic_creation_script/>
+        <dynamic_default_value/>
+        <dynamic_ref_qual/>
+        <element>table_name</element>
+        <element_reference>false</element_reference>
+        <foreign_database/>
+        <formula/>
+        <function_definition/>
+        <function_field>false</function_field>
+        <help/>
+        <hint/>
+        <internal_type display_value="">table_name</internal_type>
+        <label>Table Name</label>
+        <mandatory>false</mandatory>
+        <max_length>200</max_length>
+        <model display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</model>
+        <model_id>5dafc05e83409b103a19c7a6feaad31d</model_id>
+        <model_table>sys_hub_flow_snapshot</model_table>
+        <name>var__m_sys_hub_flow_input_5dafc05e83409b103a19c7a6feaad31d</name>
+        <next_element/>
+        <order>101</order>
+        <primary>false</primary>
+        <read_only>false</read_only>
+        <read_only_option/>
+        <read_roles/>
+        <reference/>
+        <reference_cascade_rule/>
+        <reference_floats>false</reference_floats>
+        <reference_key/>
+        <reference_qual/>
+        <reference_qual_condition/>
+        <reference_type/>
+        <sizeclass/>
+        <spell_check>false</spell_check>
+        <staged>false</staged>
+        <sys_class_name>sys_hub_flow_input</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:08</sys_created_on>
+        <sys_id>21afc05e83409b103a19c7a6feaad35c</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package/>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:08</sys_updated_on>
+        <table_reference>false</table_reference>
+        <text_index>false</text_index>
+        <unique>false</unique>
+        <use_dependent_field>false</use_dependent_field>
+        <use_dynamic_default>false</use_dynamic_default>
+        <use_reference_qualifier>simple</use_reference_qualifier>
+        <virtual>false</virtual>
+        <virtual_type>script</virtual_type>
+        <widget/>
+        <write_roles/>
+        <xml_view>false</xml_view>
+    </sys_hub_flow_input>
+    <sys_hub_action_input_action_instance action="delete_multiple" query="action_input=21afc05e83409b103a19c7a6feaad35c"/>
+    <sys_hub_flow_input action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <array>false</array>
+        <array_denormalized>false</array_denormalized>
+        <attributes>child_label=FDChangeDetails,child_name=FDChangeDetails,child_type=object,child_type_label=Object,element_mapping_provider=com.glide.flow_design.action.data.FlowDesignVariableMapper,pwd2droppable=true,uiType=array.object,uiTypeLabel=Array.Object</attributes>
+        <audit>false</audit>
+        <calculation><![CDATA[(function calculatedFieldValue(current) {
+
+	// Add your code here
+	return '';  // return the calculated value
+
+})(current);]]></calculation>
+        <choice/>
+        <choice_field/>
+        <choice_table/>
+        <column_label/>
+        <comments/>
+        <create_roles/>
+        <default_value/>
+        <defaultsort/>
+        <delete_roles/>
+        <dependent/>
+        <dependent_on_field/>
+        <display>false</display>
+        <dynamic_creation>false</dynamic_creation>
+        <dynamic_creation_script/>
+        <dynamic_default_value/>
+        <dynamic_ref_qual/>
+        <element>changed_fields</element>
+        <element_reference>false</element_reference>
+        <foreign_database/>
+        <formula/>
+        <function_definition/>
+        <function_field>false</function_field>
+        <help/>
+        <hint/>
+        <internal_type display_value="String">string</internal_type>
+        <label>Changed Fields</label>
+        <mandatory>false</mandatory>
+        <max_length>4000</max_length>
+        <model display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</model>
+        <model_id>5dafc05e83409b103a19c7a6feaad31d</model_id>
+        <model_table>sys_hub_flow_snapshot</model_table>
+        <name>var__m_sys_hub_flow_input_5dafc05e83409b103a19c7a6feaad31d</name>
+        <next_element/>
+        <order>100</order>
+        <primary>false</primary>
+        <read_only>false</read_only>
+        <read_only_option/>
+        <read_roles/>
+        <reference/>
+        <reference_cascade_rule/>
+        <reference_floats>false</reference_floats>
+        <reference_key/>
+        <reference_qual/>
+        <reference_qual_condition/>
+        <reference_type/>
+        <sizeclass/>
+        <spell_check>false</spell_check>
+        <staged>false</staged>
+        <sys_class_name>sys_hub_flow_input</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:08</sys_created_on>
+        <sys_id>6dafc05e83409b103a19c7a6feaad343</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package/>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:08</sys_updated_on>
+        <table_reference>false</table_reference>
+        <text_index>false</text_index>
+        <unique>false</unique>
+        <use_dependent_field>false</use_dependent_field>
+        <use_dynamic_default>false</use_dynamic_default>
+        <use_reference_qualifier>simple</use_reference_qualifier>
+        <virtual>false</virtual>
+        <virtual_type>script</virtual_type>
+        <widget/>
+        <write_roles/>
+        <xml_view>false</xml_view>
+    </sys_hub_flow_input>
+    <sys_hub_action_input_action_instance action="delete_multiple" query="action_input=6dafc05e83409b103a19c7a6feaad343"/>
+    <sys_hub_flow_output action="delete_multiple" query="model=5dafc05e83409b103a19c7a6feaad31d"/>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=5dafc05e83409b103a19c7a6feaad31d"/>
+    <sys_hub_trigger_instance_v2 action="delete_multiple" query="flow=5dafc05e83409b103a19c7a6feaad31d^sys_idNOT IN3dafc05e83409b103a19c7a6feaad3c5"/>
+    <sys_hub_trigger_instance_v2 action="INSERT_OR_UPDATE">
+        <comment>Case moved to under investigation</comment>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <name>Updated</name>
+        <published_version/>
+        <remote_sys_id/>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>3dafc05e83409b103a19c7a6feaad3c5</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <trigger_definition display_value="Updated">bb695e60c31322002841b63b12d3aea5</trigger_definition>
+        <trigger_inputs>H4sIAAAAAAAA/+1YUW/bNhD+K4KeVsADXBTdhrxt6wIE6FagybaHriBo8iQTo0mPPNrRgvz3HSXKViS5VdOo2bA82TqSuu/uvu9I6t1Njk6VJbgL45EbAZeVv5D5WZ4vcs1XoOnvFV9poGdlEJzh+qraApkxmpnhmzgmYQtGgsFmqVhbJeC18vT87v0i33AjOVpX5WfoAizywtnNFWy2miO9q+Dak9E6CS4/e75cLvL6vckJvXDHdYjP1+z5ty9fvvjuG+Z5AejYkq0KyQrHg2RS+W1AYIL7GhM9al79do+lYq20dGAa9FvuCA1GbDeDrPSA4khyUlwUFVxjTJM8hNxJTLI44PKN0VVnyrVXf0O9PnhgnVSnGcXl2u7fQgGEWMC5MrW7NKit4PrwxJHqvaJIPcVye3tI0rkCncruhVNb/F6g2rWluV1M4cnbYLLf12CyXz24rC7+gDSlVhKYbsamk6YN9GOsqWnSgZaK44Jhe0LGKH+u9d5SasiUaQQYDfdDDnEkBf9WauRc7mKZYx6jYvO5uHIJ3isbfxGVKYeMaVjxEbbcUKDwV4gx1sko2lLWL+MNPjK/Tu5jFrOIobCuqd/FcWKLKS642PAyUYI8aBDYqVBBKztPPytaRiEc83AClLGGTQH2izVff0lcK4vrLpgWxw9kv5MgYuYpcP4z0d1P933Z+QObdndj6yk9WT9F7UPCnnaOPQr/n9VeaLsnEj20wLmpBpSNnpQhllaZsOTsGmeTDMkDSmeDkadQ3J0xj265+PPDII4zsq8kFDxofPbYQo3YqA12NdqNo6/U7thEvR4pN+r2SZ3HVL0x2U8p6Kw+2fqHFmqNvEdPaqMiOEoH1ltKm/YMWwQziTaOD7HQztsB1B7oH1UjdFA4cPGokxZ/TyKteaI6Rkt+0veTWJrM/WiNVNicwvr6aIf8LHebVBrRAdASIt5aGUHG4P8Iy+ULGWK6qMvtwKMqeZre48vEVRPo1E3KCEwcyc9s/EnfF+5Lnz036BlaxqVkHcSHBraxEvSrTnUTZyhv24A+v+3UnjR0+DQw5117psvT2NmKrgPxXBXvtbP1Z2uA2WL0WqSKLCWHutaqynANhEnTnk5vrlHNt20YGwvah/bKZjSQuS8C7mFuR/VHieEVqSl3r0k0xk/+HHL6dtRz/rSvHNN31cx6aBkHo8jMxJqbsjlVtdw9JzUDF+usmZI1U2bUteh97BDzOYMduGoQbDRmYSujVObyzPWeV37Qvqg7xEaRzpdkIEmYRgSP1hLavcujo5ll1ekGA9b0GsNgfGKPOJL8NIb/SlOY3gPe/wOCSQpMahkAAA==</trigger_inputs>
+        <trigger_outputs/>
+        <trigger_type>record_update</trigger_type>
+        <updation_source/>
+    </sys_hub_trigger_instance_v2>
+    <sys_hub_action_instance_v2 action="delete_multiple" query="flow=5dafc05e83409b103a19c7a6feaad31d^sys_idNOT IN21afc05e83409b103a19c7a6feaad3b6,21afc05e83409b103a19c7a6feaad3b9,25afc05e83409b103a19c7a6feaad3ba,25afc05e83409b103a19c7a6feaad3bc,31afc05e83409b103a19c7a6feaad3c1,39afc05e83409b103a19c7a6feaad3be,39afc05e83409b103a19c7a6feaad3c3,3dafc05e83409b103a19c7a6feaad3bf,69afc05e83409b103a19c7a6feaad3b7,adafc05e83409b103a19c7a6feaad3ba,b9afc05e83409b103a19c7a6feaad3c1,bdafc05e83409b103a19c7a6feaad3bd,bdafc05e83409b103a19c7a6feaad3c2,e5afc05e83409b103a19c7a6feaad3b4"/>
+    <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+        <action_type display_value="Look Up Record">9d09f99587003300663ca1bb36cb0ba3</action_type>
+        <action_type_parent display_value="Look Up Record">b93f42810b30030085c083eb37673a63</action_type_parent>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <comment/>
+        <compiled_snapshot>9d09f99587003300663ca1bb36cb0ba3</compiled_snapshot>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <order>2</order>
+        <parent_ui_id/>
+        <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>21afc05e83409b103a19c7a6feaad3b6</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>e46e1200-39b6-4f61-851d-2d81e052306d</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/+VY32/jKBD+Vyw/pzk7v5z07dQq0kp7W2nb68veCmEDCToCXsDpplX/9xts7PgSN2mujbTVPbWGgfnmm28GyLenUOIVDS9Do7RFdpPTsBeusSiaMWwyGCLc5AJv7v0MDqwKHmE8xxrWW6rDy6cwW3JBNJXh5bfvvZATMByTaMZms/E0iaLhMIomk2GG4zQdTrI0StMYthA4pQJMb8FbcFch6ABV/rkEH4pn9fdnv/SqHlSaOCjDXkh/WioJBQwMC0N74QpLgq3Sm2ZEU0xupNgOLLm0sBvss6Qir/5b4Z+GP4Ln4cCtYBTiy2g113wiT081zK6xxbdWF5kttDetYBtg5qkJuCGxg28fSPTc29o/Onu8a09oe0H8DMwTynAh7NV/8xmf6nPgfFYB3uSWK8h/OHQZwqmow1eiWMkvVVbDBuF9h9CqmesX9FYYIJvmLrUuVz5x7HapHr7W2ZhzWeLyk0JlWDRf2FrN08I6Xp5CRhDjVBDEpeDSeYK0OSFRQVfgAa1wnnO5QLlWa17uCrGs+gsBH30m1IPjgi9kH2cu8j5IDPfnMH5dDt9jzR0Lf8A2sLjnHC5hqfeHTKZ5btEDJwtqt95rK6LsAxZ/d817xaE6UWV44XMvNBtzJbAxW7JBpuhH4TioqPfsoTJR5ZISxe8QwZp6opwGfBFmShLugjMtGbi5vwqoaZICGKksZxsIak2N5QvsrJGxWFsowL3mcdLaYw2GjA81GDxrNZirdiBdwdUtZnfsc9cGdbWcodWMoih6n2bT1Qz2i/WkWt0vQifKN9TgeUrt9EqoKDhaDpVZqyFuDF27TegKc4EqcPuif8nsqL5nB/U9aun7ziPbAepVXX6icu7fqi6XBV+qifrcOYOqpx9J0289WM52fnABWkFVMo0qdEnlGmWiMOWExtJ4cZ3jMOAMrYA4noN7TTOQi0FYU8RUIclW1XVxOFYZ18Z64/26+EohxzJQIKPALmlQWgeN9bHyiA+WR9pu/59YUEP3+5sAoAcl9KCBflqgp9xKR2c5Kt77VjqH9lRmAvSUt1JJtVb6hZvpkSQeUMMrr62vBBW/K6i332u75N95vz2C9UM0p3O0m/JhUJG83zpe0x4OPj8xabWHG5f0IN3svD4b577Sq+dCxzE6dxM7x+jg/36M/pJXw95Lz76z3RkRMjKD1xwsY+72By+cunPVbSja13f1pDsu8ozidDTAk2QYx1EURySJpkkSTycpm+BkxFoiv1bSvbwGiQ0cEGg4QQ3kOFRfAalSgmK5I/87IPC3uUfs5T/+hQ+8D3GLLPjdLufVUCfr56qWgv8p+Y+CfnJim9JoMI1JdjFN4uRixMjkYkbw+ALP0nEyJDQbsff8GeL7P34wPrCiFAAA</values>
+    </sys_hub_action_instance_v2>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=21afc05e83409b103a19c7a6feaad3b6"/>
+    <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+        <action_type display_value="bfd_action_log_communication">458fc41e83409b103a19c7a6feaad31c</action_type>
+        <action_type_parent display_value="bfd_action_log_communication">b5954ac6bd4e4ad085087d8fda347411</action_type_parent>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <comment/>
+        <compiled_snapshot>458fc41e83409b103a19c7a6feaad31c</compiled_snapshot>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <order>4</order>
+        <parent_ui_id/>
+        <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>21afc05e83409b103a19c7a6feaad3b9</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>02182208-4844-454a-94f3-62821e59cdad</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/+1WbWvbMBD+K8Kfg8lr2+Tb1lIorCss3cYoxZytc6why54kJ/VC//tOseM4pCQNdNCxfLPOd6fn7p5H0sPSU5CiN/EiMDgtzQ33Ot4cZOFsy+XXnINFHvT8qNAalfVNaQLBn5/JjQuTSyi/vc47B007WdTeZOlFiZCcPLzJw2PHE5zCh+OLOBr28GIw7I7DXncAvXF0DmcxAvBB3+GSEKIk10vCyqrUZH2hAFvmzmSsFmpWrz/VwdO1MdPcgel1PHyyqDgSihikwY6XgqJKMl16E6sLMmgEfqdk2XgkQllKRmkSlHn1lcKTEb9p40HfRcRIBUZY/WuWQd21yhxfgQVCVES20LVrlGQiQlO1hmMMhbSXbVvlcJdbkakqxEIo19GZLFL1ueqJ1yRYD4kshSEQmLuKXQ11QfE0yRZf1iivhVo1p/4pswhkswJLLQwL6/AsPZSYUqIghTynxga5zuZiFUxYUn8maeHHMlvQpkbMlA+RA+5Tg8G/JvvVyvwNtHBV3FIaCiaY4n5ris8dj0Z+KcGYTXXU1uBX4bBVtdZVBVVjXEikRW4/0JZzrAt47mxIn4BSxIoN5TEFIXe5vTYfIvFotI/Eg1GbxM3eO2COoW//7ek77L5b+jbjqcxXL0/pxPCG4aYIf2JkWwy/UXM0VszAYWSF68ICShZnmpVZoZk7R3cF8MqoQ/oY9/bpYxi19DFtkO+Ucow+Bm+vj/5o9G4FcmJ/m/0pGgMzbLH/x5qsTBimskVFZQarBExssXwhbMKcv8kxEiCFscwipD77jvRTShZlylKokwATMVsgU4icgSotMWhGH9z5xEKnzCZIySz1DFlYrpb4RInpwcQ0GhrralP3gvJ39ffP4D50AvC9z7yzsHUC3DbT2xnnMSfA8G/ckN33e0eejoD2EUCZZzOqmH8sW8dAGPNgBXhLOZOtVWAsaGL5rhiPjD4kid7eR+N5vyWJ+3U1JMWNLrZrPEYbo9Pt+L9J4/EPJIkQSvQPAAA=</values>
+    </sys_hub_action_instance_v2>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=21afc05e83409b103a19c7a6feaad3b9"/>
+    <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+        <action_type display_value="bfd_action_check_approval_required">a97f401e83409b103a19c7a6feaad3bb</action_type>
+        <action_type_parent display_value="bfd_action_check_approval_required">74bdf435f6154851b3eab5f07814f030</action_type_parent>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <comment>bfd_CaseUtils.highValueApprovalRequired (threshold 500)</comment>
+        <compiled_snapshot>a97f401e83409b103a19c7a6feaad3bb</compiled_snapshot>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <order>5</order>
+        <parent_ui_id/>
+        <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>25afc05e83409b103a19c7a6feaad3ba</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>bc651c7e-d4ce-478a-9281-8feae65ce0a8</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/41Ry27bMBD8lYJnQbDqNGl8KxwEKNAkQN3mEgTCmlxZBFYkw4cTVfC/d2nKTgv00Jt2NLM7M3yahIEBxUpICLgZw1clKrEHShmbpp9OQUTVNrVM3qOJdRhDq9XhwDSlgyMYH/+P7cDzpYherCYhe02KGWL19FwJrViOn666i0WDn5cXi+tts1hCcy2v4LJDALWUC15BsEVi6pq9fiirGf1HgDi6DIXotdnN87dZvDmB1qtspqkEvkU0CtlFBxSwEgMYTmL9KFbRJwY8gnowNJ4ZvTaRl/GaHsmVrwHegv7Fh5cfs6JDDiix/DuP7dxagbsbiMCOkozJz1TZWy0xlGoUdpAorv/ECuHBRW1NkUTY0kltKQ3mvnQizgtOj8RICmwCXU6cM8yBuk1vX7+fXN5qcyxn/klWAp0niFzhNsXsZxJIOPCidgDnuNjWebvXRzF7Geod8VB3ZF/5aNA7U4PMxmsuGOpbxm+O8CN4nVPc8RoWs039469XPFSCn3xNEMJ7Oq61fUnZW8k6p2pLMVkivXbxC5/c4xzg8Pwbwfss/fYCAAA=</values>
+    </sys_hub_action_instance_v2>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=25afc05e83409b103a19c7a6feaad3ba"/>
+    <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+        <action_type display_value="Update Record">f9d01dd2c31332002841b63b12d3aea1</action_type>
+        <action_type_parent display_value="Update Record">baf174c8c3c232002841b63b12d3aee4</action_type_parent>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <comment/>
+        <compiled_snapshot>f9d01dd2c31332002841b63b12d3aea1</compiled_snapshot>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <order>8</order>
+        <parent_ui_id>3f914144-1b3c-4f23-94f9-66e7cc3cfd5e</parent_ui_id>
+        <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>25afc05e83409b103a19c7a6feaad3bc</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>c4bd3a29-c157-4147-bbd0-102e3fac998f</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/+1V204bMRD9FeTnKNrNkjTkrSJFqtSCCm1egFqz9iyx5L3Ul5A0yr93vLvZrAABqoRUpOYpM+MzPmd87L3esgJyZDPmINXI62DAVqB9SK55/GE8TqYTbiFDZ3jE00zyzICXXCpbeYdcgA2YEGrYLP4CWoGhfR0aNtsysVRaGizY7Pp2wJSkXulYRvFJPBFJnCSjKBpNj+N0kqTxSCaA4oRaaEhR09LvQQbFT6lym+rJ3Jc+9ui8KZRGBj7jaMBw7bCQSEwy0BYHLIdCgivNhs2c8ZQwCPKi0JtuxVIVjjpSnyXqqvmXw9qq38RgGgVEhiRSYFPrQt6OsUlnc3BwRXsI5027VCxLJdA245GYgdfutJ9rFlxUTpVFA6kVt+hS+7w4b6bDugb7U6OMt0QCq6A4aGgFZVfL8v5yz/JMFfV02qIuBeguAueMSul4bThO1JhTI55DVanijlemXKkaTFzy4Z2mYJjp8p42tequGIIIxIc0YBieUX5epxdgVFDxldoQeDdgdmNPNVh70EJD5L98YNIoazXwZgwBIoyq3EfaYIUt3d2guwEGBR16z/3b7Y+KaKDk8VB4Q8rdbvfY6a8w8DE+Z2CMewa+3LN4yKp1ryyFrweq5AP7ztvK0ef5wb/xG/j3+D35txH47u3be7ReNHLtX9szcnhmuXXgvL3xUZTI0DqoITakB/TPT98e+/qVqJe8H42e9T72vH+mUEt78H4nZP9yY04E6bvRCHvwerfFo0Vb7G7AG1yBeBLVv/8X4d+7CLd/ALiRrBvVCAAA</values>
+    </sys_hub_action_instance_v2>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=25afc05e83409b103a19c7a6feaad3bc"/>
+    <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+        <action_type display_value="bfd_action_revert_requested_action">076f8cda83409b103a19c7a6feaad347</action_type>
+        <action_type_parent display_value="bfd_action_revert_requested_action">3d857acab6dc4b75b98f2d0db6324ec4</action_type_parent>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <comment>Clear provisional credit / reset card_action</comment>
+        <compiled_snapshot>076f8cda83409b103a19c7a6feaad347</compiled_snapshot>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <order>14</order>
+        <parent_ui_id>62cc8add-b75a-41c9-85fb-5abbd690b11a</parent_ui_id>
+        <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>31afc05e83409b103a19c7a6feaad3c1</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>4c6ff638-83a3-42bc-b320-32e90f86e177</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/41RXWsbMRD8K0XPxxHXwU38VhwChbaBus1LCMdaWvkEe5KqDyfXw/+9K+vstNCHvt3OzezOjJ4mYWFAsRYSIm7H+EmJRhyAcsGm6YdXkFB1i1bmENCmNo6xM+p4ZJoy0ROMj//H9hD4UsIg1pOQvSHFDLF+em6EUcWAXukbqeBmeX11u1tcLWFxKz/ASiOAWq6ueQXBDompG/b6rq5m9B8B0ugLFFMwdj/Pn2fx9gy6oIqZRSPwNaFVyC40UMRGDGA5iQujWKeQGQgI6sHSeGH0xiZexmt6JF+/BniN5hcfXr4vCo0cUGL9dxm7ubUK6ztIwI6yTDnMVNk7IzHWahRqyJQ2f2KV8OCTcbZKEuzorHaUB/u1diIuC86PxEiObAJ9SVwyzIH0tncv384u7409lTP/JCeBLhMkrnCXU/EzCSQceFE3gPdcbOeDO5iTmL0M7Z54aDW5Fz4azd62IIvxlguG9p7xuxP8CMGUFF94DYvZpvn+1yseG8FPviGI8S0d19r9zMVbzTqn6moxRSKD8ekjnzzgHOD4/Bu6cc8/9gIAAA==</values>
+    </sys_hub_action_instance_v2>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=31afc05e83409b103a19c7a6feaad3c1"/>
+    <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+        <action_type display_value="Update Record">f9d01dd2c31332002841b63b12d3aea1</action_type>
+        <action_type_parent display_value="Update Record">baf174c8c3c232002841b63b12d3aee4</action_type_parent>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <comment/>
+        <compiled_snapshot>f9d01dd2c31332002841b63b12d3aea1</compiled_snapshot>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <order>11</order>
+        <parent_ui_id>f94dbe52-22d7-4460-b223-ade1bf238e38</parent_ui_id>
+        <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>39afc05e83409b103a19c7a6feaad3be</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>ac9e98a9-0aab-45c5-bd3c-2c70b8eea8d0</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/+1V204bMRD9FeTnKNrNkhTyVpEiVWpBhZYXSq1Ze5ZY9V7qC5BG+feO15vNChCgSkhFap4yMz7jc8bH3ss1q6BENmcOco28DUbsBrQPyTuevptOs4MZt1CgMzzheSF5YcBLLpVtvEMuwAZMCDWsLv4C2oChfR0aNl8zsVRaGqzY/PJqxJSkXvlUJulhOhNZmmWTJJkc7Kf5LMvTicwAxSG10JCjpqVfgwyKH1PlVs2juU9D7N5JLNRGBj7TZMTwzmElkZgUoC2OWAmVBFebFZs74ylhEORppVf9iqWqHHWkPkvUTfxXwp1Vv4nBQRIQBZJIgbHWh7wbY0wXC3BwTnsI5023VCxrJdDG8UgswGt3NMzFBaeNU3UVIa3iDl1rX1YncTqsb7A9Ncp4SySwCYqDhk5Qcb6sb8+2LI9V1U6nK+pagO4jcM6onI7XhuNEjSU14iU0jaqueWPqG9WCiUs5vtYUjAtd39KmVl1XYxCB+JgGDONjyi/a9AUYFVR8pjYE3oyYXdkjDdbutNAQ+S8fmERlnQYexxAgwqjGvacNbrCjuxn1N8CgoEMfuH+9/tYQDZQ8HQtvSLnbbB46/QUG3senDIzpwMBnWxb3WXXulbXw7UCVvGffRVfZ+7jY+Td9Bf/uvyX/RoFv3r6DR+tZI7f+tQMjh2eWWwfO2+8+STIZSXIHP7H68eHLQ0+/APGc55PJk57HgeePFWppd57vBWxfbCyJHH0voqB7r3ZX3Lvoir3zX8H66Sxpf/8vwL93Aa7+AIKyYsnNCAAA</values>
+    </sys_hub_action_instance_v2>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=39afc05e83409b103a19c7a6feaad3be"/>
+    <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+        <action_type display_value="Update Record">f9d01dd2c31332002841b63b12d3aea1</action_type>
+        <action_type_parent display_value="Update Record">baf174c8c3c232002841b63b12d3aee4</action_type_parent>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <comment/>
+        <compiled_snapshot>f9d01dd2c31332002841b63b12d3aea1</compiled_snapshot>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <order>18</order>
+        <parent_ui_id>62ae69df-13a4-48f3-881d-2a0c3e3865e8</parent_ui_id>
+        <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>39afc05e83409b103a19c7a6feaad3c3</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>b35b0b6b-4d14-40ec-ba89-d482d535731f</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/+1V204bMRD9FeTnKNrNkhTyVpEiVWpBhZYXSq1Ze5ZY9V7qC5BG+feO15vNChCgSkhFap4yMz7jc8bH3ss1q6BENmcOco28DUbsBrQPyTuevptOs4MZt1CgMzzheSF5YcBLLpVtvEMuwAZMCDWsLv4C2oChfR0aNl8zsVRaGqzY/PJqxJSkXvlUJulhOhNZmmWTJJkc7Kf5LMvTicwAxSG10JCjpqVfgwyKH1PlVs2juU9D7N5JLNRGBj7TZMTwzmElkZgUoC2OWAmVBFebFZs74ylhEORppVf9iqWqHHWkPkvUTfxXwp1Vv4nBQRIQBZJIgbHWh7wbY0wXC3BwTnsI5023VCxrJdDG8UgswGt3NMzFBaeNU3UVIa3iDl1rX1YncTqsb7A9Ncp4SySwCYqDhk5Qcb6sb8+2LI9V1U6nK+pagO4jcM6onI7XhuNEjSU14iU0jaqueWPqG9WCiUs5vtYUjAtd39KmVl1XYxCB+JgGDONjyi/a9AUYFVR8pjYE3oyYXdkjDdbutNAQ+S8fmERlnQYexxAgwqjGvacNbrCjuxn1N8CgoEMfuH+9/tYQDZQ8HQtvSLnbbB46/QUG3senDIzpwMBnWxb3WXXulbXw7UCVvGffRVfZ+7jY+Td9Bf/uvyX/RoFv3r6DR+tZI7f+tQMjh2eWWwfO2+8+STIZSXIHP7H68eHLQ0+/APGc55PJk57HgeePFWppd57vBWxfbCyJHH0voqB7r3ZX3Lvoir3zX8H66Sxpf/8vwL93Aa7+AIKyYsnNCAAA</values>
+    </sys_hub_action_instance_v2>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=39afc05e83409b103a19c7a6feaad3c3"/>
+    <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+        <action_type display_value="bfd_action_log_approval_decision">ec7f001e83409b103a19c7a6feaad31a</action_type>
+        <action_type_parent display_value="bfd_action_log_approval_decision">745ba47276f24059ae70cd19a8385b96</action_type_parent>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <comment/>
+        <compiled_snapshot>ec7f001e83409b103a19c7a6feaad31a</compiled_snapshot>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <order>12</order>
+        <parent_ui_id>f94dbe52-22d7-4460-b223-ade1bf238e38</parent_ui_id>
+        <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>3dafc05e83409b103a19c7a6feaad3bf</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>1c852478-3428-4d0b-932d-ba4e3e6b5637</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/+1STY/TMBT8K8jnKGrawtLeUKuVkICVKOxltYpe7ZfGkuMYf3Q3RP3vPNdpWrQIdiUOHLjZ4/cxM567nmlokC0ZB4ebzr0XLGN7UCFiff/VCPAoyiLnwVrUPnedK6U4HKhMSGcUdLfPqzZgaZNHy5Y947VUgirY8u4+Y1JQ+5RfVZNJgW9n88liW0xmUCz4FbypEEDMiopGKNiiotIVcX2VRhP6CwG+MxFy3kq9G+4fhubNCWytiGSKjOGjRy2QWFSgHGasAU1KWtuxpbeBAIsgbrTqxopaak/DaEyNyqRTA49OfqfFs2nsqJAEckxv47UcXEtwtQYPxChwH+xQyutWcnTJGoEVBOVXl1gquDFetjq1eNiqU3erQqM/JU/YOOD0SYQERyTQRMVRwyCo2tTtw+cTy2upj+YMj6rloMYbeLJwG3zk0zNU2NCgsgFjyNjS2HYvj83Epcl3ii55pdoHWurkTufAI/GcDIb8mvD1Eb4FK6OKjzSGmomm/PLTLx4yRl++UuDcWR3ZWn4LkVvSOqgqkzGxhVtp/DtaucdBwCEbQy+QSxddPGee1pMAFE/zffHypyzD/HdZfr24yPL6TOEpqZfkePr3czyf/M/xP5zj+x9Ez+QBvgUAAA==</values>
+    </sys_hub_action_instance_v2>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=3dafc05e83409b103a19c7a6feaad3bf"/>
+    <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+        <action_type display_value="Send Notification">0d8dd9f10f11101051218e8ebc767e27</action_type>
+        <action_type_parent display_value="Send Notification">7eda5d710f11101051218e8ebc767ec1</action_type_parent>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <comment/>
+        <compiled_snapshot>0d8dd9f10f11101051218e8ebc767e27</compiled_snapshot>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <order>3</order>
+        <parent_ui_id/>
+        <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>69afc05e83409b103a19c7a6feaad3b7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>ff775aaa-e5ba-4fcb-a3ce-2193b7153b37</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/9WV227UMBCGXwXlerOKk81he4eoKiFBkVrgBlXWxB53LTkHHKe0VH13xkm6zZZtgZYicbczzoz/OXzrL9dBDRUGB4GD0iAfjEVwAab3zkvO8jRNiox3oNBZHvFSSa4s9JJL3bW9Qy6g8zHeNHD1+QmhLVi616ENDq4DsdFGWqyDgy9ni0BLylWwQsq1YpFijEUsSlnMCiywFHmWYxJTCgMlGvr0oy+D7H1Vuat2r+/dPPbV8XjQWOn1xIsALx3WEkmIAtPhIqigluAae7X1WAT5oTbkcLYne6NrRwkpzQZNO/6q4LLT30lAEfkAhVSjwPFsa/Kpi6NbHYKDU0opXG+nT8Wm0QK7sTsSFfTGvZn7xg8+tE439RgyFDxFN6av6uOxOcE2we3QyNN3JAJbX7GvYSpQnW6abye3Ko90PTRnOjSNALO1wDmrS5pu56fZ6497uj569/YdDVZ0M6+gbXV9zlvbXOjhNhJfLc8NGUtlmm+kstPn9RKEr3RJE4HlEfkPB/dnsNqnfU9pKNhf+anWX3t86xdKlGWpSlyHrBQiXOVYhEUMeYhpJBIVJ1GUq+BmEXRX3RsDXXfXMJoU/9r7csf2TY3iY699iLC6da9J1AVOPblZbCmzKGixZoRdX39qSTpKzpait9Red3PzM02/AclKPgZJXMwgOblVcV/VRIhsRD8MQct7iBxOJ6/eHt4xwv6QkcnxKCRJ/B9BMkL/fEZ2+74LyW7n/wklkkV5so5EmMdpEq4iAWFZyDKEMlbpapUVWcmeQMnsn+CXvNSN00oLGOY0pwZXGbI4isJkXWbhSmUsLFImw1gWDKOUEM7kctzzp/L0+KMz5+l4V+V+7RNbd0u9S9bJzD9xlTzO1bh1z8OKRocXfjJYgTZ83JIHWLtX5V/m7iElOzCCUij8n6XSaCStEx9iXoRRdYpgxebI3+SnOT5PD5A7n+rO3Gnd6eKfaJ5Pu0PHJ/nc88lVYyvwMxyU/CvaV2uGeRIX4TqL6U3EJA1LmSQhozcSEVDF8mVoP/sB9A/1eoUKAAA=</values>
+    </sys_hub_action_instance_v2>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=69afc05e83409b103a19c7a6feaad3b7"/>
+    <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+        <action_type display_value="Look Up Record">9d09f99587003300663ca1bb36cb0ba3</action_type>
+        <action_type_parent display_value="Look Up Record">b93f42810b30030085c083eb37673a63</action_type_parent>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <comment>Resolve a bfd_team_lead approver at runtime</comment>
+        <compiled_snapshot>9d09f99587003300663ca1bb36cb0ba3</compiled_snapshot>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <order>6</order>
+        <parent_ui_id/>
+        <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>adafc05e83409b103a19c7a6feaad3ba</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>b10e4f1c-9a23-48c1-9fd8-6b2c1cd83d6a</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/+VYUW/bOAz+K4af05wdJ3HSt0OLAAN2K7D2+rLbCbQlN8IpsifJbdOi/32ULTtG4iXNtQE27CkxRYnkR36k5S/PvoQV8899nStDzLpg/sC/B1G2MtApiijXhYD1rVsBz+TeE8oLULjfMOWfP/vpkguqmPTPv3wd+Jyi4oQG82w+n8ziIIiiIJhOoxTCJImmaRIkSYhHCEiYQNVrtObd1B70OFX9nKONnKfN80e39aIR5opaV6KBzx4Nk5ShDxkIzQb+CiQFk6t1K1EM6JUUG8GSS4On4TlLJor63woeNX9Cy9HI7sgYxpeyeq19JA6eWpxdgoFro8rUlMqp1m5rROa5DbgFsQdvF0jwMtjoP1l92NanrLshfEHkKcugFObi/9kMj7U5sjbrAK8Kw3PMvx/ZDEEimvBzUa7kpzqrfuvhbU+h1SuXP6i3UiPYrLCptblyicuul/nD5yYbCy4rv9yiyFMQ7RMYo3hSGovLs59RknEmKOFScGktYdpsITHBVmiBrKAouLwjhcrveXUqxrIa3gl8GGYif7BY8Ds5hNRGPsQSg+EC5ZeV+BYUtyj8hcfg5oE1uMStzh7RqeKFIQ+c3jGzsd5o0dw8gPivb91VHGkSVYXnvwx8vdYXArTegI1lSr6VFoMaeoceqRJVbam8+BMjuGcOKFsDjoRpLim3welOGahcsKFV+KdEYtNHEsaTSTSbEg0ZM4oEwwSdNAxWRCDN/sW8qQqje7fDRbLVV97r2ENtiU72tSWYd9rSRTf8PkiaxrQt+9h3QMOxEzSocRAE79Oi+lrILsWPYvgudW2m3sDc0xD0eP7UEBwkESFapshn3JYBF7iXMKVy1aFUuEuHV1ZzyiAZj2AaR2EYBGFA42AWx+FsmmRTiMdZp5ovc2mJMoqNZ/3wcuk1fhz21FV6kiNLQW6V+Q36+sei6kJtmU9OUua/UJG/dT6V/GYb81rUi/qphlbJ/5b8W8k+2GKbsWA0C2l6NovD+Gyc0enZnMLkDObJJI4oS8fZaeZQnYfOm8haE9v/yRI0sYNjlz99KgdHw3zvaBh3yHTjPNpy0NGkeiTV2hZT7IL3qV5oXvROwJTZ78SUk72wcYG1Qupk6rxUFZT3JBWlrhYUSF2fdZKq5xlZIXC8QPOKpVgumoBiJMtLSYkzvCGFRTXjShunvMuJzwxzLLHxi7VnlsyrtL1W+xA9wr30SLpvTh8yr3Hdna89dN2rXPda148L9Jhr4PgnHj+bK9bCzmGbCaynopPKZur2XQUPJHFPNbzynvhKp8J3dertF8m+8u+9UB7w9ZdoTqdoN9VNvAZ5t3W8pj3s/d4DtNMermzSvWS99bmnNe6YXt/Pe8bowi5sjdHR7z5Gf8pb1eBH31ne+br19TvPzFObzxQAAA==</values>
+    </sys_hub_action_instance_v2>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=adafc05e83409b103a19c7a6feaad3ba"/>
+    <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+        <action_type display_value="bfd_action_log_approval_decision">ec7f001e83409b103a19c7a6feaad31a</action_type>
+        <action_type_parent display_value="bfd_action_log_approval_decision">745ba47276f24059ae70cd19a8385b96</action_type_parent>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <comment/>
+        <compiled_snapshot>ec7f001e83409b103a19c7a6feaad31a</compiled_snapshot>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <order>15</order>
+        <parent_ui_id>62cc8add-b75a-41c9-85fb-5abbd690b11a</parent_ui_id>
+        <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>b9afc05e83409b103a19c7a6feaad3c1</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>c967ff28-7dfa-4780-9b6c-612cbc7212e5</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/+1Sy47TMBT9FeR1FDVtYWh3o1YjIQEjUZjNaBTd2jeNkeMYPzoTov4713WaFg3iIbFgwc4+vo9zjs99zzQ0yJaMg8NN594IlrE9qBCxvv9kBHgUZZHzYC1qn7vOlVIcDlQmpDMKurvfqzZgaZNHy5Y947VUgirY8v4hY1JQ+5RfVZNJga9n88liW0xmUCz4FbyqEEDMiopGKNiiotIVcX2RRhP6AwG+MxFy3kq9G+5vh+bNCWytiGSKjOGTRy2QWFSgHGasAU1KWtuxpbeBAIsgbrXqxopaak/DaEyNyqRTA09OfqXFs2nsqJAEckxv47UcXEtwtQYPxChwH+xQyutWcnTJGoEVBOVXl1gquDVetjq1eNiqU3erQqPfJ0/YOOD0SYQERyTQRMVRwyCo2tTt44cTyxupj+YMj6rloMYbeLJwG3zk0zNU2NCgsgFjyNjS2HYvj83Epcl3ii55pdpHWurkTufAI/GcDIb8hvD1Eb4DK6OKdzSGmomm/PjdLx4yRl++UuDcWR3ZWn4JkVvSOqgqkzGxhVtp/DWt3OMg4JCNoRfIpYsunjNv8TNyCvHzfF+8/CrLMP9Zll8uLrK8PlN4TupPcjz9+zmeT/7n+B/O8cM3eWshWr4FAAA=</values>
+    </sys_hub_action_instance_v2>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=b9afc05e83409b103a19c7a6feaad3c1"/>
+    <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+        <action_type display_value="Ask For Approval">f8f2e9920b10030085c083eb37673abd</action_type>
+        <action_type_parent display_value="Ask For Approval">bae0a1120b10030085c083eb37673a92</action_type_parent>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <comment>bfd_team_lead sign-off</comment>
+        <compiled_snapshot>f8f2e9920b10030085c083eb37673abd</compiled_snapshot>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <order>9</order>
+        <parent_ui_id>3f914144-1b3c-4f23-94f9-66e7cc3cfd5e</parent_ui_id>
+        <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>bdafc05e83409b103a19c7a6feaad3bd</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>77bc13bf-01c1-4d54-9305-7618496b1c20</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/+1X32/iOBD+V5CfgUsICaFv1aJq93S3K/XHvpQqMvYEvGeS1E665RD/+01sA1no0mu7SFu1LwiPZ8Yzn7/Psa+XJKNzICeEV5BwWgJpkzsqq9q0HBPKSpFnY3IyJgq+ASvHpD0mtV9SLgowE+hTUbmZMLblyo4rRV2CXmO4jeV0oY2nZjPglbTWHyyJpBOQzr7C8rjQhaSLr65KtBRUYRMlKHKyJGwmJFeQkZPrmzYRHF1YmPZgOOx5E9/zAs+LQ+bFAUyCQTQIaDrEFGYRdB1V0BpZGPaBqctGy6Yyi4OYr+f+ckkunIPJ9MeldcgVrwsM2wTuS8g4YGUplRraZE4zTJWrxcaigPIvmdwaZiIrbbMzkIX9N6f3WvyLFfW9OiIF7Jo5SDbDxMFlzSlWRC9KVeGeKefKZrlgoC1eHFJayfJD02YdvhT11tmQkk7kOjqX1Tz7bLEimwSN3ak0FgFF3XLdg2sovZjl38/XVZ6JzKDjJmXOqNyMaFkqManKup4lAQlzTJTMaVGIbJoUKr8TJhhrmXenEgfdVObfcVEtplnXcriLCNPuGdpHxvyVKlF38TemwWAsUyT4F5PVKxOECMiqTfRCf5BU622DiGxyWxkn065rLLHY1CFMiaI8xVXvwPWwam90tl4jYXnGRV2Zbkju1MyCPjdi06fZ4up6uUTaQj/1WWdIe0GnHzO/M0x53IkmPeYzHgc8ot1zYEixLqKtVqubfZ38ytSPCa5/UHAADcGdo070Vm0Pw+OEt5lULqgpulM32VpndILrHxZcvdFP1Vvsee+Ke6nijiEui9JWTveJPwjDII4STVMoVeIlk5QnqaIVN9uELSaMatiXy1NCH5PDhB2SA2MNOVy6DnYacgIww8TM/Uh+E9b6TJtfGv+JXxqrhEeI/07735D2ypzPzZvb8qqoLyc88busUth5uXre1WkQH6Su1zzJ11XsVuXIy3NWGUAF32HvyM20Po229PV+/bkd9F4RfW2Dr569FoL/fy3CHdUYuOXyRzGddcyglavWrB4pof9p2XpbCm4roUC36tO5BDpPJHKitbnK7ZH+xfkekwz0oyDEn0EaeH7P92KI4pgNPcriKAr7QUMy2zvLuuufwrF+e+AeZ9Pd98ba6KTTO8Ibw4/e0tlficsdvK1lD/HjvUauMnFbwaeaUVFvEg29mHd46k3wkh6EHcrA60DkhxDyiIV+cNzHSipA8md9QDz/0AeExw+p4cyt9rMqnBbM8KHbkInfuQ0dQxOv7B3wtr4o3/JKZS+iLjtIXWge5H/axXaZu1vDc4gbvBP3LRD35j8T3W8OixUAAA==</values>
+    </sys_hub_action_instance_v2>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=bdafc05e83409b103a19c7a6feaad3bd"/>
+    <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+        <action_type display_value="bfd_action_check_mandatory_tasks">1e6f0cda83409b103a19c7a6feaad340</action_type>
+        <action_type_parent display_value="bfd_action_check_mandatory_tasks">19872d6d588244938350d682b10600ee</action_type_parent>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <comment>bfd_CaseUtils.mandatoryTasksComplete</comment>
+        <compiled_snapshot>1e6f0cda83409b103a19c7a6feaad340</compiled_snapshot>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <order>16</order>
+        <parent_ui_id/>
+        <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>bdafc05e83409b103a19c7a6feaad3c2</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>2e4d2a16-a958-4d79-9ea2-cc5755b71623</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/41Ry27bMBD8lYJnQbBrx218KxwECJA2QN3mEgTCmlxZBFYky4cTVfC/d2nKTgv0kJt2NLM7M3wahYEexVpICLgdwp0SlTgApYyN40+nIKJq5rVM3qOJdRhCo9XxyDSlgyMYHt/HduD5UkQv1qOQnSbFDLF+eq6EVixfwaqdSQWfF8vZ9W4+W8D8Wn5iEAHUYnnFKwh2SEzdsNcPZTWj/wkQB5ehEL02+2m+n8TbM2i9ymbmlcDXiEYhu2iBAlaiB8NJrB/EOvrEgEdQD4aGC6PTJvIyXtMhufLVw2vQv/nw4mNWtMgBJZZ/l7GZWitwewMR2FGSMfmJKjurJYZSjcIWEsXN31ghPLiorSmSCDs6qy2l3nwrnYjLgvMjMZICm0CXE+cMU6B229mX72eXt9qcypl+kpVAlwkiV7hLMfsZBRL2vKjpwTkutnHeHvRJzF76ek881C3ZFz4a9N7UILPxmguG+pbxmxP8CF7nFF95DYvZpv7xzyseK8FPviEI4S0d19r8StlbyTqlakoxWSK9dvELnzzgFOD4/Ad4DfnG9gIAAA==</values>
+    </sys_hub_action_instance_v2>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=bdafc05e83409b103a19c7a6feaad3c2"/>
+    <sys_hub_action_instance_v2 action="INSERT_OR_UPDATE">
+        <action_type display_value="bfd_action_ensure_investigation_tasks">7b6fccda83409b103a19c7a6feaad355</action_type>
+        <action_type_parent display_value="bfd_action_ensure_investigation_tasks">4ed0b6973f774ff08bba8f9b86d90663</action_type_parent>
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <comment>Identity verification, transaction review, card actions, chargeback, etc.</comment>
+        <compiled_snapshot>7b6fccda83409b103a19c7a6feaad355</compiled_snapshot>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <generation_source/>
+        <order>1</order>
+        <parent_ui_id/>
+        <sys_class_name>sys_hub_action_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>e5afc05e83409b103a19c7a6feaad3b4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>61a6074b-2b10-43e3-a167-135cf2d6ea3b</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/41RXWvcMBD8K0XPxuTqJmnurVwIFJoGcm1eQjBraX0WrCVVH5e45v57VyfftYU+9M07ntmdGT3PwsCIYi0kBNxO4bMSldgDpYzN83enIKJqV7VM3qOJdZhCq9XhwDSlgyOYnv6P7cDzpYherGchB02KGWL9/FIJrVjedFe9lAo+Nh8ubrrVRQOrG3kNVz0CqOYSeAVBh8TUDXt9V1Yz+o8AcXIZCtFrs1vmL4t4ewKtV9nMqhL4FtEoZBc9UMBKjGA4ifWTWEefGPAI6sHQdGYM2kRexmsGJFe+RngL+icfbt5nRY8cUGL5dx7bpbUC97cQgR0lGZNfqHKwWmIo1SjsIVHc/IkVwoOL2poiidDRSW0pjeZr6UScF5weiZEU2AS6nDhnWAL128G+Pp5c3mlzLGf5SVYCnSeIXGGXYvYzCyQceVE7gnNcbOu83eujmL2M9Y54qHuyr3w06J2pQWbjNRcM9R3jt0f4CbzOKe55DYvZpv721yseKsFPviEI4Xc6rrX9kbK3knVJ1ZZiskR67eInPrnHJcDh5ReUqHvj9gIAAA==</values>
+    </sys_hub_action_instance_v2>
+    <sys_hub_alias_mapping action="delete_multiple" query="source_id=e5afc05e83409b103a19c7a6feaad3b4"/>
+    <sys_hub_sub_flow_instance_v2 action="delete_multiple" query="flow=5dafc05e83409b103a19c7a6feaad31d"/>
+    <sys_hub_flow_logic_instance_v2 action="delete_multiple" query="flow=5dafc05e83409b103a19c7a6feaad31d^sys_idNOT IN21afc05e83409b103a19c7a6feaad3b3,a1afc05e83409b103a19c7a6feaad3ad,adafc05e83409b103a19c7a6feaad3b0,e5afc05e83409b103a19c7a6feaad3af"/>
+    <sys_hub_flow_logic_instance_v2 action="INSERT_OR_UPDATE">
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <block display_value="">f8af405e83409b103a19c7a6feaad3a9</block>
+        <comment/>
+        <connected_to/>
+        <decision_table/>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <flow_variables_assigned/>
+        <generation_source/>
+        <logic_definition display_value="If">af4e1945c3e232002841b63b12d3ae3e</logic_definition>
+        <order>17</order>
+        <outputs_assigned/>
+        <parent_ui_id/>
+        <sys_class_name>sys_hub_flow_logic_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>21afc05e83409b103a19c7a6feaad3b3</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_scope/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>62ae69df-13a4-48f3-881d-2a0c3e3865e8</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/+1VXW/aMBT9K8jPAeWDQOENUVWa1K3SWvVlq6Ib2wGrTpzFDi2L+O+7jpOAOqoNdY97s4997z3nxEdpiKpNWRv9oFZai01Blt+ePCIKi+G6IYKRJSEeKSDnuKKqYMIIVSQt4JEdyNoerKQc5VAwMKrajwzoZz2iKi8lN/YaE7qUsH/8u9t0KySreMemhApnGV6RZfPmqGWX+ZAFCxrQKJxFoe+HV9MgnUVpELIIOETYUELKJV5d9/RHty3yvi6zLy2uTSWKTbe/7brc96CqmGUV+B7hr4YXjCOfDKTmHhnkDUjFgd0V8ghsRWGcu1suS7fK4VWLnzg6jGNbknEUS7k7HLZJ56eDs2swgKRqauqqu0q3SlCunU2MZ1BLsz7F3IW70op2JQZS2VcrWefFF+cNGRr0nw+RWiMJXlrNVkSnKLvfqpevPcsbUbT+dIdSUZDDDgy6mNbG8mkIlzzHRkkOZYneJmWldqItRi75ZCNxM8mkesGh9p1OgFriE7QYJjeIX7fwI1TCqviMbbDY0UxBC5q0bxrboU2cHDyi93otQeujSHQ3+VFbik5yJy5x/tgSWonSrHDyjnc6Dt77ETlJR9OEfMpCCGZjWMRX4ymbL8YLDuGY0ngex+k8mIXRpI/A4fC99v2ItVx/C8/Hml2WrQXEWRz48flsTWfnsnXeiksCFf4hUFbKxXnyff9/oD4cKKETF4NOWzv8H+bpyYbGzRy8pkIjtQeLfer/TPZgj89M0FPoRVXPVtQRO/wCkQysAuMGAAA=</values>
+        <workflow_reference/>
+    </sys_hub_flow_logic_instance_v2>
+    <sys_hub_flow_logic_instance_v2 action="INSERT_OR_UPDATE">
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <block display_value="">78af405e83409b103a19c7a6feaad399</block>
+        <comment/>
+        <connected_to/>
+        <decision_table/>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <flow_variables_assigned/>
+        <generation_source/>
+        <logic_definition display_value="If">af4e1945c3e232002841b63b12d3ae3e</logic_definition>
+        <order>7</order>
+        <outputs_assigned/>
+        <parent_ui_id/>
+        <sys_class_name>sys_hub_flow_logic_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>a1afc05e83409b103a19c7a6feaad3ad</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_scope/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>3f914144-1b3c-4f23-94f9-66e7cc3cfd5e</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/+1V0U7bMBT9FeTntErSppS+IRDaJDYkQLwMFN3YN601Jw62A3RV/33XcVLQVrRV43Fv9rHvveec+CgbplvXtM7e6lNr5bJmi28PEZO1x2i9YVKwBWMRq6FCWnFdC+mkrvMOiNgTqNYffJLL1ajbHEHTGE3LI4OPrTQo6JqQtlGwvvu723wllTDYs2nA0CyHhi02vxx17MoYyuSEJ3ySziZpHKfzaVLMJkWSigkgTKihggIVXT0b6B9ddsj7uty68bh1RtbLfn/Zd7kZQG2EZ5XEEcMXh7Ug9osSlMWIVVALcNqsd4hBEFe1egVWsnbB3RWqJqwqeLHyB41Os8yXlEhiOYbD3Tbv/QxweQ4OiFTLXWv6q3ylJUcbbBJYQqvc2VssXLhqvOhQ4qBQQ7VWbVV/Dd6wXYPh8xHSWiKBjdfsRfSKypuVfr4eWF7IuvOnP1Sag9rtwJGLRes8nw1DhRU1yit6DuRt7t+E7IqJSzVeKtqMS6Wfaah/p2PgnviYLIbxBeHnHXwHRnoVX6gNFQeaBVjJ8+5NUzuyCdk2YnZtzxRY+yqS3M0fW08xSO7F5cEfX8KNbNwpTX7CXsc2ej8ib9Kx2RR8liX8GEdiynE0PZ7D6CSdJ6N5iYCzjGMM8/GQhes+CtvtfRvHE9Fx/i1EH9P0sKydQFZmSZztz9p0ti9r+605JGDpHwLmpRycrziO/wfsnwMmbR5i0Wvrhn9gvh58iMLMnddcWqJ267HPw5/KH6zpmUn+FnrW5rsX9YptfwJn5VnG8wYAAA==</values>
+        <workflow_reference/>
+    </sys_hub_flow_logic_instance_v2>
+    <sys_hub_flow_logic_instance_v2 action="INSERT_OR_UPDATE">
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <block display_value="">b0af405e83409b103a19c7a6feaad3a4</block>
+        <comment/>
+        <connected_to/>
+        <decision_table/>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <flow_variables_assigned/>
+        <generation_source/>
+        <logic_definition display_value="Else If">666e5545c3e232002841b63b12d3ae99</logic_definition>
+        <order>13</order>
+        <outputs_assigned/>
+        <parent_ui_id>3f914144-1b3c-4f23-94f9-66e7cc3cfd5e</parent_ui_id>
+        <sys_class_name>sys_hub_flow_logic_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>adafc05e83409b103a19c7a6feaad3b0</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_scope/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>62cc8add-b75a-41c9-85fb-5abbd690b11a</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/+1VTW/bMAz9K4POjiHb+WhyK1IUGNCtQFv0shUGLcuJNlnyLDlpZuS/j7LsJNgaDMVy3E16FMn3nkm4JbqxVWPNk742RqwUWXx5CYhQDsNzS0ROFoQEREHJ8cS0yoUVWqUdEJANyMYFHvg3zizPEcqFqSTsnv+MsLWQec37LhXUWMPymiza30Jd14JCEc1ZxJJ4msSUxlfjKJsmWRTnCXCIsaCEjEt8uhxofbjrkPN87a5yuLG1UKv+ftdXeRxAXeeOVUQDwl8tVzmyXxQgDQ9ICSoHq+vdAak55PdKHoG1UNa7tuay8qcSXo34ia3jycSlFBzFMu6Dh2vae+fh4gYsIKmG2abun7K1Fowbb1POC2ikXZ5i/sF95UT7FAuZHLK1bEr12XtDDgWGT4VIY5AEr5xmJ6JXVDyu9fZhYHkrVOdPH5SagTzcwKKLWWMdn5ZwyUsslJZQVehtWtV6I7pk5FKGK4mXsJB6i03d/IXAHPEQLYbwFvGbDn6GWjgVn7AMJnuaGRjB0m5WsRzaxMk+IGZnlhKMOYpEd9MfjaPoJffiUu+PS2G1qOw1dt7wXsc+OD/6J1PftrNZxqIkK0Y0YtFonE/Go3lCJ6PZNLoaz6dZxGIaImvUDTI1Fizf7782lCY47edW5lJlL7pv0Vv79rY971my+C9L5r7ru3eMUvp/yf55yYRJ/Wr02rrmF9yxF7dIvufBayYMUnty2MfhL+QCOxwzwU6hra6/O1FHbP8LU46rxM8GAAA=</values>
+        <workflow_reference/>
+    </sys_hub_flow_logic_instance_v2>
+    <sys_hub_flow_logic_instance_v2 action="INSERT_OR_UPDATE">
+        <attributes>timeFromCreateToActivate=190000</attributes>
+        <block display_value="">f0af405e83409b103a19c7a6feaad39f</block>
+        <comment/>
+        <connected_to/>
+        <decision_table/>
+        <display_text/>
+        <flow display_value="bfd_flow_investigation">5dafc05e83409b103a19c7a6feaad31d</flow>
+        <flow_variables_assigned/>
+        <generation_source/>
+        <logic_definition display_value="If">af4e1945c3e232002841b63b12d3ae3e</logic_definition>
+        <order>10</order>
+        <outputs_assigned/>
+        <parent_ui_id>3f914144-1b3c-4f23-94f9-66e7cc3cfd5e</parent_ui_id>
+        <sys_class_name>sys_hub_flow_logic_instance_v2</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:09</sys_created_on>
+        <sys_id>e5afc05e83409b103a19c7a6feaad3af</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_scope/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:09</sys_updated_on>
+        <ui_id>f94dbe52-22d7-4460-b223-ade1bf238e38</ui_id>
+        <updation_source/>
+        <values>H4sIAAAAAAAA/+1VUWvbMBD+K0PPjpHtOGnyFlIKg26FtfRlK+YsyYmYbHmWnDYL+e87WXYStoQR1se9Sd/p7r77fB/eEd3aurXmSS+MkauKzL++BERWDsPzjkhO5oQEpIJS4InpiksrdZV1QEA2oFoXWNR1ozeCI8SlqRVsn/+MsLVUvBF9lxoarGFFQ+a730Jd14JCEc1YxJJ4ksSUxjfjKJ8keRTzBAQkWFBBLhQ+XQ60Ptx3yGW+dls73NhGVqv+ft9XeRxA3XDHKqIBEW9WVBzZzwtQRgSkhIqD1c32gDQC+EOljsBaVtarthaq9qcS3oz8ia3jNHUphcBhmfDBwzXrtfNwcQsWkFTLbNv0T9laSyaMl4mLAlpll6eYf/BQu6F9ioVcDdlatWX12WtDDgWGT4VIa5CEqN3Mboh+ouJxrV+/DCzvZNXp0weVZqAON7CoYt5ax2dHhBIlFspKqGvUNnOrILtk5FKGK4WXsFD6FZu6/QuBOeIhSgzhHeK3HfwMjXRTfMIymOxp5mAky7pdxXIokyD7gJitWSow5jgkqpv9aB1FP3I/XOb1cSmskbVdYOeN6OfYB5dX/2Trd7vpNGdRkhcjGrFoNObpeDRLaDqaTqKb8WySRyymIXQWAJUZC1bs999aShMOFy3zXmWv89sM0iKNaHreb+PJOb+dl+cak8V/MZn7rld7jFL632T/bDJpMm+Nfrau+Tt67MUZyfc8aM2kQWpPDvs4/IVcYItrJtkp9Kqb726oI7b/BWQohQTPBgAA</values>
+        <workflow_reference/>
+    </sys_hub_flow_logic_instance_v2>
+    <sys_hub_pill_compound action="delete_multiple" query="attached_to=5dafc05e83409b103a19c7a6feaad31d"/>
+    <sys_hub_flow_variable action="delete_multiple" query="model=5dafc05e83409b103a19c7a6feaad31d"/>
+    <sys_choice action="delete_multiple" query="name=var__m_sys_hub_flow_variable_5dafc05e83409b103a19c7a6feaad31d"/>
+    <sys_documentation action="INSERT_OR_UPDATE">
+        <element>changed_fields</element>
+        <help/>
+        <hint/>
+        <label>Changed Fields</label>
+        <language>en</language>
+        <name>var__m_sys_hub_flow_input_5dafc05e83409b103a19c7a6feaad31d</name>
+        <plural/>
+        <sys_class_name>sys_documentation</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:08</sys_created_on>
+        <sys_id>2dafc05e83409b103a19c7a6feaad357</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:08</sys_updated_on>
+        <url/>
+        <url_target/>
+    </sys_documentation>
+    <sys_documentation action="INSERT_OR_UPDATE">
+        <element>current</element>
+        <help/>
+        <hint/>
+        <label>Record</label>
+        <language>en</language>
+        <name>var__m_sys_hub_flow_input_5dafc05e83409b103a19c7a6feaad31d</name>
+        <plural/>
+        <sys_class_name>sys_documentation</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:08</sys_created_on>
+        <sys_id>59afc05e83409b103a19c7a6feaad33f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:08</sys_updated_on>
+        <url/>
+        <url_target/>
+    </sys_documentation>
+    <sys_documentation action="INSERT_OR_UPDATE">
+        <element>table_name</element>
+        <help/>
+        <hint/>
+        <label>Table Name</label>
+        <language>en</language>
+        <name>var__m_sys_hub_flow_input_5dafc05e83409b103a19c7a6feaad31d</name>
+        <plural/>
+        <sys_class_name>sys_documentation</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:08</sys_created_on>
+        <sys_id>65afc05e83409b103a19c7a6feaad388</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:08</sys_updated_on>
+        <url/>
+        <url_target/>
+    </sys_documentation>
+    <sys_choice action="delete_multiple" query="name=var__m_sys_hub_flow_input_5dafc05e83409b103a19c7a6feaad31d"/>
+    <sys_choice action="delete_multiple" query="name=var__m_sys_hub_flow_output_5dafc05e83409b103a19c7a6feaad31d"/>
+    <sys_hub_flow action="UPDATE">
+        <sys_id>5b7af7709d9f44fc9b41d4a22fb39c83</sys_id>
+        <latest_snapshot>5dafc05e83409b103a19c7a6feaad31d</latest_snapshot>
+        <compiler_build/>
+        <version_record/>
+    </sys_hub_flow>
+    <sys_flow_trigger_plan action="delete_multiple" query="plan_id=5b7af7709d9f44fc9b41d4a22fb39c83^sys_idNOT IN96af045e83409b103a19c7a6feaad368"/>
+    <sys_flow_trigger_plan action="INSERT_OR_UPDATE">
+        <binding_strategy>com.snc.process_flow.engine.binding.OncePerUniqueChange</binding_strategy>
+        <plan/>
+        <plan_id>5b7af7709d9f44fc9b41d4a22fb39c83</plan_id>
+        <snapshot>5dafc05e83409b103a19c7a6feaad31d</snapshot>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:18:12</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>96af045e83409b103a19c7a6feaad368</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_overrides/>
+        <sys_scope/>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:18:12</sys_updated_on>
+        <trigger display_value="">92af045e83409b103a19c7a6feaad367</trigger>
+    </sys_flow_trigger_plan>
     <sys_flow_subflow_plan action="delete_multiple" query="plan_id=5b7af7709d9f44fc9b41d4a22fb39c83"/>
 </record_update>
