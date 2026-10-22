@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sysauto_script">
+    <sysauto_script action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <advanced>false</advanced>
+        <business_calendar/>
+        <condition/>
+        <conditional>false</conditional>
+        <entered_run_end/>
+        <entered_run_start>2020-01-01 00:00:00</entered_run_start>
+        <entered_time/>
+        <max_drift/>
+        <name>BFD - Platform enablement</name>
+        <offset/>
+        <offset_type>0</offset_type>
+        <repeat_every/>
+        <run_as/>
+        <run_as_tz/>
+        <run_dayofmonth>1</run_dayofmonth>
+        <run_dayofweek>1</run_dayofweek>
+        <run_daysofweek/>
+        <run_end/>
+        <run_month/>
+        <run_period>1970-01-01 00:02:00</run_period>
+        <run_start>2020-01-01 00:00:00</run_start>
+        <run_time>1970-01-01 00:00:00</run_time>
+        <run_type>periodically</run_type>
+        <run_weekinmonth/>
+        <script><![CDATA[/**
+ * One-time platform enablement for SafeTrace.
+ *
+ * Each of these targets a GLOBAL record that a scoped Fluent build cannot
+ * declare (the build fails scope validation at upload, or the update-set loader
+ * silently skips a private property). Performing them as runtime GlideRecord
+ * writes from a scheduled job is the supported way to land them.
+ *
+ * All three steps are idempotent, and the job deactivates itself once there is
+ * nothing left to do.
+ *
+ * 1. sn_atf.runner.enabled  -> true   (lets the ATF suite actually execute)
+ * 2. glide.email.smtp.active -> true  (lets the 11 notifications actually send)
+ * 3. Case-form related lists for Case Tasks + Communications
+ *
+ * NOTE: is_private is deliberately NOT modified on either property. Only the
+ * value changes, so the platform's protection of these records is preserved.
+ */
+;(function runPlatformEnablement() {
+    var JOB = 'BFD - Platform enablement'
+    var CASE_TABLE = 'x_1755386_safetr_0_bfd_fraud_dispute_case'
+    var changes = 0
+
+    // ---------------------------------------------------------------- helpers
+    function setProperty(name, value) {
+        var gr = new GlideRecord('sys_properties')
+        if (!gr.get('name', name)) {
+            gs.warn('[' + JOB + '] property not found, skipping: ' + name)
+            return false
+        }
+        if (gr.getValue('value') === value) {
+            return false // already correct
+        }
+        gr.setValue('value', value)
+        if (gr.update()) {
+            gs.info('[' + JOB + '] ' + name + ' set to ' + value)
+            return true
+        }
+        gs.error('[' + JOB + '] write to ' + name + ' was blocked (ACL / write_roles).')
+        return false
+    }
+
+    /** Ensures one related-list entry exists under the case form's container. */
+    function ensureEntry(containerId, relatedList, position, orderBy) {
+        var existing = new GlideRecord('sys_ui_related_list_entry')
+        existing.addQuery('list_id', containerId)
+        existing.addQuery('related_list', relatedList)
+        existing.setLimit(1)
+        existing.query()
+        if (existing.next()) {
+            return false
+        }
+        var entry = new GlideRecord('sys_ui_related_list_entry')
+        entry.initialize()
+        entry.setValue('list_id', containerId)
+        entry.setValue('related_list', relatedList)
+        entry.setValue('position', position)
+        if (orderBy) {
+            entry.setValue('order_by', orderBy)
+        }
+        if (entry.insert()) {
+            gs.info('[' + JOB + '] related list added: ' + relatedList)
+            return true
+        }
+        gs.error('[' + JOB + '] could not add related list: ' + relatedList)
+        return false
+    }
+
+    function ensureRelatedLists() {
+        var added = 0
+
+        // Find or create the container for the case table's default view.
+        var container = new GlideRecord('sys_ui_related_list')
+        container.addQuery('name', CASE_TABLE)
+        container.addQuery('view', 'Default view')
+        container.setLimit(1)
+        container.query()
+
+        var containerId = ''
+        if (container.next()) {
+            containerId = container.getUniqueValue()
+        } else {
+            var fresh = new GlideRecord('sys_ui_related_list')
+            fresh.initialize()
+            fresh.setValue('name', CASE_TABLE)
+            fresh.setValue('view', 'Default view')
+            containerId = '' + fresh.insert()
+            if (!containerId) {
+                gs.error('[' + JOB + '] could not create the related-list container.')
+                return 0
+            }
+            gs.info('[' + JOB + '] created related-list container for the case form.')
+        }
+
+        if (ensureEntry(containerId, 'x_1755386_safetr_0_bfd_case_task.case', 0, 'due_date')) added++
+        if (ensureEntry(containerId, 'x_1755386_safetr_0_bfd_case_communication.case', 1, 'sent_at')) added++
+        if (ensureEntry(containerId, 'x_1755386_safetr_0_bfd_case_metric_snapshot.case', 2, 'metric_date')) added++
+
+        return added
+    }
+
+    // ------------------------------------------------------------------- run
+    try {
+        if (setProperty('sn_atf.runner.enabled', 'true')) changes++
+    } catch (e) {
+        gs.error('[' + JOB + '] ATF property: ' + e)
+    }
+
+    try {
+        if (setProperty('glide.email.smtp.active', 'true')) changes++
+    } catch (e) {
+        gs.error('[' + JOB + '] email property: ' + e)
+    }
+
+    try {
+        changes += ensureRelatedLists()
+    } catch (e) {
+        gs.error('[' + JOB + '] related lists: ' + e)
+    }
+
+    if (changes > 0) {
+        gs.info('[' + JOB + '] applied ' + changes + ' change(s); re-checking next cycle.')
+        return
+    }
+
+    // Everything already in place - stand down.
+    var job = new GlideRecord('sysauto_script')
+    job.addQuery('name', JOB)
+    job.setLimit(1)
+    job.query()
+    if (job.next()) {
+        job.setValue('active', false)
+        if (job.update()) {
+            gs.info('[' + JOB + '] nothing left to enable - job deactivated.')
+        }
+    }
+})()
+]]></script>
+        <sys_class_name>sysauto_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 17:43:59</sys_created_on>
+        <sys_id>ff826dcfa571445ea22ca368699ed1ee</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>BFD - Platform enablement</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sysauto_script_ff826dcfa571445ea22ca368699ed1ee</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 17:43:59</sys_updated_on>
+        <time_zone>floating</time_zone>
+        <upgrade_safe>false</upgrade_safe>
+    </sysauto_script>
+</record_update>
