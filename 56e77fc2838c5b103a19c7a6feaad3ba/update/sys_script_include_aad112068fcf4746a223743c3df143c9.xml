@@ -482,33 +482,78 @@ bfd_FlowSupport.prototype = {
     },
 
     // ----------------------------------------------------------- metrics export
+    /**
+     * Elapsed hours between two date-time strings, rounded to 2dp. Never
+     * negative: a backwards interval is reported as 0 rather than corrupting the
+     * averages on the reports and dashboard.
+     */
+    _hoursBetween: function (fromRaw, toRaw) {
+        var from = this._str(fromRaw);
+        var to = this._str(toRaw);
+        if (!from || !to) {
+            return 0;
+        }
+        try {
+            var ms = new GlideDateTime(to).getNumericValue() - new GlideDateTime(from).getNumericValue();
+            if (ms <= 0) {
+                return 0;
+            }
+            return Math.round((ms / 3600000) * 100) / 100;
+        } catch (e) {
+            return 0;
+        }
+    },
+
     /** Creates the closure metric snapshot row for reporting. */
     createMetricSnapshot: function (caseSysId) {
         var gr = this._caseGr(caseSysId);
         if (!gr) {
             return '';
         }
-        var now = new GlideDateTime();
-        var created = new GlideDateTime(this._str(gr.getValue('sys_created_on')));
-        var ageHours = (now.getNumericValue() - created.getNumericValue()) / 3600000;
 
-        var resolutionHours = 0;
-        var actual = this._str(gr.getValue('actual_resolution_date'));
-        if (actual) {
-            var resolved = new GlideDateTime(actual);
-            resolutionHours = (resolved.getNumericValue() - created.getNumericValue()) / 3600000;
+        var nowValue = new GlideDateTime().getValue();
+        var createdRaw = this._str(gr.getValue('sys_created_on'));
+        var incidentRaw = this._str(gr.getValue('incident_date_time'));
+        var actualRaw = this._str(gr.getValue('actual_resolution_date'));
+
+        /*
+         * Lifecycle start. Seeded or imported cases can carry an
+         * actual_resolution_date that predates sys_created_on (the row was
+         * created later than the real-world event it represents). In that
+         * situation the meaningful start is the incident, not the row creation,
+         * so prefer it — otherwise every duration comes out negative.
+         */
+        var startRaw = createdRaw;
+        if (actualRaw && createdRaw) {
+            try {
+                var isBackdated =
+                    new GlideDateTime(actualRaw).getNumericValue() <
+                    new GlideDateTime(createdRaw).getNumericValue();
+                if (isBackdated && incidentRaw) {
+                    startRaw = incidentRaw;
+                }
+            } catch (e) {
+                gs.warn('[bfd_FlowSupport.createMetricSnapshot] date compare: ' + e);
+            }
         }
+
+        var ageHours = this._hoursBetween(startRaw, actualRaw || nowValue);
+        var resolutionHours = actualRaw ? this._hoursBetween(startRaw, actualRaw) : 0;
+
+        // Date the metric on the day the case actually resolved, so the
+        // volume-over-time reports plot against the real timeline.
+        var metricDate = actualRaw ? actualRaw.substring(0, 10) : new GlideDate().getValue();
 
         var snap = new GlideRecord(this.SNAPSHOT_TABLE);
         snap.initialize();
         snap.setValue('case', gr.getUniqueValue());
-        snap.setValue('metric_date', new GlideDate().getValue());
+        snap.setValue('metric_date', metricDate);
         snap.setValue('case_type', this._str(gr.getValue('case_type')));
         snap.setValue('team', this._str(gr.getValue('assigned_team')));
-        snap.setValue('age_hours', Math.round(ageHours * 100) / 100);
+        snap.setValue('age_hours', ageHours);
         snap.setValue('sla_status', gr.getValue('sla_breach_flag') == true ? 'breached' : 'on_track');
         snap.setValue('recovery_amount', this._num(gr.getValue('recovery_amount')));
-        snap.setValue('resolution_time_hours', Math.round(resolutionHours * 100) / 100);
+        snap.setValue('resolution_time_hours', resolutionHours);
         snap.setValue('csat_score', this._str(gr.getValue('customer_satisfaction_score')));
         return this._str(snap.insert());
     },

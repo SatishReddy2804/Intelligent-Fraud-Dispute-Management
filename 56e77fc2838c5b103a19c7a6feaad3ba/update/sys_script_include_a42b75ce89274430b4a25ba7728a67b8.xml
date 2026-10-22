@@ -82,7 +82,11 @@ bfd_DemoDataRepair.prototype = {
         return s;
     },
 
-    /** Hours between two date-time strings. Returns 0 when either is missing. */
+    /**
+     * Hours between two date-time strings. Returns 0 when either is missing, and
+     * never returns a negative value - a backwards interval would corrupt the
+     * averages on the reports and dashboard.
+     */
     _hoursBetween: function (fromRaw, toRaw) {
         var from = this._s(fromRaw);
         var to = this._s(toRaw);
@@ -91,6 +95,7 @@ bfd_DemoDataRepair.prototype = {
             var a = new GlideDateTime(from);
             var b = new GlideDateTime(to);
             var hours = (b.getNumericValue() - a.getNumericValue()) / 3600000;
+            if (hours <= 0) return 0;
             return Math.round(hours * 100) / 100;
         } catch (e) {
             return 0;
@@ -238,6 +243,29 @@ bfd_DemoDataRepair.prototype = {
     },
 
     /**
+     * Deletes snapshot rows carrying impossible durations (negative age or
+     * resolution time). Those were produced by an earlier revision that measured
+     * from sys_created_on even when the case carried a back-dated
+     * actual_resolution_date. Removing them lets generateMetricSnapshots rebuild
+     * the row with the corrected calculation.
+     */
+    _purgeInvalidSnapshots: function () {
+        var removed = 0;
+        var gr = new GlideRecord(this.SNAPSHOT);
+        gr.addEncodedQuery('resolution_time_hours<0^ORage_hours<0');
+        gr.query();
+        while (gr.next()) {
+            if (gr.deleteRecord()) {
+                removed++;
+            }
+        }
+        if (removed) {
+            gs.info('[bfd_DemoDataRepair] purged ' + removed + ' snapshot row(s) with invalid durations.');
+        }
+        return removed;
+    },
+
+    /**
      * Backfills bfd_case_metric_snapshot for every resolved or closed case that
      * does not already have a snapshot row, so the snapshot-backed reports and
      * the team lead dashboard stop rendering blank.
@@ -247,7 +275,11 @@ bfd_DemoDataRepair.prototype = {
      * @returns {{created:number, skipped:number, scanned:number}}
      */
     generateMetricSnapshots: function () {
-        var out = { scanned: 0, created: 0, skipped: 0, failed: 0 };
+        var out = { scanned: 0, created: 0, skipped: 0, failed: 0, purged: 0 };
+
+        // Drop any rows with impossible durations first so they get rebuilt.
+        out.purged = this._purgeInvalidSnapshots();
+
         var existing = this._existingSnapshotCaseIds();
 
         var gr = new GlideRecord(this.CASE);
