@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_ui_action">
+    <sys_ui_action action="INSERT_OR_UPDATE">
+        <action_name>bfd_ui_repair_demo_data</action_name>
+        <active>true</active>
+        <client>false</client>
+        <client_script_v2/>
+        <comments/>
+        <condition/>
+        <form_action>false</form_action>
+        <form_button>false</form_button>
+        <form_button_icon/>
+        <form_button_v2>false</form_button_v2>
+        <form_context_menu>false</form_context_menu>
+        <form_link>false</form_link>
+        <form_menu_button_v2>false</form_menu_button_v2>
+        <form_style/>
+        <format_for_configurable_workspace>false</format_for_configurable_workspace>
+        <hint>Backfill the missing CUST / TXN / CASE / TASK display numbers on the seeded demo data and generate the missing case metric snapshots. Idempotent — safe to run more than once.</hint>
+        <isolate_script>false</isolate_script>
+        <list_action>true</list_action>
+        <list_banner_button>true</list_banner_button>
+        <list_button>false</list_button>
+        <list_button_icon/>
+        <list_choice>false</list_choice>
+        <list_context_menu>false</list_context_menu>
+        <list_link>false</list_link>
+        <list_save_with_form_button>false</list_save_with_form_button>
+        <list_style>primary</list_style>
+        <messages/>
+        <name>Repair demo data &amp; metrics</name>
+        <onclick/>
+        <order>1400</order>
+        <script><![CDATA[// bfd_ui_repair_demo_data — list banner button on the fraud / dispute case list.
+//
+// Runs the idempotent remediation in bfd_DemoDataRepair: stamps the missing
+// CUST / TXN / CASE / TASK display numbers on the already-installed demo data
+// and backfills the empty bfd_case_metric_snapshot table. Reports the per-table
+// counts back to the user with gs.addInfoMessage.
+(function repairDemoDataAction() {
+    var result;
+
+    try {
+        result = new bfd_DemoDataRepair().repairAll();
+    } catch (e) {
+        gs.addErrorMessage('Demo data repair failed: ' + e);
+        gs.error('[bfd_ui_repair_demo_data] ' + e);
+        return;
+    }
+
+    if (!result) {
+        gs.addErrorMessage('Demo data repair returned no result. Check the system log for details.');
+        return;
+    }
+
+    gs.addInfoMessage(result.summary);
+
+    var tables = (result.numbers && result.numbers.tables) || [];
+    for (var i = 0; i < tables.length; i++) {
+        var entry = tables[i];
+        gs.addInfoMessage(
+            entry.label +
+                ' (' +
+                entry.table +
+                '.' +
+                entry.field +
+                '): ' +
+                entry.updated +
+                ' record(s) numbered' +
+                (entry.updated && entry.first ? ', starting at ' + entry.first : '') +
+                (entry.error ? ' — error: ' + entry.error : '') +
+                '.'
+        );
+    }
+
+    var snapshots = result.snapshots || {};
+    gs.addInfoMessage(
+        'Metric snapshots: ' +
+            (snapshots.created || 0) +
+            ' created, ' +
+            (snapshots.skipped || 0) +
+            ' already existed, ' +
+            (snapshots.scanned || 0) +
+            ' resolved/closed case(s) scanned. Re-running this action is safe.'
+    );
+})();
+]]></script>
+        <show_form_icon_only>false</show_form_icon_only>
+        <show_insert>false</show_insert>
+        <show_list_icon_only>false</show_list_icon_only>
+        <show_multiple_update>false</show_multiple_update>
+        <show_query>false</show_query>
+        <show_update>true</show_update>
+        <sys_class_name>sys_ui_action</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 16:55:49</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>920299302fa142c2acab29daa49a2b9e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Repair demo data &amp; metrics</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_ui_action_920299302fa142c2acab29daa49a2b9e</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 16:55:49</sys_updated_on>
+        <table>x_1755386_safetr_0_bfd_fraud_dispute_case</table>
+        <ui11_compatible>false</ui11_compatible>
+        <ui16_compatible>false</ui16_compatible>
+    </sys_ui_action>
+</record_update>

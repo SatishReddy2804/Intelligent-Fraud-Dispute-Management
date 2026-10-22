@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_action_role">
+    <sys_ui_action_role action="INSERT_OR_UPDATE">
+        <sys_class_name>sys_ui_action_role</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 16:55:49</sys_created_on>
+        <sys_id>08003306369947a19718511f5cdd8d83</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Repair demo data &amp; metrics.admin</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_ui_action display_value="Repair demo data &amp; metrics">920299302fa142c2acab29daa49a2b9e</sys_ui_action>
+        <sys_update_name>sys_ui_action_role_08003306369947a19718511f5cdd8d83</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 16:55:49</sys_updated_on>
+        <sys_user_role display_value="admin" name="admin">2831a114c611228501d4ea6c309d626d</sys_user_role>
+    </sys_ui_action_role>
+</record_update>

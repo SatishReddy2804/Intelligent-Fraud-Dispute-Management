@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_query_parameter_map">
+    <sys_ws_query_parameter_map action="INSERT_OR_UPDATE">
+        <sys_class_name>sys_ws_query_parameter_map</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 16:56:13</sys_created_on>
+        <sys_id>729a16b51d414386873ca0868051371d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>650523b7135a4a4585311920084493bf</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_ws_query_parameter_map_729a16b51d414386873ca0868051371d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 16:56:13</sys_updated_on>
+        <web_service_operation display_value="case360">6677b609985449019649e9ca7f27f6d5</web_service_operation>
+        <web_service_query_parameter display_value="case_id">650523b7135a4a4585311920084493bf</web_service_query_parameter>
+    </sys_ws_query_parameter_map>
+</record_update>

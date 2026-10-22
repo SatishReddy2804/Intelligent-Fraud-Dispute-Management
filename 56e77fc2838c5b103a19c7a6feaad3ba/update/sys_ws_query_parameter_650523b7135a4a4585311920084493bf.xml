@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_query_parameter">
+    <sys_ws_query_parameter action="INSERT_OR_UPDATE">
+        <example_value>a1b2c3d4e5f60718293a4b5c6d7e8f90</example_value>
+        <name>case_id</name>
+        <required>true</required>
+        <short_description>sys_id of the fraud / dispute case to assemble the 360 view for.</short_description>
+        <sys_class_name>sys_ws_query_parameter</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 16:56:13</sys_created_on>
+        <sys_id>650523b7135a4a4585311920084493bf</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>case_id</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_ws_query_parameter_650523b7135a4a4585311920084493bf</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 16:56:13</sys_updated_on>
+        <web_service_definition display_value="SafeTrace Fraud &amp; Dispute Console API">6e87cf880c4b4afb931d1b1b2e4654fe</web_service_definition>
+    </sys_ws_query_parameter>
+</record_update>

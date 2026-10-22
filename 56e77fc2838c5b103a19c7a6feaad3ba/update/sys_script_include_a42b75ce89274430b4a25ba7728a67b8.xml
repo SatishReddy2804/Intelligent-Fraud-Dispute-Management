@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_1755386_safetr_0.bfd_DemoDataRepair</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Idempotent remediation for already-installed demo data: backfills NULL display numbers (CUST/TXN/CASE/TASK) with unique padded sequences and backfills the empty bfd_case_metric_snapshot table for resolved/closed cases.</description>
+        <mobile_callable>false</mobile_callable>
+        <name>bfd_DemoDataRepair</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var bfd_DemoDataRepair = Class.create();
+bfd_DemoDataRepair.prototype = {
+    CASE: 'x_1755386_safetr_0_bfd_fraud_dispute_case',
+    SNAPSHOT: 'x_1755386_safetr_0_bfd_case_metric_snapshot',
+
+    /** Zero padding width, so CASE + 1001 => CASE0001001. */
+    PAD: 7,
+
+    /** First sequence number used when a table has no numbered rows at all. */
+    START_SEQ: 1000,
+
+    /**
+     * (table, field, prefix) triples whose display number was never stamped,
+     * because Fluent Record() inserts bypass the column default
+     * `javascript:getNextObjNumberPadded()`.
+     */
+    TARGETS: [
+        {
+            table: 'x_1755386_safetr_0_bfd_customer_profile',
+            field: 'customer_number',
+            prefix: 'CUST',
+            label: 'Customer profiles'
+        },
+        {
+            table: 'x_1755386_safetr_0_bfd_transaction',
+            field: 'transaction_reference',
+            prefix: 'TXN',
+            label: 'Transactions'
+        },
+        {
+            table: 'x_1755386_safetr_0_bfd_fraud_dispute_case',
+            field: 'case_number',
+            prefix: 'CASE',
+            label: 'Fraud and dispute cases'
+        },
+        {
+            table: 'x_1755386_safetr_0_bfd_case_task',
+            field: 'number',
+            prefix: 'TASK',
+            label: 'Case tasks'
+        }
+    ],
+
+    initialize: function () {},
+
+    // ------------------------------------------------------------- primitives
+    _s: function (v) {
+        return v === null || v === undefined ? '' : '' + v;
+    },
+
+    _v: function (gr, field) {
+        if (!gr || !field) return '';
+        return this._s(gr.getValue(field));
+    },
+
+    _n: function (v) {
+        var n = parseFloat(this._s(v));
+        return isNaN(n) ? 0 : n;
+    },
+
+    _b: function (gr, field) {
+        var v = this._v(gr, field);
+        return v === 'true' || v === '1';
+    },
+
+    _pad: function (num) {
+        var s = '' + num;
+        while (s.length < this.PAD) {
+            s = '0' + s;
+        }
+        return s;
+    },
+
+    /** Hours between two date-time strings. Returns 0 when either is missing. */
+    _hoursBetween: function (fromRaw, toRaw) {
+        var from = this._s(fromRaw);
+        var to = this._s(toRaw);
+        if (!from || !to) return 0;
+        try {
+            var a = new GlideDateTime(from);
+            var b = new GlideDateTime(to);
+            var hours = (b.getNumericValue() - a.getNumericValue()) / 3600000;
+            return Math.round(hours * 100) / 100;
+        } catch (e) {
+            return 0;
+        }
+    },
+
+    // -------------------------------------------------------- number backfill
+    /**
+     * Scans the existing non-empty values for one (table, field, prefix) so the
+     * backfill continues the real sequence instead of restarting it. Returns the
+     * highest sequence found plus the set of values already in use, which makes
+     * the whole routine safe to re-run.
+     */
+    _scanExisting: function (target) {
+        var out = { max: this.START_SEQ, used: {} };
+        var gr = new GlideRecord(target.table);
+        gr.addNotNullQuery(target.field);
+        gr.query();
+        while (gr.next()) {
+            var value = this._v(gr, target.field);
+            if (!value) continue;
+            out.used[value] = true;
+            if (value.indexOf(target.prefix) !== 0) continue;
+            var digits = value.substring(target.prefix.length).replace(/[^0-9]/g, '');
+            if (!digits) continue;
+            var seq = parseInt(digits, 10);
+            if (!isNaN(seq) && seq > out.max) {
+                out.max = seq;
+            }
+        }
+        return out;
+    },
+
+    /**
+     * Stamps a unique, sequential, zero-padded display number on every record of
+     * the configured tables whose number column is empty or NULL.
+     *
+     * - ordered by sys_created_on, so numbering is stable and deterministic
+     * - the starting sequence is derived from the existing values, so re-running
+     *   never collides and never renumbers an already-stamped record
+     * - setWorkflow(false) keeps triage / routing / comms business rules from
+     *   re-firing, and autoSysFields(false) keeps the audit stamps untouched
+     *
+     * @returns {{total:number, tables:Array}} per-table counts of records updated
+     */
+    backfillNumbers: function () {
+        var out = { total: 0, tables: [] };
+
+        for (var i = 0; i < this.TARGETS.length; i++) {
+            var target = this.TARGETS[i];
+            var entry = {
+                table: target.table,
+                field: target.field,
+                prefix: target.prefix,
+                label: target.label,
+                updated: 0,
+                skipped: 0,
+                first: '',
+                last: ''
+            };
+
+            try {
+                var scan = this._scanExisting(target);
+                var seq = scan.max + 1;
+
+                var gr = new GlideRecord(target.table);
+                gr.setWorkflow(false);
+                gr.autoSysFields(false);
+                gr.addNullQuery(target.field);
+                gr.orderBy('sys_created_on');
+                gr.query();
+
+                while (gr.next()) {
+                    // Skip past any value that is somehow already taken.
+                    var candidate = target.prefix + this._pad(seq);
+                    while (scan.used[candidate]) {
+                        seq++;
+                        candidate = target.prefix + this._pad(seq);
+                    }
+
+                    gr.setValue(target.field, candidate);
+                    if (gr.update()) {
+                        scan.used[candidate] = true;
+                        if (!entry.first) entry.first = candidate;
+                        entry.last = candidate;
+                        entry.updated++;
+                        seq++;
+                    } else {
+                        entry.skipped++;
+                    }
+                }
+            } catch (e) {
+                entry.error = '' + e;
+                gs.error('[bfd_DemoDataRepair.backfillNumbers] ' + target.table + ': ' + e);
+            }
+
+            out.total += entry.updated;
+            out.tables.push(entry);
+        }
+
+        return out;
+    },
+
+    // ----------------------------------------------------- metric snapshots
+    /** sys_ids of the cases that already own a snapshot row. */
+    _existingSnapshotCaseIds: function () {
+        var seen = {};
+        var gr = new GlideRecord(this.SNAPSHOT);
+        gr.addNotNullQuery('case');
+        gr.query();
+        while (gr.next()) {
+            var id = this._v(gr, 'case');
+            if (id) seen[id] = true;
+        }
+        return seen;
+    },
+
+    /**
+     * Direct snapshot insert, used only when bfd_FlowSupport.createMetricSnapshot
+     * returns nothing. Derives metric_date from the actual resolution date where
+     * one exists, and the age / resolution durations from sys_created_on.
+     */
+    _insertSnapshot: function (caseGr) {
+        var nowValue = new GlideDateTime().getValue();
+        var created = this._v(caseGr, 'sys_created_on');
+        var resolved = this._v(caseGr, 'actual_resolution_date');
+
+        var metricDate = resolved ? resolved.substring(0, 10) : new GlideDate().getValue();
+
+        var snap = new GlideRecord(this.SNAPSHOT);
+        snap.initialize();
+        snap.setValue('case', caseGr.getUniqueValue());
+        snap.setValue('metric_date', metricDate);
+        snap.setValue('case_type', this._v(caseGr, 'case_type'));
+        snap.setValue('team', this._v(caseGr, 'assigned_team'));
+        snap.setValue('age_hours', this._hoursBetween(created, resolved || nowValue));
+        snap.setValue('sla_status', this._b(caseGr, 'sla_breach_flag') ? 'breached' : 'on_track');
+        snap.setValue('recovery_amount', this._n(this._v(caseGr, 'recovery_amount')));
+        snap.setValue('resolution_time_hours', this._hoursBetween(created, resolved));
+        var csat = this._v(caseGr, 'customer_satisfaction_score');
+        if (csat !== '') {
+            snap.setValue('csat_score', csat);
+        }
+        return this._s(snap.insert());
+    },
+
+    /**
+     * Backfills bfd_case_metric_snapshot for every resolved or closed case that
+     * does not already have a snapshot row, so the snapshot-backed reports and
+     * the team lead dashboard stop rendering blank.
+     *
+     * Idempotent: a case that already owns a snapshot is never inserted twice.
+     *
+     * @returns {{created:number, skipped:number, scanned:number}}
+     */
+    generateMetricSnapshots: function () {
+        var out = { scanned: 0, created: 0, skipped: 0, failed: 0 };
+        var existing = this._existingSnapshotCaseIds();
+
+        var gr = new GlideRecord(this.CASE);
+        gr.addQuery('case_status', 'IN', 'resolved,closed');
+        gr.orderBy('sys_created_on');
+        gr.query();
+
+        while (gr.next()) {
+            out.scanned++;
+            var caseId = gr.getUniqueValue();
+            if (existing[caseId]) {
+                out.skipped++;
+                continue;
+            }
+
+            var snapshotId = '';
+            try {
+                snapshotId = this._s(new bfd_FlowSupport().createMetricSnapshot(caseId));
+            } catch (e) {
+                gs.error('[bfd_DemoDataRepair.generateMetricSnapshots] FlowSupport ' + caseId + ': ' + e);
+            }
+
+            if (!snapshotId) {
+                try {
+                    snapshotId = this._insertSnapshot(gr);
+                } catch (e2) {
+                    gs.error('[bfd_DemoDataRepair.generateMetricSnapshots] insert ' + caseId + ': ' + e2);
+                }
+            }
+
+            if (snapshotId) {
+                existing[caseId] = true;
+                out.created++;
+            } else {
+                out.failed++;
+            }
+        }
+
+        return out;
+    },
+
+    // ----------------------------------------------------------------- runner
+    /**
+     * Runs both repairs and returns the structured counts plus a single
+     * human-readable summary line suitable for gs.addInfoMessage / gs.info.
+     */
+    repairAll: function () {
+        var numbers = this.backfillNumbers();
+        var snapshots = this.generateMetricSnapshots();
+
+        var parts = [];
+        for (var i = 0; i < numbers.tables.length; i++) {
+            var entry = numbers.tables[i];
+            var piece = entry.label + ': ' + entry.updated + ' numbered';
+            if (entry.updated && entry.first) {
+                piece += ' (' + entry.first + (entry.last !== entry.first ? ' to ' + entry.last : '') + ')';
+            }
+            if (entry.error) {
+                piece += ' [error: ' + entry.error + ']';
+            }
+            parts.push(piece);
+        }
+
+        var summary =
+            'SafeTrace demo data repair complete. ' +
+            numbers.total +
+            ' display number(s) stamped - ' +
+            parts.join('; ') +
+            '. Metric snapshots: ' +
+            snapshots.created +
+            ' created, ' +
+            snapshots.skipped +
+            ' already present, ' +
+            snapshots.scanned +
+            ' resolved/closed case(s) scanned' +
+            (snapshots.failed ? ', ' + snapshots.failed + ' failed' : '') +
+            '. This routine is idempotent and safe to run again.';
+
+        return {
+            summary: summary,
+            numbers: numbers,
+            snapshots: snapshots,
+            total_numbered: numbers.total,
+            total_snapshots: snapshots.created
+        };
+    },
+
+    type: 'bfd_DemoDataRepair'
+};
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 16:55:37</sys_created_on>
+        <sys_id>a42b75ce89274430b4a25ba7728a67b8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_DemoDataRepair</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_script_include_a42b75ce89274430b4a25ba7728a67b8</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 16:55:37</sys_updated_on>
+    </sys_script_include>
+</record_update>

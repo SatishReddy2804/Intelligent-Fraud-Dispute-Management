@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_fix">
+    <sys_script_fix action="INSERT_OR_UPDATE">
+        <before>false</before>
+        <description>Idempotent remediation for the already-installed SafeTrace demo data. Calls bfd_DemoDataRepair.repairAll(), which (1) stamps unique 7-digit padded display numbers on records whose number column is NULL — CUST on bfd_customer_profile.customer_number, TXN on bfd_transaction.transaction_reference, CASE on bfd_fraud_dispute_case.case_number and TASK on bfd_case_task.number, ordered by sys_created_on and continuing the existing sequence — and (2) backfills bfd_case_metric_snapshot for every resolved or closed case that has no snapshot row. Updates run with setWorkflow(false) and autoSysFields(false) so triage/routing business rules do not re-fire and audit stamps are untouched. Safe to run repeatedly: existing numbers are never changed and snapshots are never double-inserted.</description>
+        <name>BFD - Repair demo data and metrics</name>
+        <record_for_rollback>true</record_for_rollback>
+        <script><![CDATA[Symbol(CallExpressionShape)]]></script>
+        <sys_class_name>sys_script_fix</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 16:55:36</sys_created_on>
+        <sys_id>9de50a8c6cb24bfa9aba8ac7ba3a69b5</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>BFD - Repair demo data and metrics</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_script_fix_9de50a8c6cb24bfa9aba8ac7ba3a69b5</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 16:55:36</sys_updated_on>
+        <unloadable>false</unloadable>
+    </sys_script_fix>
+</record_update>

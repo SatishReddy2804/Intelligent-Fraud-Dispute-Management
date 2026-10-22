@@ -1,0 +1,1096 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_1755386_safetr_0.bfd_ConsoleService</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Agent console data layer: open-case breakdowns by priority/risk/team/type/SLA, my work, the SLA-breach, pending-information, pending-approval, high-value and duplicate queues, and the single-case 360 payload (Customer 360, Transaction 360, AI triage, investigation tasks, communications, duplicate detection). Masked account/card output only.</description>
+        <mobile_callable>false</mobile_callable>
+        <name>bfd_ConsoleService</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var bfd_ConsoleService = Class.create();
+bfd_ConsoleService.prototype = {
+    CASE: 'x_1755386_safetr_0_bfd_fraud_dispute_case',
+    TASK: 'x_1755386_safetr_0_bfd_case_task',
+
+    // Statuses that count as "open" work for an agent.
+    OPEN_STATUSES: 'new,triage,pending_customer_information,under_investigation,pending_approval,action_taken,reopened',
+
+    HIGH_VALUE_THRESHOLD: 1000,
+    AT_RISK_HOURS: 8,
+    SCAN_LIMIT: 5000,
+    ROW_LIMIT: 25,
+    MAX_ROW_LIMIT: 100,
+
+    initialize: function () {},
+
+    // ------------------------------------------------------------- primitives
+    _s: function (v) {
+        return v === null || v === undefined ? '' : '' + v;
+    },
+    _v: function (gr, field) {
+        if (!gr || !field) return '';
+        return this._s(gr.getValue(field));
+    },
+    _d: function (gr, field) {
+        if (!gr || !field) return '';
+        return this._s(gr.getDisplayValue(field));
+    },
+    _n: function (gr, field) {
+        var n = parseFloat(this._v(gr, field));
+        return isNaN(n) ? 0 : n;
+    },
+    _b: function (gr, field) {
+        var v = this._v(gr, field);
+        return v === 'true' || v === '1';
+    },
+
+    /** Uniform envelope so every handler returns the same shape. */
+    ok: function (data) {
+        return { ok: true, data: data };
+    },
+    fail: function (status, code, message) {
+        return { ok: false, status: status, code: code, message: message };
+    },
+    send: function (response, out) {
+        if (out && out.ok === true) {
+            response.setStatus(200);
+            response.setBody(out.data);
+            return;
+        }
+        var status = out && out.status ? out.status : 500;
+        response.setStatus(status);
+        response.setBody({
+            error: {
+                code: (out && out.code) || 'server_error',
+                message: (out && out.message) || 'Unexpected server error.'
+            }
+        });
+    },
+
+    // ------------------------------------------------------------------ labels
+    LABELS: {
+        case_type: {
+            unauthorized_transaction: 'Unauthorised transaction',
+            duplicate_charge: 'Duplicate charge',
+            payment_failure: 'Payment failure',
+            atm_cash_withdrawal_issue: 'ATM cash withdrawal issue',
+            card_not_received: 'Card not received',
+            other: 'Other'
+        },
+        priority: { p1: 'P1 - Critical', p2: 'P2 - High', p3: 'P3 - Moderate', p4: 'P4 - Low' },
+        urgency: { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low' },
+        risk_level: { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low' },
+        assigned_team: {
+            fraud_operations: 'Fraud Operations',
+            cards_operations: 'Cards Operations',
+            banking_operations: 'Banking Operations'
+        },
+        case_status: {
+            'new': 'New',
+            triage: 'Triage',
+            pending_customer_information: 'Pending customer information',
+            under_investigation: 'Under investigation',
+            pending_approval: 'Pending approval',
+            action_taken: 'Action taken',
+            resolved: 'Resolved',
+            closed: 'Closed',
+            reopened: 'Reopened'
+        },
+        card_action: {
+            none: 'None',
+            temporary_block: 'Temporary block',
+            permanent_block: 'Permanent block',
+            replacement_issued: 'Replacement issued'
+        },
+        sla: { on_track: 'On track', at_risk: 'At risk', breached: 'Breached' }
+    },
+
+    _label: function (field, value) {
+        var v = this._s(value);
+        if (v === '') return '(empty)';
+        var map = this.LABELS[field] || this.LABELS_EXT[field];
+        if (map && map[v]) return map[v];
+        return v;
+    },
+
+    // ------------------------------------------------------------- row shaping
+    /**
+     * Agent-facing projection of a case. Agents are allowed to see the AI
+     * assessment, but account and card identifiers are only ever emitted in
+     * their masked form (account_number_masked / card_last_four).
+     */
+    _row: function (gr) {
+        var caseType = this._v(gr, 'case_type');
+        var priority = this._v(gr, 'priority');
+        var riskLevel = this._v(gr, 'risk_level');
+        var status = this._v(gr, 'case_status');
+        var team = this._v(gr, 'assigned_team');
+
+        var ai = this._v(gr, 'ai_recommendation');
+        if (ai.length > 240) ai = ai.substring(0, 240) + '\u2026';
+
+        return {
+            sys_id: gr.getUniqueValue(),
+            case_number: this._v(gr, 'case_number'),
+            case_type: caseType,
+            case_type_label: this._label('case_type', caseType),
+            priority: priority,
+            priority_label: this._label('priority', priority),
+            risk_level: riskLevel,
+            risk_level_label: this._label('risk_level', riskLevel),
+            risk_score: this._n(gr, 'risk_score'),
+            case_status: status,
+            case_status_label: this._label('case_status', status),
+            assigned_team: team,
+            assigned_team_label: this._label('assigned_team', team),
+            assigned_group_label: this._d(gr, 'assigned_group'),
+            assigned_agent_label: this._d(gr, 'assigned_agent'),
+            customer_label: this._d(gr, 'customer'),
+            account_number_masked: this._d(gr, 'account'),
+            card_last_four: this._cardLastFour(gr),
+            expected_resolution_date: this._v(gr, 'expected_resolution_date'),
+            expected_resolution_display: this._d(gr, 'expected_resolution_date'),
+            disputed_amount: this._n(gr, 'disputed_amount'),
+            currency: this._v(gr, 'currency'),
+            sla_breach_flag: this._b(gr, 'sla_breach_flag'),
+            sla_status: this._slaStatus(gr),
+            escalation_level: this._n(gr, 'escalation_level'),
+            recurrence_count: this._n(gr, 'recurrence_count'),
+            duplicate_of_case_label: this._d(gr, 'duplicate_of_case'),
+            provisional_credit_flag: this._b(gr, 'provisional_credit_flag'),
+            provisional_credit_amount: this._n(gr, 'provisional_credit_amount'),
+            ai_recommendation_excerpt: ai,
+            url: '/' + this.CASE + '.do?sys_id=' + gr.getUniqueValue()
+        };
+    },
+
+    /**
+     * Last four digits of the disputed card. Only the last four are ever read;
+     * the transaction table holds no full card number.
+     */
+    _cardLastFour: function (gr) {
+        var txnId = this._v(gr, 'transaction');
+        if (!txnId) return '';
+        var txn = new GlideRecord('x_1755386_safetr_0_bfd_transaction');
+        if (!txn.get(txnId)) return '';
+        return this._v(txn, 'card_last_four');
+    },
+
+    /** breached | at_risk | on_track, derived from the flag and the due date. */
+    _slaStatus: function (gr) {
+        if (this._b(gr, 'sla_breach_flag')) return 'breached';
+        var expected = this._v(gr, 'expected_resolution_date');
+        if (!expected) return 'on_track';
+        var due = new GlideDateTime(expected);
+        var now = new GlideDateTime();
+        var diffMs = due.getNumericValue() - now.getNumericValue();
+        if (diffMs < 0) return 'breached';
+        if (diffMs <= this.AT_RISK_HOURS * 60 * 60 * 1000) return 'at_risk';
+        return 'on_track';
+    },
+
+    _openQuery: function () {
+        return 'case_statusIN' + this.OPEN_STATUSES;
+    },
+
+    _clampLimit: function (raw) {
+        var n = parseInt(this._s(raw), 10);
+        if (isNaN(n) || n <= 0) return this.ROW_LIMIT;
+        if (n > this.MAX_ROW_LIMIT) return this.MAX_ROW_LIMIT;
+        return n;
+    },
+
+    /** Runs an encoded query and projects the rows. ACLs still apply. */
+    _list: function (encodedQuery, orderBy, limit) {
+        var rows = [];
+        var gr = new GlideRecord(this.CASE);
+        gr.addEncodedQuery(encodedQuery);
+        if (orderBy) gr.orderBy(orderBy);
+        else gr.orderByDesc('sys_updated_on');
+        gr.setLimit(this._clampLimit(limit));
+        gr.query();
+        while (gr.next()) {
+            rows.push(this._row(gr));
+        }
+        return rows;
+    },
+
+    _count: function (encodedQuery) {
+        try {
+            var ga = new GlideAggregate(this.CASE);
+            ga.addEncodedQuery(encodedQuery);
+            ga.addAggregate('COUNT');
+            ga.query();
+            if (ga.next()) {
+                var n = parseInt(ga.getAggregate('COUNT'), 10);
+                return isNaN(n) ? 0 : n;
+            }
+        } catch (e) {
+            // fall through to a counted query
+        }
+        var gr = new GlideRecord(this.CASE);
+        gr.addEncodedQuery(encodedQuery);
+        gr.query();
+        return gr.getRowCount();
+    },
+
+    // --------------------------------------------------------------- groups
+    /** sys_ids of the groups the signed-in user belongs to. */
+    _myGroupIds: function () {
+        var ids = [];
+        try {
+            var gm = new GlideRecord('sys_user_grmember');
+            gm.addQuery('user', gs.getUserID());
+            gm.query();
+            while (gm.next()) {
+                var id = this._v(gm, 'group');
+                if (id) ids.push(id);
+            }
+        } catch (e) {
+            ids = [];
+        }
+        if (!ids.length) {
+            try {
+                var groups = gs.getUser().getMyGroups();
+                if (groups) {
+                    var it = groups.iterator();
+                    while (it.hasNext()) {
+                        ids.push('' + it.next());
+                    }
+                }
+            } catch (e2) {
+                // leave empty — the console will show an empty "my team" list
+            }
+        }
+        return ids;
+    },
+
+    // --------------------------------------------------------------- summary
+    /**
+     * Aggregated open-case breakdowns. One pass over the open cases keeps the
+     * SLA buckets (which depend on the due date, not just the flag) consistent
+     * with the counts.
+     */
+    getSummary: function () {
+        var openQuery = this._openQuery();
+
+        var buckets = {
+            priority: {},
+            risk_level: {},
+            assigned_team: {},
+            case_type: {},
+            sla: {}
+        };
+        var groupBuckets = {};
+        var totalOpen = 0;
+        var totalDisputed = 0;
+
+        var gr = new GlideRecord(this.CASE);
+        gr.addEncodedQuery(openQuery);
+        gr.setLimit(this.SCAN_LIMIT);
+        gr.query();
+        while (gr.next()) {
+            totalOpen++;
+            totalDisputed += this._n(gr, 'disputed_amount');
+
+            this._bump(buckets.priority, this._v(gr, 'priority'));
+            this._bump(buckets.risk_level, this._v(gr, 'risk_level'));
+            this._bump(buckets.assigned_team, this._v(gr, 'assigned_team'));
+            this._bump(buckets.case_type, this._v(gr, 'case_type'));
+            this._bump(buckets.sla, this._slaStatus(gr));
+
+            var groupId = this._v(gr, 'assigned_group');
+            var groupKey = groupId || '__unassigned__';
+            if (!groupBuckets[groupKey]) {
+                groupBuckets[groupKey] = {
+                    value: groupId,
+                    label: groupId ? this._d(gr, 'assigned_group') : 'Unassigned',
+                    count: 0
+                };
+            }
+            groupBuckets[groupKey].count++;
+        }
+
+        return this.ok({
+            total_open: totalOpen,
+            total_disputed_amount: Math.round(totalDisputed * 100) / 100,
+            open_query: openQuery,
+            breakdowns: {
+                priority: this._toBreakdown('priority', buckets.priority, openQuery),
+                risk_level: this._toBreakdown('risk_level', buckets.risk_level, openQuery),
+                assigned_team: this._toBreakdown('assigned_team', buckets.assigned_team, openQuery),
+                case_type: this._toBreakdown('case_type', buckets.case_type, openQuery),
+                sla: this._slaBreakdown(buckets.sla, openQuery),
+                assigned_group: this._groupBreakdown(groupBuckets, openQuery)
+            },
+            generated_at: new GlideDateTime().getDisplayValue()
+        });
+    },
+
+    _bump: function (bucket, value) {
+        var key = this._s(value);
+        if (!bucket[key]) bucket[key] = 0;
+        bucket[key]++;
+    },
+
+    _toBreakdown: function (field, bucket, baseQuery) {
+        var out = [];
+        for (var key in bucket) {
+            if (!Object.prototype.hasOwnProperty.call(bucket, key)) continue;
+            out.push({
+                value: key,
+                label: this._label(field, key),
+                count: bucket[key],
+                query: key === '' ? baseQuery + '^' + field + 'ISEMPTY' : baseQuery + '^' + field + '=' + key
+            });
+        }
+        out.sort(function (a, b) {
+            return b.count - a.count;
+        });
+        return out;
+    },
+
+    _slaBreakdown: function (bucket, baseQuery) {
+        var order = ['breached', 'at_risk', 'on_track'];
+        var queries = {
+            breached: baseQuery + '^sla_breach_flag=true',
+            at_risk: baseQuery + '^sla_breach_flag!=true^expected_resolution_dateISNOTEMPTY',
+            on_track: baseQuery + '^sla_breach_flag!=true'
+        };
+        var out = [];
+        for (var i = 0; i < order.length; i++) {
+            var key = order[i];
+            out.push({
+                value: key,
+                label: this._label('sla', key),
+                count: bucket[key] || 0,
+                query: queries[key]
+            });
+        }
+        return out;
+    },
+
+    _groupBreakdown: function (groupBuckets, baseQuery) {
+        var out = [];
+        for (var key in groupBuckets) {
+            if (!Object.prototype.hasOwnProperty.call(groupBuckets, key)) continue;
+            var entry = groupBuckets[key];
+            out.push({
+                value: entry.value,
+                label: entry.label || 'Unassigned',
+                count: entry.count,
+                query: entry.value
+                    ? baseQuery + '^assigned_group=' + entry.value
+                    : baseQuery + '^assigned_groupISEMPTY'
+            });
+        }
+        out.sort(function (a, b) {
+            return b.count - a.count;
+        });
+        return out;
+    },
+
+    // --------------------------------------------------------------- my work
+    getMyWork: function (limit) {
+        var me = gs.getUserID();
+        var openQuery = this._openQuery();
+        var groupIds = this._myGroupIds();
+
+        var mineQuery = openQuery + '^assigned_agent=' + me;
+        var teamQuery = groupIds.length
+            ? openQuery + '^assigned_groupIN' + groupIds.join(',') + '^assigned_agent!=' + me
+            : '';
+
+        return this.ok({
+            user: gs.getUserDisplayName(),
+            group_count: groupIds.length,
+            sections: [
+                {
+                    key: 'assigned_to_me',
+                    title: 'Assigned to me',
+                    description: 'Open cases where you are the assigned agent.',
+                    count: this._count(mineQuery),
+                    query: mineQuery,
+                    rows: this._list(mineQuery, 'expected_resolution_date', limit)
+                },
+                {
+                    key: 'my_groups',
+                    title: "My groups' cases",
+                    description: groupIds.length
+                        ? 'Open cases assigned to a group you belong to but not yet picked up by you.'
+                        : 'You are not a member of any assignment group.',
+                    count: teamQuery ? this._count(teamQuery) : 0,
+                    query: teamQuery,
+                    rows: teamQuery ? this._list(teamQuery, 'expected_resolution_date', limit) : []
+                }
+            ],
+            generated_at: new GlideDateTime().getDisplayValue()
+        });
+    },
+
+    // ---------------------------------------------------------------- queues
+    /** Definition of every operational queue the console exposes. */
+    QUEUE_KEYS: 'sla_breached,pending_customer_information,pending_approval,high_value_or_critical,duplicate_recurring',
+
+    _queueDef: function (key) {
+        var open = this._openQuery();
+        switch (key) {
+            case 'sla_breached':
+                return {
+                    key: key,
+                    title: 'SLA breaching',
+                    description: 'Cases flagged as an SLA breach that are not yet resolved or closed.',
+                    query: 'sla_breach_flag=true^case_statusNOT INresolved,closed',
+                    orderBy: 'expected_resolution_date'
+                };
+            case 'pending_customer_information':
+                return {
+                    key: key,
+                    title: 'Pending customer information',
+                    description: 'Cases waiting on a reply from the customer.',
+                    query: 'case_status=pending_customer_information',
+                    orderBy: 'sys_updated_on'
+                };
+            case 'pending_approval':
+                return {
+                    key: key,
+                    title: 'Pending approval',
+                    description: 'Cases where a financial action is waiting for team lead approval.',
+                    query: 'case_status=pending_approval',
+                    orderBy: 'sys_updated_on'
+                };
+            case 'high_value_or_critical':
+                return {
+                    key: key,
+                    title: 'High value or critical risk',
+                    description:
+                        'Open cases with a disputed amount above ' +
+                        this.HIGH_VALUE_THRESHOLD +
+                        ' or a critical AI risk level.',
+                    query: open + '^disputed_amount>' + this.HIGH_VALUE_THRESHOLD + '^ORrisk_level=critical',
+                    orderBy: 'expected_resolution_date'
+                };
+            case 'duplicate_recurring':
+                return {
+                    key: key,
+                    title: 'Duplicate and recurring disputes',
+                    description: 'Cases linked to an original dispute, or with a recurrence count above zero.',
+                    query: 'duplicate_of_caseISNOTEMPTY^ORrecurrence_count>0',
+                    orderBy: 'sys_updated_on'
+                };
+            default:
+                return null;
+        }
+    },
+
+    /** Every queue with its count and the first page of rows. */
+    getQueues: function (limit) {
+        var keys = this.QUEUE_KEYS.split(',');
+        var sections = [];
+        for (var i = 0; i < keys.length; i++) {
+            var def = this._queueDef(keys[i]);
+            if (!def) continue;
+            sections.push({
+                key: def.key,
+                title: def.title,
+                description: def.description,
+                query: def.query,
+                count: this._count(def.query),
+                rows: this._list(def.query, def.orderBy, limit)
+            });
+        }
+        return this.ok({
+            sections: sections,
+            generated_at: new GlideDateTime().getDisplayValue()
+        });
+    },
+
+    /** A single queue, for the drill-down view. */
+    getQueue: function (key, limit) {
+        var def = this._queueDef(this._s(key));
+        if (!def) {
+            return this.fail(400, 'unknown_queue', 'Unknown queue. Valid keys: ' + this.QUEUE_KEYS + '.');
+        }
+        return this.ok({
+            key: def.key,
+            title: def.title,
+            description: def.description,
+            query: def.query,
+            count: this._count(def.query),
+            rows: this._list(def.query, def.orderBy, limit || this.MAX_ROW_LIMIT),
+            generated_at: new GlideDateTime().getDisplayValue()
+        });
+    },
+
+    // ============================================================== case 360
+    //
+    // Everything below backs the console's ?view=case&id=<sys_id> view: the
+    // Customer 360 panel, the Transaction 360 panel, the AI triage panel, the
+    // investigation task and communication panels, and the duplicate detection
+    // panel. Agents may see risk / AI data, but a full card or account number is
+    // never emitted — only the stored masked value and a derived last four.
+
+    CUSTOMER: 'x_1755386_safetr_0_bfd_customer_profile',
+    ACCOUNT: 'x_1755386_safetr_0_bfd_bank_account',
+    TRANSACTION: 'x_1755386_safetr_0_bfd_transaction',
+    COMMUNICATION: 'x_1755386_safetr_0_bfd_case_communication',
+
+    /** Rows per 360 sub-panel. */
+    PANEL_LIMIT: 10,
+
+    /** Choice labels used only by the 360 view. Merged in by _label(). */
+    LABELS_EXT: {
+        intake_channel: {
+            mobile_banking: 'Mobile banking',
+            online_banking: 'Online banking',
+            branch: 'Branch',
+            phone: 'Phone',
+            email: 'Email'
+        },
+        resolution_code: {
+            fraud_confirmed_refunded: 'Fraud confirmed - refunded',
+            fraud_not_confirmed: 'Fraud not confirmed',
+            duplicate_reversed: 'Duplicate reversed',
+            payment_corrected: 'Payment corrected',
+            no_action_required: 'No action required',
+            chargeback_won: 'Chargeback won',
+            chargeback_lost: 'Chargeback lost'
+        },
+        kyc_status: {
+            verified: 'Verified',
+            pending: 'Pending',
+            failed: 'Failed',
+            not_started: 'Not started'
+        },
+        risk_tier: { low: 'Low', medium: 'Medium', high: 'High' },
+        preferred_contact_channel: { in_app: 'In app', email: 'Email', sms: 'SMS', phone: 'Phone' },
+        account_type: { current: 'Current', savings: 'Savings', credit_card: 'Credit card', loan: 'Loan' },
+        account_status: { active: 'Active', dormant: 'Dormant', closed: 'Closed', frozen: 'Frozen' },
+        transaction_channel: {
+            pos: 'Point of sale',
+            online: 'Online',
+            atm: 'ATM',
+            mobile: 'Mobile',
+            branch: 'Branch',
+            recurring: 'Recurring'
+        },
+        transaction_type: {
+            debit: 'Debit',
+            credit: 'Credit',
+            withdrawal: 'Withdrawal',
+            transfer: 'Transfer',
+            payment: 'Payment'
+        },
+        transaction_status: {
+            posted: 'Posted',
+            pending: 'Pending',
+            reversed: 'Reversed',
+            failed: 'Failed',
+            declined: 'Declined'
+        },
+        task_type: {
+            identity_verification: 'Identity verification',
+            transaction_review: 'Transaction review',
+            card_block: 'Card block',
+            card_replacement: 'Card replacement',
+            chargeback: 'Chargeback',
+            merchant_investigation: 'Merchant investigation',
+            payment_reversal: 'Payment reversal',
+            atm_investigation: 'ATM investigation',
+            customer_contact: 'Customer contact',
+            approval: 'Approval',
+            recovery_action: 'Recovery action'
+        },
+        task_status: {
+            open: 'Open',
+            work_in_progress: 'Work in progress',
+            complete: 'Complete',
+            cancelled: 'Cancelled'
+        },
+        comm_channel: { in_app: 'In app', email: 'Email', sms: 'SMS', phone: 'Phone' },
+        direction: { outbound: 'Outbound', inbound: 'Inbound' },
+        delivery_status: { sent: 'Sent', delivered: 'Delivered', failed: 'Failed', read: 'Read' }
+    },
+
+    // -------------------------------------------------------------- masking
+    /** Right-most four digits of a value. Never returns more than four. */
+    _lastFour: function (raw) {
+        var digits = this._s(raw).replace(/[^0-9]/g, '');
+        if (!digits) return '';
+        if (digits.length <= 4) return digits;
+        return digits.substring(digits.length - 4);
+    },
+
+    /**
+     * Account identifiers are stored already masked. If an unmasked value ever
+     * reaches here it is reduced to a dot mask plus the last four, so a full
+     * account number can never leave the server.
+     */
+    _safeAccount: function (raw) {
+        var value = this._s(raw);
+        if (!value) return '';
+        if (/[*xX#\u2022]/.test(value)) return value;
+        var digits = value.replace(/[^0-9]/g, '');
+        if (digits.length <= 4) return value;
+        return '\u2022\u2022\u2022\u2022 ' + this._lastFour(digits);
+    },
+
+    /** Card data is only ever emitted as a derived last four. */
+    _safeCard: function (raw) {
+        return this._lastFour(raw);
+    },
+
+    _trim: function (raw, max) {
+        var value = this._s(raw);
+        var cap = max || 4000;
+        return value.length > cap ? value.substring(0, cap) + '\u2026' : value;
+    },
+
+    _caseNumber: function (caseId) {
+        if (!caseId) return '';
+        var gr = new GlideRecord(this.CASE);
+        if (!gr.get(caseId)) return '';
+        return this._v(gr, 'case_number');
+    },
+
+    _formUrl: function (table, sysId) {
+        if (!table || !sysId) return '';
+        return '/' + table + '.do?sys_id=' + sysId;
+    },
+
+    // ---------------------------------------------------------- projections
+    /** Compact case projection used by the previous-case and duplicate panels. */
+    _caseBrief: function (gr) {
+        var caseType = this._v(gr, 'case_type');
+        var status = this._v(gr, 'case_status');
+        var code = this._v(gr, 'resolution_code');
+        var sysId = gr.getUniqueValue();
+        return {
+            sys_id: sysId,
+            case_number: this._v(gr, 'case_number'),
+            case_type: caseType,
+            case_type_label: this._label('case_type', caseType),
+            case_status: status,
+            case_status_label: this._label('case_status', status),
+            disputed_amount: this._n(gr, 'disputed_amount'),
+            currency: this._v(gr, 'currency'),
+            opened: this._v(gr, 'sys_created_on'),
+            opened_display: this._d(gr, 'sys_created_on'),
+            resolution_code: code,
+            resolution_code_label: code ? this._label('resolution_code', code) : '',
+            url: this._formUrl(this.CASE, sysId)
+        };
+    },
+
+    /** Full case detail for the 360 header and AI triage panel. */
+    _caseDetail: function (gr) {
+        var row = this._row(gr);
+        var sysId = gr.getUniqueValue();
+        var urgency = this._v(gr, 'urgency');
+        var intake = this._v(gr, 'intake_channel');
+        var code = this._v(gr, 'resolution_code');
+        var cardAction = this._v(gr, 'card_action');
+        var dupId = this._v(gr, 'duplicate_of_case');
+
+        row.account_number_masked = this._safeAccount(row.account_number_masked);
+        row.card_last_four = this._safeCard(row.card_last_four);
+
+        row.urgency = urgency;
+        row.urgency_label = this._label('urgency', urgency);
+        row.intake_channel = intake;
+        row.intake_channel_label = intake ? this._label('intake_channel', intake) : '';
+        row.intent_classification = this._v(gr, 'intent_classification');
+        row.ai_recommendation = this._trim(this._v(gr, 'ai_recommendation'));
+        row.policy_guidance = this._trim(this._v(gr, 'policy_guidance'));
+        row.customer_statement = this._trim(this._v(gr, 'customer_statement'), 2000);
+        row.incident_date_time = this._v(gr, 'incident_date_time');
+        row.incident_date_time_display = this._d(gr, 'incident_date_time');
+        row.actual_resolution_date = this._v(gr, 'actual_resolution_date');
+        row.actual_resolution_display = this._d(gr, 'actual_resolution_date');
+        row.resolution_code = code;
+        row.resolution_code_label = code ? this._label('resolution_code', code) : '';
+        row.resolution_summary = this._trim(this._v(gr, 'resolution_summary'), 2000);
+        row.card_action = cardAction;
+        row.card_action_label = cardAction ? this._label('card_action', cardAction) : '';
+        row.recovery_amount = this._n(gr, 'recovery_amount');
+        row.customer_satisfaction_score = this._v(gr, 'customer_satisfaction_score');
+        row.duplicate_of_case = dupId;
+        row.duplicate_of_case_number = dupId ? this._caseNumber(dupId) : '';
+        row.duplicate_of_case_url = dupId ? this._formUrl(this.CASE, dupId) : '';
+        row.customer_sys_id = this._v(gr, 'customer');
+        row.account_sys_id = this._v(gr, 'account');
+        row.transaction_sys_id = this._v(gr, 'transaction');
+        row.url = this._formUrl(this.CASE, sysId);
+        return row;
+    },
+
+    // --------------------------------------------------------- customer 360
+    _customerProfile: function (customerId) {
+        if (!customerId) return null;
+        var gr = new GlideRecord(this.CUSTOMER);
+        if (!gr.get(customerId)) return null;
+        var kyc = this._v(gr, 'kyc_status');
+        var tier = this._v(gr, 'risk_tier');
+        var pref = this._v(gr, 'preferred_contact_channel');
+        return {
+            sys_id: gr.getUniqueValue(),
+            customer_number: this._v(gr, 'customer_number'),
+            full_name: this._v(gr, 'full_name'),
+            email: this._v(gr, 'email'),
+            mobile_phone: this._v(gr, 'mobile_phone'),
+            kyc_status: kyc,
+            kyc_status_label: kyc ? this._label('kyc_status', kyc) : '',
+            risk_tier: tier,
+            risk_tier_label: tier ? this._label('risk_tier', tier) : '',
+            preferred_contact_channel: pref,
+            preferred_contact_channel_label: pref ? this._label('preferred_contact_channel', pref) : '',
+            active_flag: this._b(gr, 'active_flag'),
+            url: this._formUrl(this.CUSTOMER, gr.getUniqueValue())
+        };
+    },
+
+    _customerAccounts: function (customerId) {
+        var rows = [];
+        if (!customerId) return rows;
+        var gr = new GlideRecord(this.ACCOUNT);
+        gr.addQuery('customer', customerId);
+        gr.orderBy('account_type');
+        gr.query();
+        while (gr.next()) {
+            var type = this._v(gr, 'account_type');
+            var status = this._v(gr, 'account_status');
+            var tier = this._v(gr, 'risk_tier');
+            rows.push({
+                sys_id: gr.getUniqueValue(),
+                account_number_masked: this._safeAccount(this._v(gr, 'account_number_masked')),
+                account_last_four: this._lastFour(this._v(gr, 'account_number_masked')),
+                account_type: type,
+                account_type_label: type ? this._label('account_type', type) : '',
+                account_status: status,
+                account_status_label: status ? this._label('account_status', status) : '',
+                currency: this._v(gr, 'currency'),
+                available_balance: this._n(gr, 'available_balance'),
+                risk_tier: tier,
+                risk_tier_label: tier ? this._label('risk_tier', tier) : '',
+                fraud_hold_flag: this._b(gr, 'fraud_hold_flag')
+            });
+        }
+        return rows;
+    },
+
+    _transactionRow: function (gr) {
+        var channel = this._v(gr, 'channel');
+        var status = this._v(gr, 'status');
+        var type = this._v(gr, 'transaction_type');
+        return {
+            sys_id: gr.getUniqueValue(),
+            transaction_reference: this._v(gr, 'transaction_reference'),
+            transaction_date_time: this._v(gr, 'transaction_date_time'),
+            transaction_date_time_display: this._d(gr, 'transaction_date_time'),
+            merchant_name: this._v(gr, 'merchant_name'),
+            merchant_category: this._v(gr, 'merchant_category'),
+            amount: this._n(gr, 'amount'),
+            currency: this._v(gr, 'currency'),
+            channel: channel,
+            channel_label: channel ? this._label('transaction_channel', channel) : '',
+            transaction_type: type,
+            transaction_type_label: type ? this._label('transaction_type', type) : '',
+            status: status,
+            status_label: status ? this._label('transaction_status', status) : '',
+            card_last_four: this._safeCard(this._v(gr, 'card_last_four')),
+            atm_location: this._v(gr, 'atm_location'),
+            country: this._v(gr, 'country'),
+            is_recurring: this._b(gr, 'is_recurring'),
+            fraud_indicator: this._b(gr, 'fraud_indicator'),
+            dispute_flag: this._b(gr, 'dispute_flag'),
+            account_number_masked: this._safeAccount(this._d(gr, 'account'))
+        };
+    },
+
+    _customerTransactions: function (customerId, limit) {
+        var rows = [];
+        if (!customerId) return rows;
+        var gr = new GlideRecord(this.TRANSACTION);
+        gr.addQuery('customer', customerId);
+        gr.orderByDesc('transaction_date_time');
+        gr.setLimit(limit || this.PANEL_LIMIT);
+        gr.query();
+        while (gr.next()) {
+            rows.push(this._transactionRow(gr));
+        }
+        return rows;
+    },
+
+    _customerCases: function (customerId, excludeCaseId, limit) {
+        var rows = [];
+        if (!customerId) return rows;
+        var gr = new GlideRecord(this.CASE);
+        gr.addQuery('customer', customerId);
+        if (excludeCaseId) gr.addQuery('sys_id', '!=', excludeCaseId);
+        gr.orderByDesc('sys_created_on');
+        gr.setLimit(limit || this.PANEL_LIMIT);
+        gr.query();
+        while (gr.next()) {
+            rows.push(this._caseBrief(gr));
+        }
+        return rows;
+    },
+
+    // ------------------------------------------------------ transaction 360
+    _relatedTransactions: function (txnGr, limit) {
+        var rows = [];
+        if (!txnGr) return rows;
+        var accountId = this._v(txnGr, 'account');
+        var merchant = this._v(txnGr, 'merchant_name');
+        var card = this._v(txnGr, 'card_last_four');
+        if (!accountId || (!merchant && !card)) return rows;
+
+        var gr = new GlideRecord(this.TRANSACTION);
+        gr.addQuery('account', accountId);
+        gr.addQuery('sys_id', '!=', txnGr.getUniqueValue());
+        if (merchant) {
+            var qc = gr.addQuery('merchant_name', merchant);
+            if (card) qc.addOrCondition('card_last_four', card);
+        } else {
+            gr.addQuery('card_last_four', card);
+        }
+        gr.orderByDesc('transaction_date_time');
+        gr.setLimit(limit || this.PANEL_LIMIT);
+        gr.query();
+        while (gr.next()) {
+            var row = this._transactionRow(gr);
+            var reasons = [];
+            if (merchant && this._v(gr, 'merchant_name') === merchant) reasons.push('Same merchant');
+            if (card && this._v(gr, 'card_last_four') === card) reasons.push('Same card');
+            row.match_reason = reasons.length ? reasons.join(' and ') : 'Same account';
+            rows.push(row);
+        }
+        return rows;
+    },
+
+    _transaction360: function (txnId) {
+        if (!txnId) {
+            return {
+                available: false,
+                message: 'This case has no disputed transaction linked to it.',
+                transaction: null,
+                related_transactions: []
+            };
+        }
+        var gr = new GlideRecord(this.TRANSACTION);
+        if (!gr.get(txnId)) {
+            return {
+                available: false,
+                message: 'The disputed transaction could not be read. It may have been removed, or you may not have access to it.',
+                transaction: null,
+                related_transactions: []
+            };
+        }
+        return {
+            available: true,
+            message: '',
+            transaction: this._transactionRow(gr),
+            related_transactions: this._relatedTransactions(gr, this.PANEL_LIMIT)
+        };
+    },
+
+    // --------------------------------------------------- duplicate detection
+    _duplicatePanel: function (caseGr) {
+        var out = {
+            is_duplicate: false,
+            reason: '',
+            prior_count: 0,
+            prior_history_count: 0,
+            original: null,
+            similar_cases: [],
+            prior_cases: [],
+            error: ''
+        };
+
+        try {
+            var detector = new bfd_DuplicateDetector();
+
+            var found = detector.findDuplicate(caseGr) || {};
+            out.is_duplicate = found.isDuplicate === true || this._s(found.isDuplicate) === 'true';
+            out.reason = this._s(found.reason);
+            var prior = parseInt(this._s(found.priorCount), 10);
+            out.prior_count = isNaN(prior) ? 0 : prior;
+
+            var originalId = this._s(found.originalCaseSysId);
+            if (out.is_duplicate && originalId) {
+                var orig = new GlideRecord(this.CASE);
+                if (orig.get(originalId)) {
+                    out.original = this._caseBrief(orig);
+                    out.similar_cases.push(out.original);
+                }
+            }
+
+            var history = detector.getPriorHistory(caseGr) || [];
+            out.prior_history_count = history.length;
+            for (var i = 0; i < history.length && i < this.PANEL_LIMIT; i++) {
+                var entry = history[i] || {};
+                var type = this._s(entry.case_type);
+                var status = this._s(entry.status);
+                var code = this._s(entry.resolution_code);
+                out.prior_cases.push({
+                    sys_id: this._s(entry.sys_id),
+                    case_number: this._s(entry.case_number),
+                    case_type: type,
+                    case_type_label: type ? this._label('case_type', type) : '',
+                    case_status: status,
+                    case_status_label: status ? this._label('case_status', status) : '',
+                    disputed_amount: this._s(entry.disputed_amount) === '' ? 0 : parseFloat(entry.disputed_amount) || 0,
+                    currency: '',
+                    opened: this._s(entry.opened),
+                    opened_display: this._s(entry.opened),
+                    resolution_code: code,
+                    resolution_code_label: code ? this._label('resolution_code', code) : '',
+                    url: this._formUrl(this.CASE, this._s(entry.sys_id))
+                });
+            }
+        } catch (e) {
+            out.error = '' + e;
+            gs.error('[bfd_ConsoleService._duplicatePanel] ' + e);
+        }
+
+        return out;
+    },
+
+    // --------------------------------------------------- tasks / comms panels
+    _caseTasks: function (caseId) {
+        var rows = [];
+        if (!caseId) return rows;
+        var gr = new GlideRecord(this.TASK);
+        gr.addQuery('case', caseId);
+        gr.orderBy('due_date');
+        gr.query();
+        while (gr.next()) {
+            var type = this._v(gr, 'task_type');
+            var status = this._v(gr, 'status');
+            var priority = this._v(gr, 'priority');
+            rows.push({
+                sys_id: gr.getUniqueValue(),
+                number: this._v(gr, 'number'),
+                task_type: type,
+                task_type_label: type ? this._label('task_type', type) : '',
+                status: status,
+                status_label: status ? this._label('task_status', status) : '',
+                priority: priority,
+                priority_label: priority ? this._label('priority', priority) : '',
+                due_date: this._v(gr, 'due_date'),
+                due_date_display: this._d(gr, 'due_date'),
+                assigned_group_label: this._d(gr, 'assigned_group'),
+                assigned_agent_label: this._d(gr, 'assigned_agent'),
+                outcome: this._trim(this._v(gr, 'outcome'), 600),
+                url: this._formUrl(this.TASK, gr.getUniqueValue())
+            });
+        }
+        return rows;
+    },
+
+    _caseCommunications: function (caseId) {
+        var rows = [];
+        if (!caseId) return rows;
+        var gr = new GlideRecord(this.COMMUNICATION);
+        gr.addQuery('case', caseId);
+        gr.orderByDesc('sent_at');
+        gr.query();
+        while (gr.next()) {
+            var channel = this._v(gr, 'channel');
+            var direction = this._v(gr, 'direction');
+            var delivery = this._v(gr, 'delivery_status');
+            rows.push({
+                sys_id: gr.getUniqueValue(),
+                channel: channel,
+                channel_label: channel ? this._label('comm_channel', channel) : '',
+                direction: direction,
+                direction_label: direction ? this._label('direction', direction) : '',
+                subject: this._v(gr, 'subject'),
+                sent_at: this._v(gr, 'sent_at'),
+                sent_at_display: this._d(gr, 'sent_at'),
+                delivery_status: delivery,
+                delivery_status_label: delivery ? this._label('delivery_status', delivery) : '',
+                triggered_by: this._v(gr, 'triggered_by'),
+                url: this._formUrl(this.COMMUNICATION, gr.getUniqueValue())
+            });
+        }
+        return rows;
+    },
+
+    // ------------------------------------------------------------- getCase360
+    /**
+     * Everything the agent 360 view needs for one case, in a single read:
+     * the case itself, Customer 360, Transaction 360, duplicate detection,
+     * investigation tasks and customer communications.
+     *
+     * Runs as the signed-in user so the application ACLs still apply. Returns a
+     * clean error envelope when the case id is missing or unreadable.
+     */
+    getCase360: function (caseSysId) {
+        var id = this._s(caseSysId);
+        if (!id) {
+            return this.fail(400, 'missing_case_id', 'A case_id query parameter is required.');
+        }
+
+        var gr = new GlideRecord(this.CASE);
+        if (!gr.get(id)) {
+            return this.fail(
+                404,
+                'case_not_found',
+                'That case does not exist, or you do not have permission to read it.'
+            );
+        }
+
+        var caseDetail = this._caseDetail(gr);
+        var customerId = caseDetail.customer_sys_id;
+
+        var profile = this._customerProfile(customerId);
+        var openCaseCount = 0;
+        if (customerId) {
+            openCaseCount = this._count(this._openQuery() + '^customer=' + customerId);
+        }
+
+        var customer360 = {
+            available: !!profile,
+            message: profile
+                ? ''
+                : customerId
+                  ? 'The linked customer profile could not be read. It may have been removed, or you may not have access to it.'
+                  : 'This case has no customer profile linked to it.',
+            profile: profile,
+            accounts: customerId ? this._customerAccounts(customerId) : [],
+            recent_transactions: customerId ? this._customerTransactions(customerId, this.PANEL_LIMIT) : [],
+            previous_cases: customerId ? this._customerCases(customerId, id, this.PANEL_LIMIT) : [],
+            open_case_count: openCaseCount
+        };
+
+        return this.ok({
+            case: caseDetail,
+            customer360: customer360,
+            transaction360: this._transaction360(caseDetail.transaction_sys_id),
+            duplicatePanel: this._duplicatePanel(gr),
+            tasks: this._caseTasks(id),
+            communications: this._caseCommunications(id),
+            generated_at: new GlideDateTime().getDisplayValue()
+        });
+    },
+
+    type: 'bfd_ConsoleService'
+};
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 13:08:16</sys_created_on>
+        <sys_id>9e02b1abb4664bb59d16870eea1326ab</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_ConsoleService</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_script_include_9e02b1abb4664bb59d16870eea1326ab</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 13:08:16</sys_updated_on>
+    </sys_script_include>
+</record_update>
