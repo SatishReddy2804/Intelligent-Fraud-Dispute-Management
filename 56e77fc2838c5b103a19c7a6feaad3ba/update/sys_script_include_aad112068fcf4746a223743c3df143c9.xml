@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_1755386_safetr_0.bfd_FlowSupport</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Flow support helpers: safetyNetTriage, detectDuplicate, createInitialTasks, ensureInvestigationTasks, logApprovalDecision, revertRequestedAction, evaluateSla, processSlaSweep, createMetricSnapshot, mandatoryTasksComplete, highValueApprovalRequired.</description>
+        <mobile_callable>false</mobile_callable>
+        <name>bfd_FlowSupport</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var bfd_FlowSupport = Class.create();
+bfd_FlowSupport.prototype = {
+    CASE_TABLE: 'x_1755386_safetr_0_bfd_fraud_dispute_case',
+    TASK_TABLE: 'x_1755386_safetr_0_bfd_case_task',
+    SNAPSHOT_TABLE: 'x_1755386_safetr_0_bfd_case_metric_snapshot',
+    OPEN_STATUSES: 'open,work_in_progress',
+    CLOSED_STATUSES: 'resolved,closed',
+    VALID_TASK_TYPES: [
+        'identity_verification',
+        'transaction_review',
+        'card_block',
+        'card_replacement',
+        'chargeback',
+        'merchant_investigation',
+        'payment_reversal',
+        'atm_investigation',
+        'customer_contact',
+        'approval',
+        'recovery_action'
+    ],
+    // Due-date offsets in hours, keyed off case priority.
+    DUE_HOURS: { p1: 4, p2: 24, p3: 72, p4: 120 },
+
+    initialize: function () {},
+
+    // ------------------------------------------------------------- small helpers
+    _str: function (v) {
+        return v === null || v === undefined ? '' : ('' + v);
+    },
+
+    _num: function (v) {
+        var n = parseFloat(this._str(v));
+        return isNaN(n) ? 0 : n;
+    },
+
+    _caseGr: function (caseSysId) {
+        var id = this._str(caseSysId);
+        if (!id) {
+            return null;
+        }
+        var gr = new GlideRecord(this.CASE_TABLE);
+        return gr.get(id) ? gr : null;
+    },
+
+    _dueDate: function (priority) {
+        var hours = this.DUE_HOURS[this._str(priority)];
+        if (!hours) {
+            hours = 72;
+        }
+        var due = new GlideDateTime();
+        due.addSeconds(hours * 3600);
+        return due.getValue();
+    },
+
+    /** Maps a free-text recommended action onto a bfd_case_task task_type. */
+    mapActionToTaskType: function (actionText) {
+        var a = this._str(actionText).toLowerCase();
+        if (!a) {
+            return 'transaction_review';
+        }
+        if (this.VALID_TASK_TYPES.indexOf(a) !== -1) {
+            return a;
+        }
+        if (a.indexOf('identity') !== -1 || a.indexOf('kyc') !== -1 || a.indexOf('verif') !== -1) {
+            return 'identity_verification';
+        }
+        if (a.indexOf('replacement') !== -1 || a.indexOf('reissue') !== -1 || a.indexOf('replace') !== -1) {
+            return 'card_replacement';
+        }
+        if (a.indexOf('block') !== -1 || a.indexOf('freeze') !== -1) {
+            return 'card_block';
+        }
+        if (a.indexOf('chargeback') !== -1 || a.indexOf('dispute network') !== -1) {
+            return 'chargeback';
+        }
+        if (a.indexOf('merchant') !== -1) {
+            return 'merchant_investigation';
+        }
+        if (a.indexOf('revers') !== -1 || a.indexOf('refund') !== -1 || a.indexOf('credit') !== -1) {
+            return 'payment_reversal';
+        }
+        if (a.indexOf('atm') !== -1) {
+            return 'atm_investigation';
+        }
+        if (a.indexOf('approval') !== -1 || a.indexOf('approve') !== -1) {
+            return 'approval';
+        }
+        if (a.indexOf('recovery') !== -1 || a.indexOf('recover') !== -1) {
+            return 'recovery_action';
+        }
+        if (a.indexOf('contact') !== -1 || a.indexOf('call') !== -1 || a.indexOf('inform') !== -1) {
+            return 'customer_contact';
+        }
+        if (a.indexOf('transaction') !== -1 || a.indexOf('review') !== -1) {
+            return 'transaction_review';
+        }
+        return 'transaction_review';
+    },
+
+    _taskExists: function (caseSysId, taskType) {
+        var gr = new GlideRecord(this.TASK_TABLE);
+        gr.addQuery('case', caseSysId);
+        gr.addQuery('task_type', taskType);
+        gr.addQuery('status', '!=', 'cancelled');
+        gr.setLimit(1);
+        gr.query();
+        return gr.hasNext();
+    },
+
+    _createTask: function (caseGr, taskType, outcome) {
+        var caseId = caseGr.getUniqueValue();
+        var type = this.mapActionToTaskType(taskType);
+        if (this._taskExists(caseId, type)) {
+            return '';
+        }
+        var gr = new GlideRecord(this.TASK_TABLE);
+        gr.initialize();
+        gr.setValue('case', caseId);
+        gr.setValue('task_type', type);
+        var group = caseGr.getValue('assigned_group');
+        if (group) {
+            gr.setValue('assigned_group', group);
+        }
+        var priority = caseGr.getValue('priority') || 'p3';
+        gr.setValue('priority', priority);
+        gr.setValue('due_date', this._dueDate(priority));
+        gr.setValue('status', 'open');
+        if (outcome) {
+            gr.setValue('outcome', this._str(outcome).substring(0, 4000));
+        }
+        return this._str(gr.insert());
+    },
+
+    // ------------------------------------------------------------- safety net
+    /**
+     * Safety net for bfd_flow_case_intake: the before-insert business rules
+     * normally triage the case. If risk_score is still empty, triage here.
+     */
+    safetyNetTriage: function (caseSysId) {
+        var out = { triaged: false, riskLevel: '', priority: '', riskScore: 0 };
+        var gr = this._caseGr(caseSysId);
+        if (!gr) {
+            return out;
+        }
+        if (this._str(gr.getValue('risk_score')) === '') {
+            try {
+                new bfd_TriageEngine().triageCaseAndUpdate(caseSysId, { force: false });
+                out.triaged = true;
+            } catch (e) {
+                gs.error('[bfd_FlowSupport.safetyNetTriage] ' + e);
+            }
+            gr = this._caseGr(caseSysId) || gr;
+        }
+        out.riskLevel = this._str(gr.getValue('risk_level'));
+        out.priority = this._str(gr.getValue('priority'));
+        out.riskScore = this._num(gr.getValue('risk_score'));
+        return out;
+    },
+
+    // ------------------------------------------------------- duplicate handling
+    /**
+     * Runs bfd_DuplicateDetector. The after-insert business rule already linked
+     * duplicate_of_case, so this only classifies and returns the
+     * customer-friendly message to surface on the portal timeline.
+     */
+    detectDuplicate: function (caseSysId) {
+        var out = { isDuplicate: false, message: '', originalCaseSysId: '', reason: '' };
+        var gr = this._caseGr(caseSysId);
+        if (!gr) {
+            return out;
+        }
+        try {
+            var detector = new bfd_DuplicateDetector();
+            var result = detector.findDuplicate(gr) || {};
+            out.isDuplicate = result.isDuplicate === true || this._str(result.isDuplicate) === 'true';
+            out.originalCaseSysId = this._str(result.originalCaseSysId);
+            out.reason = this._str(result.reason);
+            if (out.isDuplicate) {
+                out.message = this._str(detector.linkDuplicate(gr));
+            }
+        } catch (e) {
+            gs.error('[bfd_FlowSupport.detectDuplicate] ' + e);
+        }
+        if (out.isDuplicate && !out.message) {
+            out.message =
+                'We already have an open case covering this issue, so we have linked your new report to it. ' +
+                'You do not need to do anything else — all updates will arrive on the original case.';
+        }
+        return out;
+    },
+
+    // ------------------------------------------------------------ task creation
+    /**
+     * Creates the initial investigation task set for a brand new case by asking
+     * bfd_TriageEngine.recommendActions() what to do and mapping each recommended
+     * action string onto a bfd_case_task task_type.
+     */
+    createInitialTasks: function (caseSysId) {
+        var gr = this._caseGr(caseSysId);
+        if (!gr) {
+            return 0;
+        }
+        var riskLevel = this._str(gr.getValue('risk_level')) || 'medium';
+        var actions = [];
+        try {
+            actions = new bfd_TriageEngine().recommendActions(gr, riskLevel) || [];
+        } catch (e) {
+            gs.error('[bfd_FlowSupport.createInitialTasks] ' + e);
+        }
+        if (!actions || !actions.length) {
+            actions = ['identity_verification', 'transaction_review'];
+        }
+
+        var created = 0;
+        for (var i = 0; i < actions.length; i++) {
+            var text = this._str(actions[i]);
+            if (!text) {
+                continue;
+            }
+            if (this._createTask(gr, text, 'Auto-created from AI recommendation: ' + text)) {
+                created++;
+            }
+        }
+        return created;
+    },
+
+    /** Task types each case_type needs during investigation. */
+    _investigationPlan: function (caseGr) {
+        var caseType = this._str(caseGr.getValue('case_type'));
+        var riskLevel = this._str(caseGr.getValue('risk_level'));
+        var cardAction = this._str(caseGr.getValue('card_action'));
+        var plan = ['identity_verification'];
+
+        if (caseType === 'unauthorized_transaction') {
+            plan.push('transaction_review');
+            plan.push('chargeback');
+        } else if (caseType === 'duplicate_charge') {
+            plan.push('transaction_review');
+            plan.push('merchant_investigation');
+            plan.push('payment_reversal');
+        } else if (caseType === 'payment_failure') {
+            plan.push('transaction_review');
+            plan.push('payment_reversal');
+        } else if (caseType === 'atm_cash_withdrawal_issue') {
+            plan.push('atm_investigation');
+            plan.push('transaction_review');
+        } else if (caseType === 'card_not_received') {
+            plan.push('card_replacement');
+        } else {
+            plan.push('transaction_review');
+        }
+
+        if (cardAction === 'temporary_block' || cardAction === 'permanent_block') {
+            plan.push('card_block');
+        }
+        if (cardAction === 'replacement_issued') {
+            plan.push('card_replacement');
+        }
+        if (riskLevel === 'critical' || riskLevel === 'high') {
+            plan.push('recovery_action');
+        }
+        return plan;
+    },
+
+    /**
+     * Guarantees the appropriate investigation task set exists for the case.
+     * Idempotent — existing non-cancelled tasks of the same type are left alone.
+     */
+    ensureInvestigationTasks: function (caseSysId) {
+        var gr = this._caseGr(caseSysId);
+        if (!gr) {
+            return 0;
+        }
+        var plan = this._investigationPlan(gr);
+        var created = 0;
+        for (var i = 0; i < plan.length; i++) {
+            if (this._createTask(gr, plan[i], 'Required investigation step for case type ' + this._str(gr.getValue('case_type')))) {
+                created++;
+            }
+        }
+        return created;
+    },
+
+    // ---------------------------------------------------------------- approvals
+    /**
+     * Reads the most recent platform approval (sysapproval_approver) for the case
+     * and writes approver / decision / comments / timestamp onto the case audit
+     * trail plus a completed bfd_case_task of type 'approval'.
+     */
+    logApprovalDecision: function (caseSysId, decision) {
+        var out = { approver: '', approverName: '', comments: '', decidedAt: '', decision: this._str(decision) };
+        var gr = this._caseGr(caseSysId);
+        if (!gr) {
+            return out;
+        }
+
+        try {
+            var ap = new GlideRecord('sysapproval_approver');
+            ap.addQuery('document_id', caseSysId);
+            ap.orderByDesc('sys_updated_on');
+            ap.setLimit(1);
+            ap.query();
+            if (ap.next()) {
+                out.approver = this._str(ap.getValue('approver'));
+                out.approverName = this._str(ap.approver.getDisplayValue());
+                out.comments = this._str(ap.getValue('comments'));
+                out.decidedAt = this._str(ap.getValue('sys_updated_on'));
+                if (!out.decision) {
+                    out.decision = this._str(ap.getValue('state'));
+                }
+            }
+        } catch (e) {
+            gs.error('[bfd_FlowSupport.logApprovalDecision] ' + e);
+        }
+
+        if (!out.decidedAt) {
+            out.decidedAt = new GlideDateTime().getValue();
+        }
+        if (!out.approverName) {
+            out.approverName = out.approver || 'unknown approver';
+        }
+
+        var entry =
+            '[APPROVAL ' +
+            out.decidedAt +
+            '] decision=' +
+            (out.decision || 'unknown') +
+            '; approver=' +
+            out.approverName +
+            '; comments=' +
+            (out.comments || 'none');
+
+        var trail = this._str(gr.getValue('ai_recommendation'));
+        gr.setValue('ai_recommendation', (trail ? trail + '\n' : '') + entry);
+        var notes = this._str(gr.getValue('closure_notes'));
+        gr.setValue('closure_notes', (notes ? notes + '\n' : '') + entry);
+        gr.update();
+
+        // Completed approval task carrying the outcome.
+        var task = new GlideRecord(this.TASK_TABLE);
+        task.addQuery('case', caseSysId);
+        task.addQuery('task_type', 'approval');
+        task.addQuery('status', 'IN', this.OPEN_STATUSES);
+        task.orderByDesc('sys_created_on');
+        task.setLimit(1);
+        task.query();
+        if (task.next()) {
+            task.setValue('status', 'complete');
+            task.setValue('outcome', entry.substring(0, 4000));
+            task.update();
+        } else {
+            var newTask = new GlideRecord(this.TASK_TABLE);
+            newTask.initialize();
+            newTask.setValue('case', caseSysId);
+            newTask.setValue('task_type', 'approval');
+            var group = gr.getValue('assigned_group');
+            if (group) {
+                newTask.setValue('assigned_group', group);
+            }
+            if (out.approver) {
+                newTask.setValue('assigned_agent', out.approver);
+            }
+            newTask.setValue('priority', gr.getValue('priority') || 'p3');
+            newTask.setValue('status', 'complete');
+            newTask.setValue('outcome', entry.substring(0, 4000));
+            newTask.insert();
+        }
+        return out;
+    },
+
+    /**
+     * Rejection path: undo the action that was pending approval and put the case
+     * back under investigation.
+     */
+    revertRequestedAction: function (caseSysId) {
+        var gr = this._caseGr(caseSysId);
+        if (!gr) {
+            return false;
+        }
+        gr.setValue('provisional_credit_flag', false);
+        gr.setValue('provisional_credit_amount', 0);
+        if (this._str(gr.getValue('card_action')) === 'permanent_block') {
+            gr.setValue('card_action', 'none');
+        }
+        gr.setValue('case_status', 'under_investigation');
+        gr.update();
+        return true;
+    },
+
+    // --------------------------------------------------------------- SLA sweep
+    /**
+     * Classifies one open case against expected_resolution_date and applies the
+     * breach / escalation field updates. The flow performs the notifications.
+     *
+     * returns { state: 'breached' | 'at_risk' | 'ok', leadEscalation, escalationLevel }
+     */
+    evaluateSla: function (caseSysId) {
+        var out = { state: 'ok', leadEscalation: false, escalationLevel: 0 };
+        var gr = this._caseGr(caseSysId);
+        if (!gr) {
+            return out;
+        }
+        var status = this._str(gr.getValue('case_status'));
+        if (status === 'resolved' || status === 'closed') {
+            return out;
+        }
+        var expectedRaw = this._str(gr.getValue('expected_resolution_date'));
+        if (!expectedRaw) {
+            return out;
+        }
+
+        var now = new GlideDateTime();
+        var expected = new GlideDateTime(expectedRaw);
+        var created = new GlideDateTime(this._str(gr.getValue('sys_created_on')));
+        var level = parseInt(this._str(gr.getValue('escalation_level')), 10);
+        if (isNaN(level)) {
+            level = 0;
+        }
+        out.escalationLevel = level;
+        var riskLevel = this._str(gr.getValue('risk_level'));
+
+        if (now.compareTo(expected) > 0) {
+            // Breached. Cap escalation so the hourly sweep cannot spam forever.
+            if (level >= 5) {
+                return out;
+            }
+            var newLevel = level + 1;
+            out.leadEscalation = newLevel >= 2 || riskLevel === 'critical';
+            if (out.leadEscalation) {
+                newLevel = newLevel + 1;
+            }
+            gr.setValue('sla_breach_flag', true);
+            gr.setValue('escalation_level', newLevel);
+            gr.update();
+            out.state = 'breached';
+            out.escalationLevel = newLevel;
+            return out;
+        }
+
+        // Not breached yet — is the case inside the final 25% of its window?
+        var totalMs = expected.getNumericValue() - created.getNumericValue();
+        var remainingMs = expected.getNumericValue() - now.getNumericValue();
+        if (totalMs > 0 && remainingMs <= totalMs * 0.25 && level === 0) {
+            if (!new bfd_CommsLogger().alreadyLogged(caseSysId, 'bfd_flow_sla_escalation:at_risk')) {
+                out.state = 'at_risk';
+            }
+        }
+        return out;
+    },
+
+    /**
+     * Standalone sweep over every open case (same classification as the hourly
+     * bfd_flow_sla_escalation flow). Kept for manual/scripted runs and testing.
+     */
+    processSlaSweep: function () {
+        var summary = { scanned: 0, breached: 0, atRisk: 0 };
+        var gr = new GlideRecord(this.CASE_TABLE);
+        gr.addQuery('case_status', 'NOT IN', this.CLOSED_STATUSES);
+        gr.addNotNullQuery('expected_resolution_date');
+        gr.query();
+        while (gr.next()) {
+            summary.scanned++;
+            var result = this.evaluateSla(gr.getUniqueValue());
+            if (result.state === 'breached') {
+                summary.breached++;
+            } else if (result.state === 'at_risk') {
+                summary.atRisk++;
+            }
+        }
+        return summary;
+    },
+
+    // ----------------------------------------------------------- metrics export
+    /** Creates the closure metric snapshot row for reporting. */
+    createMetricSnapshot: function (caseSysId) {
+        var gr = this._caseGr(caseSysId);
+        if (!gr) {
+            return '';
+        }
+        var now = new GlideDateTime();
+        var created = new GlideDateTime(this._str(gr.getValue('sys_created_on')));
+        var ageHours = (now.getNumericValue() - created.getNumericValue()) / 3600000;
+
+        var resolutionHours = 0;
+        var actual = this._str(gr.getValue('actual_resolution_date'));
+        if (actual) {
+            var resolved = new GlideDateTime(actual);
+            resolutionHours = (resolved.getNumericValue() - created.getNumericValue()) / 3600000;
+        }
+
+        var snap = new GlideRecord(this.SNAPSHOT_TABLE);
+        snap.initialize();
+        snap.setValue('case', gr.getUniqueValue());
+        snap.setValue('metric_date', new GlideDate().getValue());
+        snap.setValue('case_type', this._str(gr.getValue('case_type')));
+        snap.setValue('team', this._str(gr.getValue('assigned_team')));
+        snap.setValue('age_hours', Math.round(ageHours * 100) / 100);
+        snap.setValue('sla_status', gr.getValue('sla_breach_flag') == true ? 'breached' : 'on_track');
+        snap.setValue('recovery_amount', this._num(gr.getValue('recovery_amount')));
+        snap.setValue('resolution_time_hours', Math.round(resolutionHours * 100) / 100);
+        snap.setValue('csat_score', this._str(gr.getValue('customer_satisfaction_score')));
+        return this._str(snap.insert());
+    },
+
+    // -------------------------------------------------------- closure readiness
+    /** Thin wrapper so flows can gate on bfd_CaseUtils.mandatoryTasksComplete(). */
+    mandatoryTasksComplete: function (caseSysId) {
+        var gr = this._caseGr(caseSysId);
+        if (!gr) {
+            return false;
+        }
+        return new bfd_CaseUtils().mandatoryTasksComplete(gr) === true;
+    },
+
+    /** Thin wrapper so flows can gate on bfd_CaseUtils.highValueApprovalRequired(). */
+    highValueApprovalRequired: function (caseSysId) {
+        var out = { required: false, reason: '' };
+        var gr = this._caseGr(caseSysId);
+        if (!gr) {
+            return out;
+        }
+        out.required = new bfd_CaseUtils().highValueApprovalRequired(gr, 500) === true;
+        if (out.required) {
+            var reasons = [];
+            if (this._num(gr.getValue('provisional_credit_amount')) > 500) {
+                reasons.push('provisional credit above 500');
+            }
+            if (this._str(gr.getValue('card_action')) === 'permanent_block') {
+                reasons.push('permanent card block requested');
+            }
+            if (this._num(gr.getValue('recovery_amount')) > 500) {
+                reasons.push('recovery amount above 500');
+            }
+            out.reason = reasons.join('; ');
+        }
+        return out;
+    },
+
+    type: 'bfd_FlowSupport'
+};
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:14:40</sys_created_on>
+        <sys_id>aad112068fcf4746a223743c3df143c9</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_FlowSupport</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_script_include_aad112068fcf4746a223743c3df143c9</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:14:40</sys_updated_on>
+    </sys_script_include>
+</record_update>

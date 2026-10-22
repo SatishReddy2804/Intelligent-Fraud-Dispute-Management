@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_1755386_safetr_0.bfd_CommsLogger</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Outbound communication logger: logOutbound(caseSysId, channel, subject, message, triggeredBy) and alreadyLogged(caseSysId, triggeredBy) anti-spam guard.</description>
+        <mobile_callable>false</mobile_callable>
+        <name>bfd_CommsLogger</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var bfd_CommsLogger = Class.create();
+bfd_CommsLogger.prototype = {
+    CASE_TABLE: 'x_1755386_safetr_0_bfd_fraud_dispute_case',
+    COMM_TABLE: 'x_1755386_safetr_0_bfd_case_communication',
+
+    initialize: function () {},
+
+    _str: function (v) {
+        return v === null || v === undefined ? '' : ('' + v);
+    },
+
+    _trim: function (v, max) {
+        var s = this._str(v);
+        return s.length > max ? s.substring(0, max) : s;
+    },
+
+    /**
+     * Writes an outbound bfd_case_communication row so the portal timeline shows
+     * the message that was just sent to the customer.
+     *
+     * @param {string} caseSysId   sys_id of the fraud/dispute case
+     * @param {string} channel     in_app | email | sms | phone (default email)
+     * @param {string} subject     short subject line
+     * @param {string} message     body text (never include unmasked card/account data)
+     * @param {string} triggeredBy free-text source tag, e.g. 'bfd_flow_case_intake'
+     * @returns {string} sys_id of the created communication, '' on failure
+     */
+    logOutbound: function (caseSysId, channel, subject, message, triggeredBy) {
+        var id = this._str(caseSysId);
+        if (!id) {
+            return '';
+        }
+
+        var caseGr = new GlideRecord(this.CASE_TABLE);
+        if (!caseGr.get(id)) {
+            return '';
+        }
+
+        var ch = this._str(channel);
+        if (['in_app', 'email', 'sms', 'phone'].indexOf(ch) === -1) {
+            ch = 'email';
+        }
+
+        var comm = new GlideRecord(this.COMM_TABLE);
+        comm.initialize();
+        comm.setValue('case', id);
+        var customer = caseGr.getValue('customer');
+        if (customer) {
+            comm.setValue('customer', customer);
+        }
+        comm.setValue('channel', ch);
+        comm.setValue('direction', 'outbound');
+        comm.setValue('subject', this._trim(subject, 255));
+        comm.setValue('message', this._trim(message, 4000));
+        comm.setValue('sent_at', new GlideDateTime().getValue());
+        comm.setValue('delivery_status', 'sent');
+        comm.setValue('triggered_by', this._trim(triggeredBy || 'automation', 255));
+        return this._str(comm.insert());
+    },
+
+    /**
+     * True when an outbound communication with the given triggered_by tag already
+     * exists for the case. Used as an anti-spam guard for recurring reminders.
+     */
+    alreadyLogged: function (caseSysId, triggeredBy) {
+        var id = this._str(caseSysId);
+        var tag = this._str(triggeredBy);
+        if (!id || !tag) {
+            return false;
+        }
+        var gr = new GlideRecord(this.COMM_TABLE);
+        gr.addQuery('case', id);
+        gr.addQuery('direction', 'outbound');
+        gr.addQuery('triggered_by', tag);
+        gr.setLimit(1);
+        gr.query();
+        return gr.hasNext();
+    },
+
+    type: 'bfd_CommsLogger'
+};
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:14:40</sys_created_on>
+        <sys_id>a57ddc0d1aa64c2f8022b8c114960997</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_CommsLogger</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_script_include_a57ddc0d1aa64c2f8022b8c114960997</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:14:40</sys_updated_on>
+    </sys_script_include>
+</record_update>

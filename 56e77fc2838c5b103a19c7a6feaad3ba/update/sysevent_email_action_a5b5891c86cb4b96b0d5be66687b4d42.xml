@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sysevent_email_action">
+    <sysevent_email_action action="INSERT_OR_UPDATE">
+        <action_insert>false</action_insert>
+        <action_update>false</action_update>
+        <active>true</active>
+        <advanced_condition/>
+        <affected_field_on_event/>
+        <category display_value="Uncategorized" name="Uncategorized">c97d83137f4432005f58108c3ffa917a</category>
+        <collection>x_1755386_safetr_0_bfd_fraud_dispute_case</collection>
+        <condition/>
+        <content_type>text/html</content_type>
+        <default_digest>false</default_digest>
+        <default_interval/>
+        <description>Customer outcome letter when case_status becomes resolved; includes resolution_summary. Sent by bfd_flow_closure_feedback (generation type: triggered).</description>
+        <digest_from/>
+        <digest_html/>
+        <digest_reply_to/>
+        <digest_separator_html><![CDATA[<p>&nbsp;</p>
+<hr>
+<p>&nbsp;</p>]]></digest_separator_html>
+        <digest_separator_text><![CDATA[--------------------------------------------------------------------------------
+]]></digest_separator_text>
+        <digest_subject/>
+        <digest_template/>
+        <digest_text/>
+        <digest_type>single</digest_type>
+        <digestable>false</digestable>
+        <enable_dynamic_translation>false</enable_dynamic_translation>
+        <event_name/>
+        <event_parm_1>false</event_parm_1>
+        <event_parm_2>false</event_parm_2>
+        <exclude_delegates>false</exclude_delegates>
+        <force_delivery>false</force_delivery>
+        <from/>
+        <generation_type>triggered</generation_type>
+        <importance/>
+        <include_attachments>false</include_attachments>
+        <item>event.parm1</item>
+        <item_table/>
+        <mandatory>true</mandatory>
+        <message/>
+        <message_html><![CDATA[<p>Dear ${customer.full_name},</p><p>We have finished investigating your case and reached an outcome.</p><table role="presentation" cellpadding="4"><tr><td><strong>Case reference</strong></td><td>${case_number}</td></tr><tr><td><strong>Case type</strong></td><td>${case_type}</td></tr><tr><td><strong>Status</strong></td><td>${case_status}</td></tr><tr><td><strong>Expected resolution</strong></td><td>${expected_resolution_date}</td></tr><tr><td><strong>Resolution code</strong></td><td>${resolution_code}</td></tr><tr><td><strong>Resolved on</strong></td><td>${actual_resolution_date}</td></tr></table><h3>What we found</h3><p>${resolution_summary}</p><p>If you disagree with this outcome, reply within 30 days quoting case ${case_number} and we will review it again.</p><p>Thank you,<br/>SafeTrace Fraud &amp; Dispute Resolution</p>]]></message_html>
+        <message_list/>
+        <message_text/>
+        <name>bfd_notify_case_resolved</name>
+        <omit_watermark>false</omit_watermark>
+        <order>100</order>
+        <push_message_only>false</push_message_only>
+        <recipient_fields>customer.email</recipient_fields>
+        <recipient_groups/>
+        <recipient_users/>
+        <reply_to/>
+        <send_self>false</send_self>
+        <sms_alternate/>
+        <style/>
+        <subject>Outcome of your case ${case_number}</subject>
+        <subscribable>false</subscribable>
+        <sys_class_name>sysevent_email_action</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:14:51</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>a5b5891c86cb4b96b0d5be66687b4d42</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_notify_case_resolved</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sysevent_email_action_a5b5891c86cb4b96b0d5be66687b4d42</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:14:51</sys_updated_on>
+        <sys_version>2</sys_version>
+        <template/>
+        <type>email</type>
+        <weight>0</weight>
+    </sysevent_email_action>
+</record_update>

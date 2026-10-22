@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>false</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>true</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>x_1755386_safetr_0_bfd_fraud_dispute_case</collection>
+        <condition/>
+        <description>After-update: writes the bfd_case_communication timeline row for the engine-driven notifications (info required, card action, provisional credit).</description>
+        <execute_function>false</execute_function>
+        <filter_condition table="x_1755386_safetr_0_bfd_fraud_dispute_case">case_statusCHANGESTOpending_customer_information^NQcard_actionCHANGES^NQprovisional_credit_flagCHANGESTOtrue<item endquery="false" field="case_status" goto="false" newquery="false" operator="CHANGESTO" or="false" value="pending_customer_information"/>
+            <item endquery="false" field="" goto="false" newquery="true" operator="=" or="false" value=""/>
+            <item endquery="false" field="provisional_credit_flag" goto="false" newquery="true" operator="CHANGESTO" or="false" value="true"/>
+        </filter_condition>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>bfd_case_comms_log_br</name>
+        <order>200</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+    var logger = new bfd_CommsLogger();
+    var caseId = current.getUniqueValue();
+
+    // 1) bfd_notify_info_required — case_status -> pending_customer_information
+    if (current.case_status.changesTo('pending_customer_information')) {
+        logger.logOutbound(
+            caseId,
+            'email',
+            'Action needed on your case',
+            'We asked you for additional information: the date and amount of the disputed activity, whether the card is still in your possession, and any supporting evidence. Full card numbers, PINs and passcodes are never requested.',
+            'bfd_case_comms_log_br:info_required'
+        );
+    }
+
+    // 2) bfd_notify_card_action — card_action -> block / replacement
+    if (
+        current.card_action.changesTo('temporary_block') ||
+        current.card_action.changesTo('permanent_block') ||
+        current.card_action.changesTo('replacement_issued')
+    ) {
+        logger.logOutbound(
+            caseId,
+            'email',
+            'Security action on your card',
+            'We notified you that the action "' +
+                current.card_action.getDisplayValue() +
+                '" has been applied to the card on this case. Only the masked card reference was included in the message.',
+            'bfd_case_comms_log_br:card_action'
+        );
+    }
+
+    // 3) bfd_notify_provisional_credit — provisional_credit_flag -> true
+    if (current.provisional_credit_flag.changesTo(true)) {
+        logger.logOutbound(
+            caseId,
+            'email',
+            'Provisional credit applied',
+            'We told you that a provisional credit of ' +
+                current.getValue('provisional_credit_amount') +
+                ' ' +
+                current.getValue('currency') +
+                ' has been applied to your account while the investigation continues.',
+            'bfd_case_comms_log_br:provisional_credit'
+        );
+    }
+})(current, previous);
+]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 10:14:39</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>b8d33545379f40e0a82cd160c5dc9264</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_case_comms_log_br</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_script_b8d33545379f40e0a82cd160c5dc9264</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 10:14:39</sys_updated_on>
+        <template/>
+        <when>after</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=b8d33545379f40e0a82cd160c5dc9264"/>
+</record_update>
