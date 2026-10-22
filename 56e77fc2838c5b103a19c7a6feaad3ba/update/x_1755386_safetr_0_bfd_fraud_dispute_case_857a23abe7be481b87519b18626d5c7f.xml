@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_fraud_dispute_case">
+    <x_1755386_safetr_0_bfd_fraud_dispute_case action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1023">33db4e72df994ca5ac5332dae6143c0d</account>
+        <actual_resolution_date>2025-10-15 16:00:00</actual_resolution_date>
+        <ai_recommendation>Confirm fraud, refund, reissue card.</ai_recommendation>
+        <assigned_agent display_value="Diego Ramos">6f5b0c439e3b4f999bcbe739714f7254</assigned_agent>
+        <assigned_group display_value="BFD Fraud Operations" name="BFD Fraud Operations">395ac83e517647fbaee2237f966d436c</assigned_group>
+        <assigned_team>fraud_operations</assigned_team>
+        <card_action>permanent_block</card_action>
+        <case_number/>
+        <case_status>resolved</case_status>
+        <case_type>unauthorized_transaction</case_type>
+        <closure_notes/>
+        <currency>EUR</currency>
+        <customer display_value="">5e6d3a55a0584fba93e1f80a65dcb02c</customer>
+        <customer_feedback/>
+        <customer_satisfaction_score/>
+        <customer_statement>A €675 DutyFree International charge is not mine; I was not travelling.</customer_statement>
+        <disputed_amount>675</disputed_amount>
+        <duplicate_of_case/>
+        <escalation_level>1</escalation_level>
+        <expected_resolution_date/>
+        <incident_date_time>2025-10-09 22:11:44</incident_date_time>
+        <intake_channel>online_banking</intake_channel>
+        <intent_classification>Report unauthorized travel transaction</intent_classification>
+        <policy_guidance>Confirmed fraud: refund customer, permanent block and reissue.</policy_guidance>
+        <priority>p2</priority>
+        <provisional_credit_amount>675</provisional_credit_amount>
+        <provisional_credit_flag>true</provisional_credit_flag>
+        <recovery_amount>675</recovery_amount>
+        <recurrence_count>0</recurrence_count>
+        <resolution_code>fraud_confirmed_refunded</resolution_code>
+        <resolution_summary>Fraud confirmed via geolocation mismatch; €675 refunded, card reissued.</resolution_summary>
+        <risk_level>high</risk_level>
+        <risk_score>70</risk_score>
+        <sla_breach_flag>false</sla_breach_flag>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:48</sys_created_on>
+        <sys_id>857a23abe7be481b87519b18626d5c7f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:48</sys_updated_on>
+        <transaction display_value="">ff807c8e939d4ee7ace4dce19e9ac532</transaction>
+        <urgency>high</urgency>
+    </x_1755386_safetr_0_bfd_fraud_dispute_case>
+</record_update>

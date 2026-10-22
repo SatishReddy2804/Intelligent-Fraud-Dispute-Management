@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_bank_account">
+    <x_1755386_safetr_0_bfd_bank_account action="INSERT_OR_UPDATE">
+        <account_number_masked>****-****-****-1010</account_number_masked>
+        <account_status>active</account_status>
+        <account_type>current</account_type>
+        <available_balance>7640.4</available_balance>
+        <branch>London Canary Wharf</branch>
+        <currency>GBP</currency>
+        <customer display_value="">8d97e6743804410d95cdf1e0ae2566bd</customer>
+        <fraud_hold_flag>false</fraud_hold_flag>
+        <opened_date>2017-09-05</opened_date>
+        <risk_tier>low</risk_tier>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:44</sys_created_on>
+        <sys_id>9982f9741fb84401853ca949522bdeeb</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:44</sys_updated_on>
+    </x_1755386_safetr_0_bfd_bank_account>
+</record_update>

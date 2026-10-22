@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_fraud_dispute_case">
+    <x_1755386_safetr_0_bfd_fraud_dispute_case action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1008">677e499d5a47416ca8ce7fff5fc49c3a</account>
+        <actual_resolution_date/>
+        <ai_recommendation>Request merchant billing records, reverse duplicate if confirmed.</ai_recommendation>
+        <assigned_agent display_value="Tom Becker">cd4c67007f9845a7a6d48e2125ea599d</assigned_agent>
+        <assigned_group display_value="BFD Banking Operations" name="BFD Banking Operations">7f000104a9c848b19258473a7c09a842</assigned_group>
+        <assigned_team>banking_operations</assigned_team>
+        <card_action/>
+        <case_number/>
+        <case_status>under_investigation</case_status>
+        <case_type>duplicate_charge</case_type>
+        <closure_notes/>
+        <currency>USD</currency>
+        <customer display_value="">f9a724a5abeb4e7f80977a839b711931</customer>
+        <customer_feedback/>
+        <customer_satisfaction_score/>
+        <customer_statement>StreamPlus billed me $89.99 twice this month.</customer_statement>
+        <disputed_amount>89.99</disputed_amount>
+        <duplicate_of_case/>
+        <escalation_level>0</escalation_level>
+        <expected_resolution_date>2025-10-23 18:44:12</expected_resolution_date>
+        <incident_date_time>2025-10-09 18:44:12</incident_date_time>
+        <intake_channel>mobile_banking</intake_channel>
+        <intent_classification>Report duplicate subscription charge</intent_classification>
+        <policy_guidance>Duplicate charge verification: compare statement lines and merchant descriptor.</policy_guidance>
+        <priority>p3</priority>
+        <provisional_credit_amount/>
+        <provisional_credit_flag>false</provisional_credit_flag>
+        <recovery_amount/>
+        <recurrence_count>0</recurrence_count>
+        <resolution_code/>
+        <resolution_summary/>
+        <risk_level>medium</risk_level>
+        <risk_score>35</risk_score>
+        <sla_breach_flag>false</sla_breach_flag>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:48</sys_created_on>
+        <sys_id>d09946bb9fcb44b38bb704dc3353ffb8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:48</sys_updated_on>
+        <transaction display_value="">55f34d2f1ca44f8c8c14071745c87c88</transaction>
+        <urgency>medium</urgency>
+    </x_1755386_safetr_0_bfd_fraud_dispute_case>
+</record_update>

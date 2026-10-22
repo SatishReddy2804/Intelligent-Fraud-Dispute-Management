@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_case_communication">
+    <x_1755386_safetr_0_bfd_case_communication action="INSERT_OR_UPDATE">
+        <case display_value="">da5b878964db496392d36dad1bc2036b</case>
+        <channel>email</channel>
+        <customer display_value="">37db2259fa40448b8d45042fbd42cdd9</customer>
+        <delivery_status>delivered</delivery_status>
+        <direction>outbound</direction>
+        <message>Thank you for reporting the unauthorized $849.99 charge. Your card has been blocked and we are investigating. A provisional credit will be applied.</message>
+        <sent_at>2025-10-03 14:30:00</sent_at>
+        <subject>We have received your fraud report</subject>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:44</sys_created_on>
+        <sys_id>c4755785d92d4fc98a96b10b6928b06a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:44</sys_updated_on>
+        <triggered_by>Intake flow</triggered_by>
+    </x_1755386_safetr_0_bfd_case_communication>
+</record_update>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_transaction">
+    <x_1755386_safetr_0_bfd_transaction action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1002">87dc82e4e0dd4f109a2aeb3ba1cdeb25</account>
+        <amount>200</amount>
+        <atm_location>San Jose Main Branch ATM #3</atm_location>
+        <authorization_code>AUTH10010</authorization_code>
+        <card_last_four>1002</card_last_four>
+        <channel>atm</channel>
+        <country>US</country>
+        <currency>USD</currency>
+        <customer display_value="">37db2259fa40448b8d45042fbd42cdd9</customer>
+        <dispute_flag>true</dispute_flag>
+        <fraud_indicator>false</fraud_indicator>
+        <is_recurring>false</is_recurring>
+        <merchant_category>Cash</merchant_category>
+        <merchant_name>ATM Withdrawal</merchant_name>
+        <original_transaction_reference/>
+        <status>posted</status>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:50</sys_created_on>
+        <sys_id>35fb608ebc6242fdb1d1c500e8b5e7e1</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:50</sys_updated_on>
+        <transaction_date_time>2025-10-13 11:09:33</transaction_date_time>
+        <transaction_reference/>
+        <transaction_type>withdrawal</transaction_type>
+    </x_1755386_safetr_0_bfd_transaction>
+</record_update>

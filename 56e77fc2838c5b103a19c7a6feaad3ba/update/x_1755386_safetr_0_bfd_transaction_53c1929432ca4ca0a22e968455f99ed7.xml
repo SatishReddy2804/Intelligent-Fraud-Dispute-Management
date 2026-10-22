@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_transaction">
+    <x_1755386_safetr_0_bfd_transaction action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1002">87dc82e4e0dd4f109a2aeb3ba1cdeb25</account>
+        <amount>3200</amount>
+        <atm_location/>
+        <authorization_code/>
+        <card_last_four/>
+        <channel>online</channel>
+        <country>US</country>
+        <currency>USD</currency>
+        <customer display_value="">37db2259fa40448b8d45042fbd42cdd9</customer>
+        <dispute_flag>false</dispute_flag>
+        <fraud_indicator>false</fraud_indicator>
+        <is_recurring>true</is_recurring>
+        <merchant_category>Income</merchant_category>
+        <merchant_name>Payroll Deposit</merchant_name>
+        <original_transaction_reference/>
+        <status>posted</status>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:50</sys_created_on>
+        <sys_id>53c1929432ca4ca0a22e968455f99ed7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:50</sys_updated_on>
+        <transaction_date_time>2025-10-15 09:00:00</transaction_date_time>
+        <transaction_reference/>
+        <transaction_type>credit</transaction_type>
+    </x_1755386_safetr_0_bfd_transaction>
+</record_update>

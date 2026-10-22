@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_policy_knowledge">
+    <x_1755386_safetr_0_bfd_policy_knowledge action="INSERT_OR_UPDATE">
+        <active_flag>true</active_flag>
+        <case_type>any</case_type>
+        <effective_from>2024-01-01</effective_from>
+        <effective_to/>
+        <guidance_text>All disputes: acknowledge within SLA, classify case type and risk, route to the correct operations team, and keep the customer informed at intake, status change, and resolution. Document outcomes and resolution codes.</guidance_text>
+        <keywords>intake, triage, routing, SLA, communication, resolution code</keywords>
+        <policy_category>Dispute Handling</policy_category>
+        <policy_title>General Dispute Intake and Triage</policy_title>
+        <risk_level>any</risk_level>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:48</sys_created_on>
+        <sys_id>e678f476663b4702b3a73630c10084bb</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:48</sys_updated_on>
+    </x_1755386_safetr_0_bfd_policy_knowledge>
+</record_update>

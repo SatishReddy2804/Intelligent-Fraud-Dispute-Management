@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_transaction">
+    <x_1755386_safetr_0_bfd_transaction action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1012">731cd2fd10ef4c41b4efe55fc475f630</account>
+        <amount>2450</amount>
+        <atm_location/>
+        <authorization_code>AUTH10003</authorization_code>
+        <card_last_four>1012</card_last_four>
+        <channel>online</channel>
+        <country>RU</country>
+        <currency>USD</currency>
+        <customer display_value="">95e17158d1204604abbc0b0c9a75c007</customer>
+        <dispute_flag>true</dispute_flag>
+        <fraud_indicator>true</fraud_indicator>
+        <is_recurring>false</is_recurring>
+        <merchant_category>Digital Goods</merchant_category>
+        <merchant_name>CryptoTopUp</merchant_name>
+        <original_transaction_reference/>
+        <status>posted</status>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:49</sys_created_on>
+        <sys_id>04165701f7df4fba93c70d9ffe3b967f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:49</sys_updated_on>
+        <transaction_date_time>2025-10-01 23:17:02</transaction_date_time>
+        <transaction_reference/>
+        <transaction_type>debit</transaction_type>
+    </x_1755386_safetr_0_bfd_transaction>
+</record_update>

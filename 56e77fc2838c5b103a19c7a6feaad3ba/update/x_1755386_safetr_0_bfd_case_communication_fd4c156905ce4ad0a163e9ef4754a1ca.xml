@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_case_communication">
+    <x_1755386_safetr_0_bfd_case_communication action="INSERT_OR_UPDATE">
+        <case display_value="">ca958fc700b24da6980094ee87c59afd</case>
+        <channel>email</channel>
+        <customer display_value="">2e8c292869db4c408bdf829509b2dfd4</customer>
+        <delivery_status>delivered</delivery_status>
+        <direction>outbound</direction>
+        <message>The duplicate $240 charge has been reversed and credited. This case is now closed.</message>
+        <sent_at>2025-10-09 15:35:00</sent_at>
+        <subject>Your dispute is resolved</subject>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:45</sys_created_on>
+        <sys_id>fd4c156905ce4ad0a163e9ef4754a1ca</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:45</sys_updated_on>
+        <triggered_by>Agent</triggered_by>
+    </x_1755386_safetr_0_bfd_case_communication>
+</record_update>

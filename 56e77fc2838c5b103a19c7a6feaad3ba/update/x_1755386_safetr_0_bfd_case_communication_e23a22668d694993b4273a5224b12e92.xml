@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_case_communication">
+    <x_1755386_safetr_0_bfd_case_communication action="INSERT_OR_UPDATE">
+        <case display_value="">0f48739374444ff79390e213f46f55d4</case>
+        <channel>in_app</channel>
+        <customer display_value="">75e7c17e1283444cbffa8630fe21ef6f</customer>
+        <delivery_status>delivered</delivery_status>
+        <direction>outbound</direction>
+        <message>We confirmed the duplicate $120.50 charge from Cornerstone Coffee and have refunded it.</message>
+        <sent_at>2025-10-10 10:05:00</sent_at>
+        <subject>Duplicate charge refunded</subject>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:45</sys_created_on>
+        <sys_id>e23a22668d694993b4273a5224b12e92</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:45</sys_updated_on>
+        <triggered_by>Agent</triggered_by>
+    </x_1755386_safetr_0_bfd_case_communication>
+</record_update>

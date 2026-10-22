@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_case_communication">
+    <x_1755386_safetr_0_bfd_case_communication action="INSERT_OR_UPDATE">
+        <case display_value="">18863844c6f840a1bd55066d96be2a48</case>
+        <channel>email</channel>
+        <customer display_value="">f4e40095362a4a3c9d0daa1b33ff00ea</customer>
+        <delivery_status>delivered</delivery_status>
+        <direction>outbound</direction>
+        <message>We have logged your dispute for the $1,299 LuxWatch Store charge and temporarily blocked your card.</message>
+        <sent_at>2025-10-05 09:50:00</sent_at>
+        <subject>Your dispute has been logged</subject>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:45</sys_created_on>
+        <sys_id>c52206a2e88f44fc80d2dc682e4fd8e4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:45</sys_updated_on>
+        <triggered_by>Intake flow</triggered_by>
+    </x_1755386_safetr_0_bfd_case_communication>
+</record_update>

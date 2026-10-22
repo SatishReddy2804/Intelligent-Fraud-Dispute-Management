@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_transaction">
+    <x_1755386_safetr_0_bfd_transaction action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1004">02f8f8d0404c4eb29bdbc3f4e8505e7f</account>
+        <amount>120.5</amount>
+        <atm_location/>
+        <authorization_code>AUTH10004</authorization_code>
+        <card_last_four>1004</card_last_four>
+        <channel>pos</channel>
+        <country>US</country>
+        <currency>USD</currency>
+        <customer display_value="">75e7c17e1283444cbffa8630fe21ef6f</customer>
+        <dispute_flag>true</dispute_flag>
+        <fraud_indicator>false</fraud_indicator>
+        <is_recurring>false</is_recurring>
+        <merchant_category>Restaurant</merchant_category>
+        <merchant_name>Cornerstone Coffee</merchant_name>
+        <original_transaction_reference/>
+        <status>posted</status>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:51</sys_created_on>
+        <sys_id>fcd835ec4ee54ac39f0617e13dde9bde</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:51</sys_updated_on>
+        <transaction_date_time>2025-10-08 12:05:30</transaction_date_time>
+        <transaction_reference/>
+        <transaction_type>debit</transaction_type>
+    </x_1755386_safetr_0_bfd_transaction>
+</record_update>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_transaction">
+    <x_1755386_safetr_0_bfd_transaction action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1006">45c24471434e4f42bc413a1112dbf337</account>
+        <amount>1299</amount>
+        <atm_location/>
+        <authorization_code>AUTH10002</authorization_code>
+        <card_last_four>1006</card_last_four>
+        <channel>online</channel>
+        <country>GB</country>
+        <currency>USD</currency>
+        <customer display_value="">f4e40095362a4a3c9d0daa1b33ff00ea</customer>
+        <dispute_flag>true</dispute_flag>
+        <fraud_indicator>true</fraud_indicator>
+        <is_recurring>false</is_recurring>
+        <merchant_category>Jewelry</merchant_category>
+        <merchant_name>LuxWatch Store</merchant_name>
+        <original_transaction_reference/>
+        <status>posted</status>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:50</sys_created_on>
+        <sys_id>4d6c88af81a64e0fad0e50dc0746409e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:50</sys_updated_on>
+        <transaction_date_time>2025-10-05 09:41:55</transaction_date_time>
+        <transaction_reference/>
+        <transaction_type>debit</transaction_type>
+    </x_1755386_safetr_0_bfd_transaction>
+</record_update>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_case_communication">
+    <x_1755386_safetr_0_bfd_case_communication action="INSERT_OR_UPDATE">
+        <case display_value="">38c33d5a4c9d4d1e9e1bdb40ede9a257</case>
+        <channel>phone</channel>
+        <customer display_value="">95e17158d1204604abbc0b0c9a75c007</customer>
+        <delivery_status>delivered</delivery_status>
+        <direction>outbound</direction>
+        <message>Following your report of a $2,450 unauthorized charge, your card has been permanently blocked and a replacement is on the way.</message>
+        <sent_at>2025-10-01 23:40:00</sent_at>
+        <subject>Urgent: account security</subject>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:45</sys_created_on>
+        <sys_id>ee345e4ff9c34e918b5994f21f45d2e6</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:45</sys_updated_on>
+        <triggered_by>Agent</triggered_by>
+    </x_1755386_safetr_0_bfd_case_communication>
+</record_update>

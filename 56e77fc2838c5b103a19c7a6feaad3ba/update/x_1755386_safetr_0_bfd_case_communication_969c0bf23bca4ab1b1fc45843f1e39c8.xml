@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_case_communication">
+    <x_1755386_safetr_0_bfd_case_communication action="INSERT_OR_UPDATE">
+        <case display_value="">9dc7e210211942ad9928735bab4a173c</case>
+        <channel>email</channel>
+        <customer display_value="">8d97e6743804410d95cdf1e0ae2566bd</customer>
+        <delivery_status>delivered</delivery_status>
+        <direction>outbound</direction>
+        <message>We have blocked the FitStream Pro recurring mandate and are pursuing a chargeback for the £29.99 charge.</message>
+        <sent_at>2025-10-02 06:20:00</sent_at>
+        <subject>Recurring charge dispute</subject>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:44</sys_created_on>
+        <sys_id>969c0bf23bca4ab1b1fc45843f1e39c8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:44</sys_updated_on>
+        <triggered_by>Intake flow</triggered_by>
+    </x_1755386_safetr_0_bfd_case_communication>
+</record_update>

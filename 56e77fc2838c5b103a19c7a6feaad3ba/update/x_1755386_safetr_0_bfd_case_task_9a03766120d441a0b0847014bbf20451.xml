@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_case_task">
+    <x_1755386_safetr_0_bfd_case_task action="INSERT_OR_UPDATE">
+        <assigned_agent display_value="Nadia Okafor">24ec1e8f55cf4d46904ff741014b7557</assigned_agent>
+        <assigned_group display_value="BFD Fraud Operations" name="BFD Fraud Operations">395ac83e517647fbaee2237f966d436c</assigned_group>
+        <case display_value="">da5b878964db496392d36dad1bc2036b</case>
+        <due_date>2025-10-04 12:00:00</due_date>
+        <number/>
+        <outcome>Customer identity verified via step-up auth.</outcome>
+        <priority>p1</priority>
+        <status>complete</status>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:46</sys_created_on>
+        <sys_id>9a03766120d441a0b0847014bbf20451</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:46</sys_updated_on>
+        <task_type>identity_verification</task_type>
+        <work_notes/>
+    </x_1755386_safetr_0_bfd_case_task>
+</record_update>

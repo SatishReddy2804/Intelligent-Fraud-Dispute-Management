@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_routing_rule">
+    <x_1755386_safetr_0_bfd_routing_rule action="INSERT_OR_UPDATE">
+        <active_flag>true</active_flag>
+        <amount_threshold>0</amount_threshold>
+        <assigned_group display_value="BFD Cards Operations" name="BFD Cards Operations">95694be42ceb40e8b4c1865f5ec44104</assigned_group>
+        <assigned_team>cards_operations</assigned_team>
+        <case_type>card_not_received</case_type>
+        <channel>any</channel>
+        <execution_order>30</execution_order>
+        <priority>p3</priority>
+        <risk_level>any</risk_level>
+        <rule_name>Card not received -&gt; Cards Operations</rule_name>
+        <sla_hours>72</sla_hours>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:49</sys_created_on>
+        <sys_id>f05dc086b73c492081cd5455f4cc6de0</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:49</sys_updated_on>
+    </x_1755386_safetr_0_bfd_routing_rule>
+</record_update>

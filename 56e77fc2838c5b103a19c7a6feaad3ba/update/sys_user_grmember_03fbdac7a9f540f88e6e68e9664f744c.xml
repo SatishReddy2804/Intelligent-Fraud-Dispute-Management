@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_user_grmember">
+    <sys_user_grmember action="INSERT_OR_UPDATE">
+        <group display_value="">7f000104a9c848b19258473a7c09a842</group>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:41</sys_created_on>
+        <sys_id>03fbdac7a9f540f88e6e68e9664f744c</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:41</sys_updated_on>
+        <user display_value="Tom Becker">cd4c67007f9845a7a6d48e2125ea599d</user>
+    </sys_user_grmember>
+</record_update>

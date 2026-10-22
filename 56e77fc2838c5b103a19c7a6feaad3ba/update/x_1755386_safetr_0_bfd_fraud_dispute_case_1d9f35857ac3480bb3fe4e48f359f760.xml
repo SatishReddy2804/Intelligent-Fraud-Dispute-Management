@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_fraud_dispute_case">
+    <x_1755386_safetr_0_bfd_fraud_dispute_case action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1018">f62b46bbdba44d3ba83d49ce3045ab15</account>
+        <actual_resolution_date>2025-10-05 11:00:00</actual_resolution_date>
+        <ai_recommendation>Cancel prior card, expedite reissue.</ai_recommendation>
+        <assigned_agent display_value="Priya Nair">e27ec4eea7d34299b169b417dc112b9b</assigned_agent>
+        <assigned_group display_value="BFD Cards Operations" name="BFD Cards Operations">95694be42ceb40e8b4c1865f5ec44104</assigned_group>
+        <assigned_team>cards_operations</assigned_team>
+        <card_action>replacement_issued</card_action>
+        <case_number/>
+        <case_status>closed</case_status>
+        <case_type>card_not_received</case_type>
+        <closure_notes>Replacement card activated by customer.</closure_notes>
+        <currency>USD</currency>
+        <customer display_value="">2e8c292869db4c408bdf829509b2dfd4</customer>
+        <customer_feedback/>
+        <customer_satisfaction_score>5</customer_satisfaction_score>
+        <customer_statement>New card never showed up; please resend.</customer_statement>
+        <disputed_amount>0</disputed_amount>
+        <duplicate_of_case/>
+        <escalation_level>0</escalation_level>
+        <expected_resolution_date/>
+        <incident_date_time>2025-09-29 09:05:18</incident_date_time>
+        <intake_channel>mobile_banking</intake_channel>
+        <intent_classification>Report non-receipt of new card</intent_classification>
+        <policy_guidance>Card not received: cancel and expedite reissue to verified address.</policy_guidance>
+        <priority>p3</priority>
+        <provisional_credit_amount/>
+        <provisional_credit_flag>false</provisional_credit_flag>
+        <recovery_amount/>
+        <recurrence_count>0</recurrence_count>
+        <resolution_code>no_action_required</resolution_code>
+        <resolution_summary>Undelivered card cancelled; replacement issued and delivered.</resolution_summary>
+        <risk_level>low</risk_level>
+        <risk_score>20</risk_score>
+        <sla_breach_flag>false</sla_breach_flag>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:47</sys_created_on>
+        <sys_id>1d9f35857ac3480bb3fe4e48f359f760</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:47</sys_updated_on>
+        <transaction display_value="">21652f45f89449218a1ae75b86b02937</transaction>
+        <urgency>low</urgency>
+    </x_1755386_safetr_0_bfd_fraud_dispute_case>
+</record_update>

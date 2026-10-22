@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_case_communication">
+    <x_1755386_safetr_0_bfd_case_communication action="INSERT_OR_UPDATE">
+        <case display_value="">2d030b489320412f98b69ddd350930cc</case>
+        <channel>sms</channel>
+        <customer display_value="">f4e40095362a4a3c9d0daa1b33ff00ea</customer>
+        <delivery_status>delivered</delivery_status>
+        <direction>outbound</direction>
+        <message>We are reissuing your card to your confirmed address. Allow 5-7 business days for delivery.</message>
+        <sent_at>2025-09-28 13:30:00</sent_at>
+        <subject>Card replacement</subject>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:45</sys_created_on>
+        <sys_id>c5ec43c6fab942629338476ba3311774</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:45</sys_updated_on>
+        <triggered_by>Intake flow</triggered_by>
+    </x_1755386_safetr_0_bfd_case_communication>
+</record_update>

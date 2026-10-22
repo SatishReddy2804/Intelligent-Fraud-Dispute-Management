@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_transaction">
+    <x_1755386_safetr_0_bfd_transaction action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1016">a987c761be30484eb93b4978f34157c9</account>
+        <amount>14.99</amount>
+        <atm_location/>
+        <authorization_code>AUTH10018</authorization_code>
+        <card_last_four>1016</card_last_four>
+        <channel>recurring</channel>
+        <country>US</country>
+        <currency>USD</currency>
+        <customer display_value="">27ebe5a731be45bfad2fdef7c8977f3c</customer>
+        <dispute_flag>true</dispute_flag>
+        <fraud_indicator>false</fraud_indicator>
+        <is_recurring>true</is_recurring>
+        <merchant_category>Subscription</merchant_category>
+        <merchant_name>NewsDaily Digital</merchant_name>
+        <original_transaction_reference/>
+        <status>posted</status>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:49</sys_created_on>
+        <sys_id>0317521b609c49e08eebe356bb526b07</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:49</sys_updated_on>
+        <transaction_date_time>2025-10-02 06:30:00</transaction_date_time>
+        <transaction_reference/>
+        <transaction_type>payment</transaction_type>
+    </x_1755386_safetr_0_bfd_transaction>
+</record_update>

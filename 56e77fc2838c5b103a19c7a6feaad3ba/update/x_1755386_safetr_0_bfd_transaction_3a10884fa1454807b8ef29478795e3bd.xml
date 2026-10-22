@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_transaction">
+    <x_1755386_safetr_0_bfd_transaction action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1021">4d0fd1843ed84f42b3ceea342c5c72d2</account>
+        <amount>10</amount>
+        <atm_location/>
+        <authorization_code/>
+        <card_last_four>1021</card_last_four>
+        <channel>mobile</channel>
+        <country>KE</country>
+        <currency>USD</currency>
+        <customer display_value="">2ecbf1dbc53a4d9482c84de1c51bb8c6</customer>
+        <dispute_flag>false</dispute_flag>
+        <fraud_indicator>false</fraud_indicator>
+        <is_recurring>false</is_recurring>
+        <merchant_category>Telecom</merchant_category>
+        <merchant_name>Mobile Top-up</merchant_name>
+        <original_transaction_reference/>
+        <status>declined</status>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:50</sys_created_on>
+        <sys_id>3a10884fa1454807b8ef29478795e3bd</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:50</sys_updated_on>
+        <transaction_date_time>2025-10-11 10:00:00</transaction_date_time>
+        <transaction_reference/>
+        <transaction_type>payment</transaction_type>
+    </x_1755386_safetr_0_bfd_transaction>
+</record_update>

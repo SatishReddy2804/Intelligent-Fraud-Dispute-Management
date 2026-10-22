@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_case_task">
+    <x_1755386_safetr_0_bfd_case_task action="INSERT_OR_UPDATE">
+        <assigned_agent display_value="Priya Nair">e27ec4eea7d34299b169b417dc112b9b</assigned_agent>
+        <assigned_group display_value="BFD Cards Operations" name="BFD Cards Operations">95694be42ceb40e8b4c1865f5ec44104</assigned_group>
+        <case display_value="">9dc7e210211942ad9928735bab4a173c</case>
+        <due_date>2025-10-10 17:00:00</due_date>
+        <number/>
+        <outcome/>
+        <priority>p2</priority>
+        <status>work_in_progress</status>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:46</sys_created_on>
+        <sys_id>f3f18ec966fb417da1f9106f40f70aa8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:46</sys_updated_on>
+        <task_type>transaction_review</task_type>
+        <work_notes/>
+    </x_1755386_safetr_0_bfd_case_task>
+</record_update>

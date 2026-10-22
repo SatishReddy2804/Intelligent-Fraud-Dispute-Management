@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_user_has_role">
+    <sys_user_has_role action="INSERT_OR_UPDATE">
+        <granted_by display_value="">not-applicable</granted_by>
+        <included_in_role/>
+        <included_in_role_instance/>
+        <inh_count/>
+        <inh_map/>
+        <inherited>false</inherited>
+        <role display_value="x_1755386_safetr_0.bfd_fraud_agent" name="x_1755386_safetr_0.bfd_fraud_agent">ab6f9884cb9f4b308574abeeaa81b4d5</role>
+        <state>active</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:42</sys_created_on>
+        <sys_id>d624979e9efb46d2be0113ba06ffb445</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:42</sys_updated_on>
+        <user display_value="Diego Ramos">6f5b0c439e3b4f999bcbe739714f7254</user>
+    </sys_user_has_role>
+</record_update>

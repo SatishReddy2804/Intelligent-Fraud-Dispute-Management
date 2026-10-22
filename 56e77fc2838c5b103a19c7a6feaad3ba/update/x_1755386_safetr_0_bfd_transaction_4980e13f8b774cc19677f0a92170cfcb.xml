@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_transaction">
+    <x_1755386_safetr_0_bfd_transaction action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1004">02f8f8d0404c4eb29bdbc3f4e8505e7f</account>
+        <amount>1000</amount>
+        <atm_location/>
+        <authorization_code/>
+        <card_last_four/>
+        <channel>mobile</channel>
+        <country>US</country>
+        <currency>USD</currency>
+        <customer display_value="">75e7c17e1283444cbffa8630fe21ef6f</customer>
+        <dispute_flag>false</dispute_flag>
+        <fraud_indicator>false</fraud_indicator>
+        <is_recurring>false</is_recurring>
+        <merchant_category>Transfer</merchant_category>
+        <merchant_name>Transfer to Savings</merchant_name>
+        <original_transaction_reference/>
+        <status>posted</status>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:50</sys_created_on>
+        <sys_id>4980e13f8b774cc19677f0a92170cfcb</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:50</sys_updated_on>
+        <transaction_date_time>2025-10-14 11:45:00</transaction_date_time>
+        <transaction_reference/>
+        <transaction_type>transfer</transaction_type>
+    </x_1755386_safetr_0_bfd_transaction>
+</record_update>

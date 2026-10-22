@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_fraud_dispute_case">
+    <x_1755386_safetr_0_bfd_fraud_dispute_case action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1010">9982f9741fb84401853ca949522bdeeb</account>
+        <actual_resolution_date/>
+        <ai_recommendation>Release held authorization, confirm with payment rail, refund if settled.</ai_recommendation>
+        <assigned_agent display_value="Tom Becker">cd4c67007f9845a7a6d48e2125ea599d</assigned_agent>
+        <assigned_group display_value="BFD Banking Operations" name="BFD Banking Operations">7f000104a9c848b19258473a7c09a842</assigned_group>
+        <assigned_team>banking_operations</assigned_team>
+        <card_action/>
+        <case_number/>
+        <case_status>pending_approval</case_status>
+        <case_type>payment_failure</case_type>
+        <closure_notes/>
+        <currency>GBP</currency>
+        <customer display_value="">8d97e6743804410d95cdf1e0ae2566bd</customer>
+        <customer_feedback/>
+        <customer_satisfaction_score/>
+        <customer_statement>My £500 utility payment failed but the money left my available balance.</customer_statement>
+        <disputed_amount>500</disputed_amount>
+        <duplicate_of_case/>
+        <escalation_level>0</escalation_level>
+        <expected_resolution_date>2025-10-14 08:15:43</expected_resolution_date>
+        <incident_date_time>2025-10-11 08:15:43</incident_date_time>
+        <intake_channel>online_banking</intake_channel>
+        <intent_classification>Report failed payment with held funds</intent_classification>
+        <policy_guidance>Failed payment: check authorization hold vs settlement; release or refund.</policy_guidance>
+        <priority>p2</priority>
+        <provisional_credit_amount/>
+        <provisional_credit_flag>false</provisional_credit_flag>
+        <recovery_amount/>
+        <recurrence_count>0</recurrence_count>
+        <resolution_code/>
+        <resolution_summary/>
+        <risk_level>medium</risk_level>
+        <risk_score>30</risk_score>
+        <sla_breach_flag>false</sla_breach_flag>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:48</sys_created_on>
+        <sys_id>8a59c93ac04f4414ac1a7c11c2773635</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:48</sys_updated_on>
+        <transaction display_value="">cf79ab7b94e44b33983939726e79e2d3</transaction>
+        <urgency>medium</urgency>
+    </x_1755386_safetr_0_bfd_fraud_dispute_case>
+</record_update>

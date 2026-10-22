@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_transaction">
+    <x_1755386_safetr_0_bfd_transaction action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1018">f62b46bbdba44d3ba83d49ce3045ab15</account>
+        <amount>1099</amount>
+        <atm_location/>
+        <authorization_code/>
+        <card_last_four>1018</card_last_four>
+        <channel>online</channel>
+        <country>US</country>
+        <currency>USD</currency>
+        <customer display_value="">2e8c292869db4c408bdf829509b2dfd4</customer>
+        <dispute_flag>false</dispute_flag>
+        <fraud_indicator>false</fraud_indicator>
+        <is_recurring>false</is_recurring>
+        <merchant_category>Electronics</merchant_category>
+        <merchant_name>Apple Store</merchant_name>
+        <original_transaction_reference/>
+        <status>pending</status>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:49</sys_created_on>
+        <sys_id>026dd080ce0646188e583b9a1447515f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:49</sys_updated_on>
+        <transaction_date_time>2025-10-20 11:50:00</transaction_date_time>
+        <transaction_reference/>
+        <transaction_type>debit</transaction_type>
+    </x_1755386_safetr_0_bfd_transaction>
+</record_update>

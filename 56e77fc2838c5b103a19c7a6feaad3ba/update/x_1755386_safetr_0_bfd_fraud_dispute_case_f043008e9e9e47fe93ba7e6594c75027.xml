@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_fraud_dispute_case">
+    <x_1755386_safetr_0_bfd_fraud_dispute_case action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1009">d2338c320a9c47d795cfcaa41ce5d6f1</account>
+        <actual_resolution_date/>
+        <ai_recommendation>Confirm mailing address with customer before reissue.</ai_recommendation>
+        <assigned_agent display_value="Priya Nair">e27ec4eea7d34299b169b417dc112b9b</assigned_agent>
+        <assigned_group display_value="BFD Cards Operations" name="BFD Cards Operations">95694be42ceb40e8b4c1865f5ec44104</assigned_group>
+        <assigned_team>cards_operations</assigned_team>
+        <card_action>replacement_issued</card_action>
+        <case_number/>
+        <case_status>pending_customer_information</case_status>
+        <case_type>card_not_received</case_type>
+        <closure_notes/>
+        <currency>USD</currency>
+        <customer display_value="">f9a724a5abeb4e7f80977a839b711931</customer>
+        <customer_feedback/>
+        <customer_satisfaction_score/>
+        <customer_statement>I requested a new card last month and still have not received it.</customer_statement>
+        <disputed_amount>0</disputed_amount>
+        <duplicate_of_case/>
+        <escalation_level>0</escalation_level>
+        <expected_resolution_date>2025-10-20 15:40:22</expected_resolution_date>
+        <incident_date_time>2025-09-30 15:40:22</incident_date_time>
+        <intake_channel>phone</intake_channel>
+        <intent_classification>Report non-receipt of new card</intent_classification>
+        <policy_guidance>Card not received: confirm address; awaiting customer verification.</policy_guidance>
+        <priority>p3</priority>
+        <provisional_credit_amount/>
+        <provisional_credit_flag>false</provisional_credit_flag>
+        <recovery_amount/>
+        <recurrence_count>0</recurrence_count>
+        <resolution_code/>
+        <resolution_summary/>
+        <risk_level>low</risk_level>
+        <risk_score>22</risk_score>
+        <sla_breach_flag>false</sla_breach_flag>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:48</sys_created_on>
+        <sys_id>f043008e9e9e47fe93ba7e6594c75027</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:48</sys_updated_on>
+        <transaction display_value="">f86ea51cde204d1684623c96d5726d40</transaction>
+        <urgency>low</urgency>
+    </x_1755386_safetr_0_bfd_fraud_dispute_case>
+</record_update>

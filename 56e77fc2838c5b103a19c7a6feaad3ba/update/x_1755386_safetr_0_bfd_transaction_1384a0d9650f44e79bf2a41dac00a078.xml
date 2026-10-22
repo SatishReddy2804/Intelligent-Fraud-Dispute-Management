@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_transaction">
+    <x_1755386_safetr_0_bfd_transaction action="INSERT_OR_UPDATE">
+        <account display_value="****-****-****-1006">45c24471434e4f42bc413a1112dbf337</account>
+        <amount>500</amount>
+        <atm_location/>
+        <authorization_code/>
+        <card_last_four/>
+        <channel>branch</channel>
+        <country>US</country>
+        <currency>USD</currency>
+        <customer display_value="">f4e40095362a4a3c9d0daa1b33ff00ea</customer>
+        <dispute_flag>false</dispute_flag>
+        <fraud_indicator>false</fraud_indicator>
+        <is_recurring>false</is_recurring>
+        <merchant_category>Deposit</merchant_category>
+        <merchant_name>Branch Deposit</merchant_name>
+        <original_transaction_reference/>
+        <status>posted</status>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:49</sys_created_on>
+        <sys_id>1384a0d9650f44e79bf2a41dac00a078</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:49</sys_updated_on>
+        <transaction_date_time>2025-10-20 08:40:00</transaction_date_time>
+        <transaction_reference/>
+        <transaction_type>credit</transaction_type>
+    </x_1755386_safetr_0_bfd_transaction>
+</record_update>

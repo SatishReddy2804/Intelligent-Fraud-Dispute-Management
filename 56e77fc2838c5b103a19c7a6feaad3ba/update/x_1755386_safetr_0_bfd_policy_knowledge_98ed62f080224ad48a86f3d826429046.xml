@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_policy_knowledge">
+    <x_1755386_safetr_0_bfd_policy_knowledge action="INSERT_OR_UPDATE">
+        <active_flag>true</active_flag>
+        <case_type>duplicate_charge</case_type>
+        <effective_from>2024-02-01</effective_from>
+        <effective_to/>
+        <guidance_text>Confirm a duplicate by matching amount, merchant descriptor, and timestamp across authorizations. Reverse only the duplicate authorization. No card block is required unless fraud is suspected.</guidance_text>
+        <keywords>duplicate, double charge, reversal, merchant descriptor</keywords>
+        <policy_category>Dispute Handling</policy_category>
+        <policy_title>Duplicate Charge Verification</policy_title>
+        <risk_level>any</risk_level>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:48</sys_created_on>
+        <sys_id>98ed62f080224ad48a86f3d826429046</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:48</sys_updated_on>
+    </x_1755386_safetr_0_bfd_policy_knowledge>
+</record_update>

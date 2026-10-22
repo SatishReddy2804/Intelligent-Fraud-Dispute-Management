@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_case_task">
+    <x_1755386_safetr_0_bfd_case_task action="INSERT_OR_UPDATE">
+        <assigned_agent display_value="Tom Becker">cd4c67007f9845a7a6d48e2125ea599d</assigned_agent>
+        <assigned_group display_value="BFD Banking Operations" name="BFD Banking Operations">7f000104a9c848b19258473a7c09a842</assigned_group>
+        <case display_value="">0f48739374444ff79390e213f46f55d4</case>
+        <due_date>2025-10-10 12:00:00</due_date>
+        <number/>
+        <outcome>Duplicate charge reversed and refunded.</outcome>
+        <priority>p3</priority>
+        <status>complete</status>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:45</sys_created_on>
+        <sys_id>08669b98d4c64dd5a90cafb3d89fc129</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:45</sys_updated_on>
+        <task_type>payment_reversal</task_type>
+        <work_notes/>
+    </x_1755386_safetr_0_bfd_case_task>
+</record_update>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="x_1755386_safetr_0_bfd_bank_account">
+    <x_1755386_safetr_0_bfd_bank_account action="INSERT_OR_UPDATE">
+        <account_number_masked>****-****-****-1007</account_number_masked>
+        <account_status>dormant</account_status>
+        <account_type>savings</account_type>
+        <available_balance>640</available_balance>
+        <branch>San Francisco Market St</branch>
+        <currency>USD</currency>
+        <customer display_value="">f4e40095362a4a3c9d0daa1b33ff00ea</customer>
+        <fraud_hold_flag>false</fraud_hold_flag>
+        <opened_date>2020-07-30</opened_date>
+        <risk_tier>medium</risk_tier>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:07:43</sys_created_on>
+        <sys_id>440a6a5adc3c45dd9cb27438b6c2c968</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:07:43</sys_updated_on>
+    </x_1755386_safetr_0_bfd_bank_account>
+</record_update>
