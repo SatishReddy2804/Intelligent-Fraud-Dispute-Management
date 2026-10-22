@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sysauto_script">
+    <sysauto_script action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <advanced>false</advanced>
+        <business_calendar/>
+        <condition/>
+        <conditional>false</conditional>
+        <entered_run_end/>
+        <entered_run_start>2020-01-01 00:00:00</entered_run_start>
+        <entered_time/>
+        <max_drift/>
+        <name>BFD - Demo data self-heal</name>
+        <offset/>
+        <offset_type>0</offset_type>
+        <repeat_every/>
+        <run_as/>
+        <run_as_tz/>
+        <run_dayofmonth>1</run_dayofmonth>
+        <run_dayofweek>1</run_dayofweek>
+        <run_daysofweek/>
+        <run_end/>
+        <run_month/>
+        <run_period>1970-01-01 00:05:00</run_period>
+        <run_start>2020-01-01 00:00:00</run_start>
+        <run_time>1970-01-01 00:00:00</run_time>
+        <run_type>periodically</run_type>
+        <run_weekinmonth/>
+        <script><![CDATA[/**
+ * Self-heal routine for the already-installed SafeTrace demo data.
+ *
+ * Repairs whatever it finds, then deactivates its own scheduled job once there
+ * is nothing left to repair, so it stops consuming scheduler cycles.
+ */
+;(function runDemoDataSelfHeal() {
+    var JOB_NAME = 'BFD - Demo data self-heal'
+    var repair
+
+    try {
+        repair = new bfd_DemoDataRepair().repairAll()
+    } catch (e) {
+        gs.error('[' + JOB_NAME + '] repair failed: ' + e)
+        return
+    }
+
+    gs.info('[' + JOB_NAME + '] ' + repair.summary)
+
+    var repairedThisRun = repair.total_numbered + repair.total_snapshots
+    if (repairedThisRun > 0) {
+        gs.info(
+            '[' +
+                JOB_NAME +
+                '] repaired ' +
+                repairedThisRun +
+                ' record(s) this run; re-checking on the next cycle before standing down.'
+        )
+        return
+    }
+
+    // Nothing left to repair - switch the job off.
+    var job = new GlideRecord('sysauto_script')
+    job.addQuery('name', JOB_NAME)
+    job.setLimit(1)
+    job.query()
+    if (job.next()) {
+        job.setValue('active', false)
+        if (job.update()) {
+            gs.info(
+                '[' +
+                    JOB_NAME +
+                    '] nothing left to repair - job deactivated. Re-activate it, use the Cases list ' +
+                    'banner button, or run the fix script if demo data is ever reloaded.'
+            )
+        }
+    }
+})()
+]]></script>
+        <sys_class_name>sysauto_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 17:18:49</sys_created_on>
+        <sys_id>38ce6fe03db34f2e836224922298bf8e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>BFD - Demo data self-heal</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sysauto_script_38ce6fe03db34f2e836224922298bf8e</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 17:18:49</sys_updated_on>
+        <time_zone>floating</time_zone>
+        <upgrade_safe>false</upgrade_safe>
+    </sysauto_script>
+</record_update>
