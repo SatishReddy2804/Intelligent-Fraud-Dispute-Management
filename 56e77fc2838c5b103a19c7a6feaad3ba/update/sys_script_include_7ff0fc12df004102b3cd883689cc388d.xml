@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_1755386_safetr_0.bfd_ReroutingEngine</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Risk-based re-routing engine: evaluateReroute (status guard, read-only ordered rule match, human-override advisory, escalate-only priority, SLA recompute, audit trail) and findTargetAssignment.</description>
+        <mobile_callable>false</mobile_callable>
+        <name>bfd_ReroutingEngine</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var bfd_ReroutingEngine = Class.create();
+bfd_ReroutingEngine.prototype = {
+    CASE_TABLE: 'x_1755386_safetr_0_bfd_fraud_dispute_case',
+    ROUTING_TABLE: 'x_1755386_safetr_0_bfd_routing_rule',
+
+    // Statuses where an automatic re-route must never happen: the case is done,
+    // or a human decision is already in flight.
+    BLOCKED_STATUSES: ['resolved', 'closed', 'pending_approval'],
+
+    // p1 is the most urgent, p4 the least. Lower rank = more urgent.
+    PRIORITY_RANK: { p1: 1, p2: 2, p3: 3, p4: 4 },
+
+    initialize: function () {},
+
+    // ---------------------------------------------------------------- helpers
+    _s: function (v) {
+        if (v === null || v === undefined) return '';
+        return ('' + v).trim();
+    },
+    _str: function (gr, field) {
+        if (!gr || !field) return '';
+        var v;
+        try {
+            v = gr.getValue(field);
+        } catch (e) {
+            return '';
+        }
+        return v === null || v === undefined ? '' : ('' + v);
+    },
+    _num: function (gr, field) {
+        var v = this._str(gr, field);
+        if (v === '') return 0;
+        var n = parseFloat(v);
+        return isNaN(n) ? 0 : n;
+    },
+    _emptyResult: function () {
+        return {
+            rerouted: false,
+            humanOwned: false,
+            fromTeam: '',
+            toTeam: '',
+            fromGroup: '',
+            toGroup: '',
+            fromPriority: '',
+            toPriority: '',
+            matchedRuleName: '',
+            slaHours: 0,
+            reason: ''
+        };
+    },
+
+    /**
+     * Rule matching, identical in semantics to bfd_RoutingEngine._matches:
+     *   case_type / risk_level / channel match on equality, 'any' or empty
+     *   amount_threshold of 0 / empty always matches, otherwise amount >= threshold
+     */
+    _matches: function (ruleGr, caseType, riskLevel, channel, amount) {
+        if (!ruleGr) return false;
+
+        var rCaseType = this._str(ruleGr, 'case_type');
+        if (rCaseType !== 'any' && rCaseType !== '' && rCaseType !== caseType) return false;
+
+        var rRisk = this._str(ruleGr, 'risk_level');
+        if (rRisk !== 'any' && rRisk !== '' && rRisk !== riskLevel) return false;
+
+        var rChannel = this._str(ruleGr, 'channel');
+        if (rChannel !== 'any' && rChannel !== '' && rChannel !== channel) return false;
+
+        var threshold = this._num(ruleGr, 'amount_threshold');
+        if (threshold > 0 && amount < threshold) return false;
+
+        return true;
+    },
+
+    /**
+     * READ-ONLY rule evaluation: returns the assignment the CURRENT risk /
+     * case_type / amount / channel should map to, without touching the case.
+     *
+     * bfd_RoutingEngine.route() cannot be reused here because it only fills
+     * assignment fields when they are empty (and writes an admin-review note
+     * when nothing matches), which is exactly the behaviour a re-route must
+     * not inherit.
+     *
+     * @param caseGr GlideRecord on the case table
+     * @return {ruleSysId, ruleName, team, group, priority, slaHours} or null
+     */
+    findTargetAssignment: function (caseGr) {
+        if (!caseGr) return null;
+
+        var caseType = this._str(caseGr, 'case_type');
+        var riskLevel = this._str(caseGr, 'risk_level');
+        var channel = this._str(caseGr, 'intake_channel');
+        var amount = this._num(caseGr, 'disputed_amount');
+
+        var gr = new GlideRecord(this.ROUTING_TABLE);
+        gr.addQuery('active_flag', true);
+        gr.orderBy('execution_order');
+        gr.query();
+
+        while (gr.next()) {
+            if (this._matches(gr, caseType, riskLevel, channel, amount)) {
+                return {
+                    ruleSysId: gr.getUniqueValue(),
+                    ruleName: this._str(gr, 'rule_name'),
+                    team: this._str(gr, 'assigned_team'),
+                    group: this._str(gr, 'assigned_group'),
+                    priority: this._str(gr, 'priority'),
+                    slaHours: this._num(gr, 'sla_hours')
+                };
+            }
+        }
+        return null;
+    },
+
+    /**
+     * Escalate-only priority resolution. Returns the candidate priority only
+     * when it is strictly more urgent than the current one, so a priority a
+     * human raised is never pushed back down.
+     */
+    _escalatedPriority: function (currentPriority, candidatePriority) {
+        var current = this._s(currentPriority);
+        var candidate = this._s(candidatePriority);
+
+        if (!candidate || !this.PRIORITY_RANK[candidate]) return current;
+        if (!current || !this.PRIORITY_RANK[current]) return candidate;
+
+        return this.PRIORITY_RANK[candidate] < this.PRIORITY_RANK[current] ? candidate : current;
+    },
+
+    _teamLabel: function (team) {
+        var t = this._s(team);
+        return t === '' ? '(none)' : t;
+    },
+
+    _groupLabel: function (groupSysId) {
+        var id = this._s(groupSysId);
+        if (id === '') return '(none)';
+        try {
+            var gr = new GlideRecord('sys_user_group');
+            if (gr.get(id)) return this._str(gr, 'name') || id;
+        } catch (e) {
+            // fall through to the raw sys_id
+        }
+        return id;
+    },
+
+    _audit: function (caseGr, note, finalDecision) {
+        if (!caseGr) return;
+        try {
+            new bfd_TriageEngine().logAiDecision(caseGr, {
+                note: note,
+                finalDecision: finalDecision
+            });
+        } catch (e) {
+            gs.warn('[bfd_ReroutingEngine._audit] ' + e);
+        }
+    },
+
+    // ------------------------------------------------------------ evaluateReroute
+    /**
+     * Re-evaluates ownership of a case after its risk assessment changed, and
+     * moves it to the team the current facts map to.
+     *
+     * Idempotent: once the case sits with the matched team the method short
+     * circuits with reason 'already with the correct team'. It never writes
+     * risk_level, so it cannot re-trigger the risk_level flow that called it.
+     *
+     * @param caseSysId sys_id of the case
+     * @return {rerouted, humanOwned, fromTeam, toTeam, fromGroup, toGroup,
+     *          fromPriority, toPriority, matchedRuleName, slaHours, reason}
+     */
+    evaluateReroute: function (caseSysId) {
+        var out = this._emptyResult();
+
+        var id = this._s(caseSysId);
+        if (!id) {
+            out.reason = 'no case sys_id supplied';
+            return out;
+        }
+
+        var gr = new GlideRecord(this.CASE_TABLE);
+        if (!gr.get(id)) {
+            out.reason = 'case not found';
+            return out;
+        }
+
+        var status = this._str(gr, 'case_status');
+        if (this.BLOCKED_STATUSES.indexOf(status) > -1) {
+            out.reason = 'case_status ' + status + ' is not eligible for automatic re-routing';
+            return out;
+        }
+
+        out.fromTeam = this._str(gr, 'assigned_team');
+        out.fromGroup = this._str(gr, 'assigned_group');
+        out.fromPriority = this._str(gr, 'priority');
+        out.toPriority = out.fromPriority;
+
+        var riskLevel = this._str(gr, 'risk_level');
+
+        var match = this.findTargetAssignment(gr);
+        if (!match) {
+            // No rule matched: leave the existing owner completely alone.
+            out.reason = 'no matching rule';
+            return out;
+        }
+
+        out.toTeam = match.team;
+        out.toGroup = match.group || out.fromGroup;
+        out.matchedRuleName = match.ruleName;
+        out.slaHours = match.slaHours;
+
+        // Idempotency guard: already where the current facts say it belongs.
+        if (match.team !== '' && match.team === out.fromTeam) {
+            out.toPriority = out.fromPriority;
+            out.reason = 'already with the correct team';
+            return out;
+        }
+
+        // Human override: an explicitly assigned agent owns this case. AI and
+        // automation stay advisory, so recommend the move instead of making it.
+        var agent = this._str(gr, 'assigned_agent');
+        if (agent !== '') {
+            out.humanOwned = true;
+            out.toPriority = out.fromPriority;
+            out.reason = 'assignment is human-owned by an assigned agent; re-route recommended but not applied';
+
+            this._audit(
+                gr,
+                'AUTOMATIC RISK-BASED RE-ROUTE WITHHELD. risk_level is now ' +
+                    (riskLevel || '(none)') +
+                    ', which matches routing rule "' +
+                    (match.ruleName || '(unnamed)') +
+                    '" owned by ' +
+                    this._teamLabel(match.team) +
+                    ' / ' +
+                    this._groupLabel(match.group) +
+                    '. The case has an explicitly assigned agent, so the human assignment stands and nothing was changed. ' +
+                    'RECOMMENDATION: reassign from ' +
+                    this._teamLabel(out.fromTeam) +
+                    ' / ' +
+                    this._groupLabel(out.fromGroup) +
+                    ' to ' +
+                    this._teamLabel(match.team) +
+                    ' / ' +
+                    this._groupLabel(match.group) +
+                    ' if the agent agrees. Automation is advisory only; a human wins.',
+                'no reassignment performed (human-owned)'
+            );
+
+            try {
+                gr.update();
+            } catch (e) {
+                gs.error('[bfd_ReroutingEngine.evaluateReroute advisory update] ' + e);
+            }
+            return out;
+        }
+
+        // ------------------------------------------------- perform the re-route
+        var newPriority = this._escalatedPriority(out.fromPriority, match.priority);
+        out.toPriority = newPriority;
+
+        if (match.team !== '') gr.setValue('assigned_team', match.team);
+        if (match.group !== '') gr.setValue('assigned_group', match.group);
+        if (newPriority !== '' && newPriority !== out.fromPriority) gr.setValue('priority', newPriority);
+
+        if (match.slaHours > 0) {
+            try {
+                new bfd_RoutingEngine().computeExpectedResolution(gr, match.slaHours);
+            } catch (e) {
+                gs.warn('[bfd_ReroutingEngine.evaluateReroute sla] ' + e);
+            }
+        }
+
+        var priorityText =
+            newPriority !== out.fromPriority
+                ? 'priority escalated ' + (out.fromPriority || '(none)') + ' -> ' + newPriority
+                : 'priority left at ' + (out.fromPriority || '(none)') + ' (no escalation warranted)';
+
+        this._audit(
+            gr,
+            'AUTOMATIC RISK-BASED RE-ROUTE. risk_level changed to ' +
+                (riskLevel || '(none)') +
+                ', which now matches routing rule "' +
+                (match.ruleName || '(unnamed)') +
+                '". Team ' +
+                this._teamLabel(out.fromTeam) +
+                ' -> ' +
+                this._teamLabel(match.team) +
+                '. Group ' +
+                this._groupLabel(out.fromGroup) +
+                ' -> ' +
+                this._groupLabel(match.group || out.fromGroup) +
+                '. ' +
+                priorityText +
+                '. SLA hours from the matched rule: ' +
+                match.slaHours +
+                '. Performed by bfd_flow_risk_routing; priority is only ever escalated, never lowered.',
+            'reassigned to ' + this._teamLabel(match.team)
+        );
+
+        try {
+            gr.update();
+        } catch (e) {
+            gs.error('[bfd_ReroutingEngine.evaluateReroute update] ' + e);
+            out.reason = 'the re-route could not be saved';
+            return out;
+        }
+
+        out.rerouted = true;
+        out.toGroup = match.group || out.fromGroup;
+        out.reason =
+            'rerouted from ' + this._teamLabel(out.fromTeam) + ' to ' + this._teamLabel(match.team);
+        return out;
+    },
+
+    type: 'bfd_ReroutingEngine'
+};
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 17:56:54</sys_created_on>
+        <sys_id>7ff0fc12df004102b3cd883689cc388d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_ReroutingEngine</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_script_include_7ff0fc12df004102b3cd883689cc388d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 17:56:54</sys_updated_on>
+    </sys_script_include>
+</record_update>
