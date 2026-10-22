@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>true</action_insert>
+        <action_query>false</action_query>
+        <action_update>false</action_update>
+        <active>true</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>x_1755386_safetr_0_bfd_fraud_dispute_case</collection>
+        <condition/>
+        <description>After-insert duplicate detection and linking (recursion-guarded).</description>
+        <execute_function>false</execute_function>
+        <filter_condition/>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>bfd_case_duplicate_br</name>
+        <order>300</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*, gs */) {
+    // Detect duplicates after the case is inserted. Writes are performed on a
+    // fresh GlideRecord with workflow disabled to avoid recursion / side-effects.
+    var detector = new bfd_DuplicateDetector();
+    var dup = detector.findDuplicate(current);
+    if (!dup.isDuplicate || !dup.originalCaseSysId) {
+        return;
+    }
+
+    var gr = new GlideRecord(current.getTableName());
+    if (!gr.get(current.getUniqueValue())) {
+        return;
+    }
+
+    // Idempotency guard: skip if already linked to this original.
+    if (gr.getValue('duplicate_of_case') === dup.originalCaseSysId) {
+        return;
+    }
+
+    var message = detector.linkDuplicate(gr); // sets duplicate_of_case + recurrence_count
+
+    var note = '[DUPLICATE] ' + (message || dup.reason);
+    var existing = gr.getValue('ai_recommendation') || '';
+    var combined = existing ? (existing + '\n\n' + note) : note;
+    if (combined.length > 4000) {
+        combined = combined.substring(combined.length - 4000);
+    }
+    gr.setValue('ai_recommendation', combined);
+
+    gr.setWorkflow(false); // prevent business rules from re-firing on this programmatic update
+    gr.update();
+})(current, previous);
+]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:24:46</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>ce1c7cc684854c6ea8622b1177f38061</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_case_duplicate_br</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_script_ce1c7cc684854c6ea8622b1177f38061</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:24:46</sys_updated_on>
+        <template/>
+        <when>after</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=ce1c7cc684854c6ea8622b1177f38061"/>
+</record_update>

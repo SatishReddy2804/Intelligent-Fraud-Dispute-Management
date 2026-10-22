@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_1755386_safetr_0.bfd_RoutingEngine</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Routing engine: route (ordered rule evaluation, first match wins, safe default to Banking Operations), computeExpectedResolution, routeAndUpdate.</description>
+        <mobile_callable>false</mobile_callable>
+        <name>bfd_RoutingEngine</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var bfd_RoutingEngine = Class.create();
+bfd_RoutingEngine.prototype = {
+    CASE_TABLE: 'x_1755386_safetr_0_bfd_fraud_dispute_case',
+    ROUTING_TABLE: 'x_1755386_safetr_0_bfd_routing_rule',
+    GROUP_TABLE: 'sys_user_group',
+    DEFAULT_GROUP_NAME: 'BFD Banking Operations',
+
+    initialize: function () {},
+
+    // ---------------------------------------------------------------- helpers
+    _str: function (gr, field) {
+        if (!gr || !field) return '';
+        var v = gr.getValue(field);
+        return v === null || v === undefined ? '' : ('' + v);
+    },
+    _num: function (gr, field) {
+        var v = this._str(gr, field);
+        if (v === '') return 0;
+        var n = parseFloat(v);
+        return isNaN(n) ? 0 : n;
+    },
+
+    // ------------------------------------------------------------------- route
+    route: function (caseGr) {
+        var out = { matchedRuleSysId: '', team: '', group: '', priority: '', sla_hours: 0 };
+        if (!caseGr) return out;
+
+        var caseType = this._str(caseGr, 'case_type');
+        var riskLevel = this._str(caseGr, 'risk_level');
+        var channel = this._str(caseGr, 'intake_channel'); // intake channel values map 1:1 to routing_rule.channel
+        var amount = this._num(caseGr, 'disputed_amount');
+
+        var gr = new GlideRecord(this.ROUTING_TABLE);
+        gr.addQuery('active_flag', true);
+        gr.orderBy('execution_order');
+        gr.query();
+
+        var matched = null;
+        while (gr.next()) {
+            if (this._matches(gr, caseType, riskLevel, channel, amount)) {
+                matched = gr;
+                break; // first match wins (ordered by execution_order ASC)
+            }
+        }
+
+        if (matched) {
+            out.matchedRuleSysId = matched.getUniqueValue();
+            out.team = this._str(matched, 'assigned_team');
+            out.group = this._str(matched, 'assigned_group');
+            out.priority = this._str(matched, 'priority');
+            out.sla_hours = this._num(matched, 'sla_hours');
+            this._applyAssignment(caseGr, out.team, out.group, out.priority);
+        } else {
+            out.team = 'banking_operations';
+            out.group = this._defaultGroupId();
+            out.priority = 'p3';
+            out.sla_hours = 0;
+            this._applyAssignment(caseGr, out.team, out.group, out.priority);
+            this._flagForReview(caseGr);
+        }
+        return out;
+    },
+
+    _matches: function (ruleGr, caseType, riskLevel, channel, amount) {
+        var rCaseType = this._str(ruleGr, 'case_type');
+        if (rCaseType !== 'any' && rCaseType !== '' && rCaseType !== caseType) return false;
+
+        var rRisk = this._str(ruleGr, 'risk_level');
+        if (rRisk !== 'any' && rRisk !== '' && rRisk !== riskLevel) return false;
+
+        var rChannel = this._str(ruleGr, 'channel');
+        if (rChannel !== 'any' && rChannel !== '' && rChannel !== channel) return false;
+
+        var threshold = this._num(ruleGr, 'amount_threshold');
+        if (threshold > 0 && amount < threshold) return false; // 0/empty threshold = always-match
+
+        return true;
+    },
+
+    _applyAssignment: function (caseGr, team, group, priority) {
+        if (team && this._str(caseGr, 'assigned_team') === '') caseGr.setValue('assigned_team', team);
+        if (group && this._str(caseGr, 'assigned_group') === '') caseGr.setValue('assigned_group', group);
+        // priority only if not already overridden
+        if (priority && this._str(caseGr, 'priority') === '') caseGr.setValue('priority', priority);
+    },
+
+    _defaultGroupId: function () {
+        var gr = new GlideRecord(this.GROUP_TABLE);
+        gr.addQuery('name', this.DEFAULT_GROUP_NAME);
+        gr.setLimit(1);
+        gr.query();
+        if (gr.next()) return gr.getUniqueValue();
+        return '';
+    },
+
+    _flagForReview: function (caseGr) {
+        var note = '[ROUTING] No matching routing rule \u2014 defaulted to Banking Operations (P3). Admin review recommended.';
+        var existing = this._str(caseGr, 'ai_recommendation');
+        var combined = existing ? (existing + '\n\n' + note) : note;
+        if (combined.length > 4000) combined = combined.substring(combined.length - 4000);
+        caseGr.setValue('ai_recommendation', combined);
+    },
+
+    // -------------------------------------------------- computeExpectedResolution
+    computeExpectedResolution: function (caseGr, slaHours) {
+        if (!caseGr) return '';
+        var hours = parseInt(slaHours, 10);
+        if (isNaN(hours) || hours <= 0) return '';
+        var gdt = new GlideDateTime();
+        gdt.addSeconds(hours * 3600);
+        caseGr.setValue('expected_resolution_date', gdt.getValue());
+        return gdt.getValue();
+    },
+
+    // ------------------------------------------------------------- routeAndUpdate
+    routeAndUpdate: function (caseSysId) {
+        if (!caseSysId) return null;
+        var gr = new GlideRecord(this.CASE_TABLE);
+        if (!gr.get(caseSysId)) return null;
+        var out = this.route(gr);
+        if (out && out.sla_hours > 0) this.computeExpectedResolution(gr, out.sla_hours);
+        gr.update();
+        return out;
+    },
+
+    type: 'bfd_RoutingEngine'
+};
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:24:47</sys_created_on>
+        <sys_id>59ae7dc9ba11445082dc4c2130180b38</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_RoutingEngine</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_script_include_59ae7dc9ba11445082dc4c2130180b38</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:24:47</sys_updated_on>
+    </sys_script_include>
+</record_update>

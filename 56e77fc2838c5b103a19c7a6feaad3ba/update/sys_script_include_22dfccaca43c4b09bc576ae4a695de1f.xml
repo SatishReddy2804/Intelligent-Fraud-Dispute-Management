@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_1755386_safetr_0.bfd_DuplicateDetector</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Duplicate detection: findDuplicate (same customer+transaction or repeated merchant/amount/card pattern), linkDuplicate (idempotent), getPriorHistory.</description>
+        <mobile_callable>false</mobile_callable>
+        <name>bfd_DuplicateDetector</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var bfd_DuplicateDetector = Class.create();
+bfd_DuplicateDetector.prototype = {
+    CASE_TABLE: 'x_1755386_safetr_0_bfd_fraud_dispute_case',
+    TRANSACTION_TABLE: 'x_1755386_safetr_0_bfd_transaction',
+    OPEN_STATUSES: 'new,triage,pending_customer_information,under_investigation,pending_approval,action_taken,reopened',
+    RECENT_CLOSE_DAYS: 60,
+
+    initialize: function () {},
+
+    // ---------------------------------------------------------------- helpers
+    _str: function (gr, field) {
+        if (!gr || !field) return '';
+        var v = gr.getValue(field);
+        return v === null || v === undefined ? '' : ('' + v);
+    },
+    _num: function (gr, field) {
+        var v = this._str(gr, field);
+        if (v === '') return 0;
+        var n = parseFloat(v);
+        return isNaN(n) ? 0 : n;
+    },
+    _isRelevant: function (gr) {
+        var status = this._str(gr, 'case_status');
+        if ((',' + this.OPEN_STATUSES + ',').indexOf(',' + status + ',') > -1) return true;
+        if (status === 'closed' || status === 'resolved') {
+            var ref = this._str(gr, 'actual_resolution_date');
+            if (!ref) ref = this._str(gr, 'sys_updated_on');
+            if (ref) {
+                var g = new GlideDateTime(ref);
+                var now = new GlideDateTime();
+                var days = (now.getNumericValue() - g.getNumericValue()) / (1000 * 60 * 60 * 24);
+                if (days <= this.RECENT_CLOSE_DAYS) return true;
+            }
+        }
+        return false;
+    },
+    _txnPattern: function (txnId) {
+        if (!txnId) return null;
+        var gr = new GlideRecord(this.TRANSACTION_TABLE);
+        if (!gr.get(txnId)) return null;
+        return {
+            merchant: this._str(gr, 'merchant_name'),
+            amount: this._num(gr, 'amount'),
+            card: this._str(gr, 'card_last_four')
+        };
+    },
+    _matchingTransactionIds: function (customerId, pattern, excludeTxnId) {
+        var ids = [];
+        if (!pattern || !customerId) return ids;
+        // need at least merchant or card to form a meaningful pattern
+        if (!pattern.merchant && !pattern.card) return ids;
+        var gr = new GlideRecord(this.TRANSACTION_TABLE);
+        gr.addQuery('customer', customerId);
+        if (pattern.merchant) gr.addQuery('merchant_name', pattern.merchant);
+        if (pattern.card) gr.addQuery('card_last_four', pattern.card);
+        gr.query();
+        while (gr.next()) {
+            var id = gr.getUniqueValue();
+            if (excludeTxnId && id === excludeTxnId) continue;
+            if (pattern.amount > 0 && Math.abs(this._num(gr, 'amount') - pattern.amount) > 0.001) continue;
+            ids.push(id);
+        }
+        return ids;
+    },
+
+    // ----------------------------------------------------------- findDuplicate
+    findDuplicate: function (caseGr) {
+        var result = { isDuplicate: false, originalCaseSysId: '', reason: '', priorCount: 0 };
+        if (!caseGr) return result;
+
+        var thisId = caseGr.getUniqueValue();
+        var customerId = this._str(caseGr, 'customer');
+        var txnId = this._str(caseGr, 'transaction');
+        if (!customerId) return result;
+
+        // 1) Same customer + same transaction
+        if (txnId) {
+            var gr = new GlideRecord(this.CASE_TABLE);
+            gr.addQuery('customer', customerId);
+            gr.addQuery('transaction', txnId);
+            if (thisId) gr.addQuery('sys_id', '!=', thisId);
+            gr.orderBy('sys_created_on');
+            gr.query();
+            var matches = [];
+            while (gr.next()) {
+                if (this._isRelevant(gr)) matches.push(gr.getUniqueValue());
+            }
+            if (matches.length) {
+                result.isDuplicate = true;
+                result.originalCaseSysId = matches[0];
+                result.priorCount = matches.length;
+                result.reason = 'Existing case on file for the same customer and transaction.';
+                return result;
+            }
+        }
+
+        // 2) Repeated dispute pattern: same merchant + amount + card_last_four
+        var pattern = this._txnPattern(txnId);
+        if (pattern) {
+            var txnIds = this._matchingTransactionIds(customerId, pattern, txnId);
+            if (txnIds.length) {
+                var gr2 = new GlideRecord(this.CASE_TABLE);
+                gr2.addQuery('customer', customerId);
+                gr2.addQuery('transaction', 'IN', txnIds.join(','));
+                if (thisId) gr2.addQuery('sys_id', '!=', thisId);
+                gr2.orderBy('sys_created_on');
+                gr2.query();
+                var m2 = [];
+                while (gr2.next()) {
+                    if (this._isRelevant(gr2)) m2.push(gr2.getUniqueValue());
+                }
+                if (m2.length) {
+                    result.isDuplicate = true;
+                    result.originalCaseSysId = m2[0];
+                    result.priorCount = m2.length;
+                    result.reason = 'Repeated dispute pattern (same merchant / amount / card) for this customer.';
+                    return result;
+                }
+            }
+        }
+        return result;
+    },
+
+    // ------------------------------------------------------------ linkDuplicate
+    linkDuplicate: function (caseGr) {
+        if (!caseGr) return '';
+        var dup = this.findDuplicate(caseGr);
+        if (!dup.isDuplicate || !dup.originalCaseSysId) return '';
+
+        // Idempotent: only mutate when not already linked to this original
+        var currentLink = this._str(caseGr, 'duplicate_of_case');
+        if (currentLink !== dup.originalCaseSysId) {
+            caseGr.setValue('duplicate_of_case', dup.originalCaseSysId);
+            var rc = this._num(caseGr, 'recurrence_count');
+            caseGr.setValue('recurrence_count', rc + 1);
+        }
+
+        var origNum = '';
+        var orig = new GlideRecord(this.CASE_TABLE);
+        if (orig.get(dup.originalCaseSysId)) origNum = this._str(orig, 'case_number');
+
+        return 'We found a related case (' + (origNum || dup.originalCaseSysId) +
+            ') already on file for this issue. Your report has been linked to it so our team can review the full history together.';
+    },
+
+    // ----------------------------------------------------------- getPriorHistory
+    getPriorHistory: function (caseGr) {
+        var history = [];
+        if (!caseGr) return history;
+        var customerId = this._str(caseGr, 'customer');
+        if (!customerId) return history;
+        var thisId = caseGr.getUniqueValue();
+
+        var gr = new GlideRecord(this.CASE_TABLE);
+        gr.addQuery('customer', customerId);
+        if (thisId) gr.addQuery('sys_id', '!=', thisId);
+        gr.orderByDesc('sys_created_on');
+        gr.setLimit(50);
+        gr.query();
+        while (gr.next()) {
+            history.push({
+                sys_id: gr.getUniqueValue(),
+                case_number: this._str(gr, 'case_number'),
+                case_type: this._str(gr, 'case_type'),
+                status: this._str(gr, 'case_status'),
+                disputed_amount: this._num(gr, 'disputed_amount'),
+                transaction: this._str(gr, 'transaction'),
+                opened: this._str(gr, 'sys_created_on'),
+                resolution_code: this._str(gr, 'resolution_code')
+            });
+        }
+        return history;
+    },
+
+    type: 'bfd_DuplicateDetector'
+};
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:24:46</sys_created_on>
+        <sys_id>22dfccaca43c4b09bc576ae4a695de1f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_DuplicateDetector</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_script_include_22dfccaca43c4b09bc576ae4a695de1f</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:24:46</sys_updated_on>
+    </sys_script_include>
+</record_update>

@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_1755386_safetr_0.bfd_TriageEngine</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Rule-based triage engine: intent, risk score/level, urgency/priority, entity validation, recommended actions, policy guidance, orchestration, and triageCase/triageCaseAndUpdate/logAiDecision.</description>
+        <mobile_callable>false</mobile_callable>
+        <name>bfd_TriageEngine</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var bfd_TriageEngine = Class.create();
+bfd_TriageEngine.prototype = {
+    CASE_TABLE: 'x_1755386_safetr_0_bfd_fraud_dispute_case',
+    CUSTOMER_TABLE: 'x_1755386_safetr_0_bfd_customer_profile',
+    ACCOUNT_TABLE: 'x_1755386_safetr_0_bfd_bank_account',
+    TRANSACTION_TABLE: 'x_1755386_safetr_0_bfd_transaction',
+    POLICY_TABLE: 'x_1755386_safetr_0_bfd_policy_knowledge',
+
+    _rank: { low: 1, medium: 2, high: 3, critical: 4 },
+    _byRank: { 1: 'low', 2: 'medium', 3: 'high', 4: 'critical' },
+    _priorityForUrgency: { critical: 'p1', high: 'p2', medium: 'p3', low: 'p4' },
+
+    initialize: function () {},
+
+    // ---------------------------------------------------------------- helpers
+    _str: function (gr, field) {
+        if (!gr || !field) return '';
+        var v = gr.getValue(field);
+        return v === null || v === undefined ? '' : ('' + v);
+    },
+    _num: function (gr, field) {
+        var v = this._str(gr, field);
+        if (v === '') return 0;
+        var n = parseFloat(v);
+        return isNaN(n) ? 0 : n;
+    },
+    _bool: function (gr, field) {
+        if (!gr || !field) return false;
+        var v = gr.getValue(field);
+        return v === '1' || v === 1 || v === true || v === 'true';
+    },
+    _getRef: function (table, sysId) {
+        if (!table || !sysId) return null;
+        var gr = new GlideRecord(table);
+        if (gr.get(sysId)) return gr;
+        return null;
+    },
+    _getCustomer: function (caseGr) {
+        return this._getRef(this.CUSTOMER_TABLE, this._str(caseGr, 'customer'));
+    },
+    _getAccount: function (caseGr) {
+        return this._getRef(this.ACCOUNT_TABLE, this._str(caseGr, 'account'));
+    },
+    _getTransaction: function (caseGr) {
+        return this._getRef(this.TRANSACTION_TABLE, this._str(caseGr, 'transaction'));
+    },
+    _hoursSince: function (dateTimeStr) {
+        if (!dateTimeStr) return -1;
+        var gdt = new GlideDateTime(dateTimeStr);
+        var now = new GlideDateTime();
+        var diffMs = now.getNumericValue() - gdt.getNumericValue();
+        if (diffMs < 0) return 0;
+        return diffMs / (1000 * 60 * 60);
+    },
+    _isForeign: function (country) {
+        if (!country) return false;
+        var c = ('' + country).toLowerCase();
+        return c !== 'us' && c !== 'usa' && c !== 'united states';
+    },
+    _caseTypeLabel: function (caseType) {
+        switch (caseType) {
+            case 'unauthorized_transaction': return 'Unauthorized transaction dispute';
+            case 'duplicate_charge': return 'Duplicate charge dispute';
+            case 'payment_failure': return 'Payment failure report';
+            case 'atm_cash_withdrawal_issue': return 'ATM / cash withdrawal issue';
+            case 'card_not_received': return 'Card not received report';
+            default: return 'General banking dispute';
+        }
+    },
+    _teamLabel: function (team) {
+        switch (team) {
+            case 'fraud_operations': return 'Fraud Operations';
+            case 'cards_operations': return 'Cards Operations';
+            case 'banking_operations': return 'Banking Operations';
+            default: return team || '';
+        }
+    },
+
+    // ---------------------------------------------------------- classifyIntent
+    classifyIntent: function (caseGr) {
+        if (!caseGr) return '';
+        var caseType = this._str(caseGr, 'case_type');
+        var stmt = this._str(caseGr, 'customer_statement').toLowerCase();
+        var tags = [];
+        if (stmt.indexOf('stolen') > -1 || stmt.indexOf('lost') > -1) tags.push('card lost/stolen');
+        if (stmt.indexOf('never received') > -1 || stmt.indexOf('not received') > -1 ||
+            stmt.indexOf('did not receive') > -1 || stmt.indexOf("didn't receive") > -1) tags.push('item/goods not received');
+        if (stmt.indexOf('charged twice') > -1 || stmt.indexOf('double charge') > -1 ||
+            stmt.indexOf('duplicate') > -1 || stmt.indexOf('twice') > -1) tags.push('duplicate charge');
+        if (stmt.indexOf('atm') > -1 || stmt.indexOf('cash machine') > -1) tags.push('ATM/cash issue');
+        if (stmt.indexOf('declined') > -1 || stmt.indexOf('failed') > -1 || stmt.indexOf('could not pay') > -1) tags.push('payment declined/failed');
+        if (stmt.indexOf('unauthorized') > -1 || stmt.indexOf('unauthorised') > -1 || stmt.indexOf('fraud') > -1 ||
+            stmt.indexOf('do not recognize') > -1 || stmt.indexOf("don't recognize") > -1 ||
+            stmt.indexOf("didn't make") > -1 || stmt.indexOf('did not make') > -1) tags.push('unauthorized activity');
+
+        var intent = this._caseTypeLabel(caseType);
+        if (tags.length) intent += ' \u2014 ' + tags.join(', ');
+        return intent;
+    },
+
+    // ------------------------------------------------------- calculateRiskScore
+    calculateRiskScore: function (caseGr) {
+        if (!caseGr) return 0;
+        var score = 0;
+        var caseType = this._str(caseGr, 'case_type');
+        switch (caseType) {
+            case 'unauthorized_transaction': score += 40; break;
+            case 'atm_cash_withdrawal_issue': score += 25; break;
+            case 'duplicate_charge': score += 15; break;
+            case 'payment_failure': score += 15; break;
+            case 'card_not_received': score += 10; break;
+            default: score += 10;
+        }
+
+        var txn = this._getTransaction(caseGr);
+        if (txn) {
+            if (this._bool(txn, 'fraud_indicator')) score += 20;
+            if (this._isForeign(this._str(txn, 'country'))) score += 10;
+            var channel = this._str(txn, 'channel');
+            if (channel === 'online' || channel === 'mobile') score += 10; // card-not-present
+        }
+
+        var hrs = this._hoursSince(this._str(caseGr, 'incident_date_time'));
+        if (hrs > -1) {
+            if (hrs <= 24) score += 15;
+            else if (hrs <= 168) score += 10;
+            else if (hrs <= 720) score += 5;
+        }
+
+        var amount = this._num(caseGr, 'disputed_amount');
+        if (amount > 5000) score += 20;
+        else if (amount > 1000) score += 10;
+
+        var cust = this._getCustomer(caseGr);
+        if (cust && this._str(cust, 'risk_tier') === 'high') score += 10;
+
+        var acct = this._getAccount(caseGr);
+        if (acct) {
+            if (this._str(acct, 'risk_tier') === 'high') score += 10;
+            if (this._bool(acct, 'fraud_hold_flag')) score += 15;
+        }
+
+        if (score > 100) score = 100;
+        if (score < 0) score = 0;
+        return Math.round(score);
+    },
+
+    // --------------------------------------------------------- deriveRiskLevel
+    deriveRiskLevel: function (score) {
+        var s = parseInt(score, 10);
+        if (isNaN(s)) s = 0;
+        if (s >= 80) return 'critical';
+        if (s >= 60) return 'high';
+        if (s >= 35) return 'medium';
+        return 'low';
+    },
+
+    // --------------------------------------------------- deriveUrgencyPriority
+    deriveUrgencyPriority: function (caseGr, riskLevel) {
+        if (!caseGr) return { urgency: 'low', priority: 'p4' };
+        var caseType = this._str(caseGr, 'case_type');
+        var amount = this._num(caseGr, 'disputed_amount');
+        var txn = this._getTransaction(caseGr);
+        var acct = this._getAccount(caseGr);
+
+        var cardCompromise = false;
+        if (acct && this._bool(acct, 'fraud_hold_flag')) cardCompromise = true;
+        if (txn && this._bool(txn, 'fraud_indicator')) cardCompromise = true;
+
+        var recentHrs = this._hoursSince(this._str(caseGr, 'incident_date_time'));
+        var recent = recentHrs > -1 && recentHrs <= 72;
+
+        var typeUrgency = 'low';
+        if (caseType === 'unauthorized_transaction') {
+            typeUrgency = (amount > 1000 || recent || cardCompromise) ? 'critical' : 'high';
+        } else if (caseType === 'atm_cash_withdrawal_issue') {
+            typeUrgency = 'high';
+        } else if (caseType === 'duplicate_charge') {
+            typeUrgency = amount > 1000 ? 'high' : 'medium';
+        } else if (caseType === 'payment_failure') {
+            typeUrgency = amount > 1000 ? 'high' : 'medium';
+        } else if (caseType === 'card_not_received') {
+            typeUrgency = 'medium';
+        } else {
+            typeUrgency = 'low';
+        }
+
+        var rl = (riskLevel && this._rank[riskLevel]) ? riskLevel : 'low';
+        var finalRank = Math.max(this._rank[typeUrgency], this._rank[rl]);
+        var urgency = this._byRank[finalRank];
+        var priority = this._priorityForUrgency[urgency] || 'p4';
+        return { urgency: urgency, priority: priority };
+    },
+
+    // --------------------------------------------------------- validateEntities
+    validateEntities: function (caseGr) {
+        var result = { valid: true, issues: [] };
+        if (!caseGr) {
+            result.valid = false;
+            result.issues.push('Case record not available.');
+            return result;
+        }
+
+        var custId = this._str(caseGr, 'customer');
+        var cust = this._getCustomer(caseGr);
+        if (!custId || !cust) {
+            result.valid = false;
+            result.issues.push('Customer is missing or does not exist.');
+        } else if (!this._bool(cust, 'active_flag')) {
+            result.valid = false;
+            result.issues.push('Customer profile is not active.');
+        }
+
+        var acctId = this._str(caseGr, 'account');
+        var acct = this._getAccount(caseGr);
+        if (!acctId || !acct) {
+            result.valid = false;
+            result.issues.push('Account is missing or does not exist.');
+        } else {
+            if (custId && this._str(acct, 'customer') !== custId) {
+                result.valid = false;
+                result.issues.push('Account does not belong to the case customer.');
+            }
+            if (this._str(acct, 'account_status') !== 'active') {
+                result.issues.push('Account status is not active (' + this._str(acct, 'account_status') + ').');
+            }
+        }
+
+        var txnId = this._str(caseGr, 'transaction');
+        if (txnId) {
+            var txn = this._getTransaction(caseGr);
+            if (!txn) {
+                result.valid = false;
+                result.issues.push('Transaction does not exist.');
+            } else {
+                if (acctId && this._str(txn, 'account') !== acctId) {
+                    result.issues.push('Transaction does not belong to the case account.');
+                }
+                if (this._num(txn, 'amount') <= 0) {
+                    result.issues.push('Transaction amount is not plausible (<= 0).');
+                }
+                var tdt = this._str(txn, 'transaction_date_time');
+                if (tdt) {
+                    var g = new GlideDateTime(tdt);
+                    if (g.getNumericValue() > new GlideDateTime().getNumericValue()) {
+                        result.issues.push('Transaction date/time is in the future.');
+                    }
+                }
+            }
+        }
+        return result;
+    },
+
+    // --------------------------------------------------------- recommendActions
+    recommendActions: function (caseGr, riskLevel) {
+        var actions = [];
+        if (!caseGr) return actions;
+        var caseType = this._str(caseGr, 'case_type');
+        var high = (riskLevel === 'high' || riskLevel === 'critical');
+
+        if (caseType === 'unauthorized_transaction') {
+            if (high) {
+                actions.push('card_block temporarily');
+                actions.push('identity_verification');
+                actions.push('transaction_review');
+                actions.push('chargeback');
+            } else {
+                actions.push('identity_verification');
+                actions.push('transaction_review');
+            }
+        } else if (caseType === 'card_not_received') {
+            actions.push('identity_verification');
+            actions.push('card_block temporarily');
+            actions.push('card_replacement');
+        } else if (caseType === 'duplicate_charge') {
+            actions.push('transaction_review');
+            actions.push('merchant_investigation');
+            actions.push('payment_reversal');
+        } else if (caseType === 'payment_failure') {
+            actions.push('transaction_review');
+            actions.push('payment_reversal');
+        } else if (caseType === 'atm_cash_withdrawal_issue') {
+            actions.push('atm_investigation');
+            actions.push('transaction_review');
+        } else {
+            actions.push('customer_contact');
+            actions.push('transaction_review');
+        }
+        if (high) actions.push('approval');
+        return actions;
+    },
+
+    // --------------------------------------------------------- getPolicyGuidance
+    getPolicyGuidance: function (caseType, riskLevel) {
+        var ct = caseType ? ('' + caseType) : 'any';
+        var rl = riskLevel ? ('' + riskLevel) : 'any';
+        var exact = [];
+        var fallback = [];
+
+        var gr = new GlideRecord(this.POLICY_TABLE);
+        gr.addQuery('active_flag', true);
+        gr.addQuery('case_type', 'IN', ct + ',any');
+        gr.query();
+        while (gr.next()) {
+            var text = this._str(gr, 'guidance_text');
+            if (!text) continue;
+            var grl = this._str(gr, 'risk_level');
+            var title = this._str(gr, 'policy_title');
+            var line = (title ? ('[' + title + '] ') : '') + text;
+            if (grl === rl) exact.push(line);
+            else if (grl === 'any' || grl === '') fallback.push(line);
+        }
+        var chosen = exact.length ? exact : fallback;
+        return chosen.join('\n\n');
+    },
+
+    // --------------------------------------------------------- recommendTeam
+    recommendTeam: function (caseType, riskLevel) {
+        if (caseType === 'unauthorized_transaction' || riskLevel === 'critical' || riskLevel === 'high') {
+            return 'fraud_operations';
+        }
+        if (caseType === 'card_not_received') return 'cards_operations';
+        return 'banking_operations';
+    },
+
+    // --------------------------------------------------------- buildRecommendation
+    buildRecommendation: function (caseGr) {
+        var rec = {
+            intent: '',
+            risk_score: 0,
+            risk_level: 'low',
+            urgency: 'low',
+            priority: 'p4',
+            recommended_team: 'banking_operations',
+            recommended_actions: [],
+            policy_guidance: '',
+            validation: { valid: true, issues: [] },
+            summary: '',
+            rationale: '',
+            confidence: 0
+        };
+        if (!caseGr) return rec;
+
+        var caseType = this._str(caseGr, 'case_type');
+        rec.intent = this.classifyIntent(caseGr);
+        rec.risk_score = this.calculateRiskScore(caseGr);
+        rec.risk_level = this.deriveRiskLevel(rec.risk_score);
+        var up = this.deriveUrgencyPriority(caseGr, rec.risk_level);
+        rec.urgency = up.urgency;
+        rec.priority = up.priority;
+        rec.recommended_team = this.recommendTeam(caseType, rec.risk_level);
+        rec.recommended_actions = this.recommendActions(caseGr, rec.risk_level);
+        rec.policy_guidance = this.getPolicyGuidance(caseType, rec.risk_level);
+        rec.validation = this.validateEntities(caseGr);
+        rec.rationale = this._buildRationale(caseGr, rec);
+        rec.confidence = this._computeConfidence(caseGr, rec);
+        rec.summary = this._buildSummary(caseGr, rec);
+        return rec;
+    },
+
+    _buildRationale: function (caseGr, rec) {
+        var factors = [];
+        var caseType = this._str(caseGr, 'case_type');
+        factors.push('Case type: ' + this._caseTypeLabel(caseType));
+
+        var txn = this._getTransaction(caseGr);
+        if (txn) {
+            if (this._bool(txn, 'fraud_indicator')) factors.push('Transaction flagged with fraud indicator');
+            var channel = this._str(txn, 'channel');
+            if (channel === 'online' || channel === 'mobile') factors.push('Card-not-present channel (' + channel + ')');
+            var country = this._str(txn, 'country');
+            if (this._isForeign(country)) factors.push('Foreign transaction country (' + country + ')');
+        }
+
+        var hrs = this._hoursSince(this._str(caseGr, 'incident_date_time'));
+        if (hrs > -1 && hrs <= 24) factors.push('Incident occurred within the last 24 hours');
+        else if (hrs > -1 && hrs <= 168) factors.push('Incident occurred within the last 7 days');
+
+        var amount = this._num(caseGr, 'disputed_amount');
+        if (amount > 5000) factors.push('High disputed amount (> 5000)');
+        else if (amount > 1000) factors.push('Elevated disputed amount (> 1000)');
+
+        var cust = this._getCustomer(caseGr);
+        if (cust && this._str(cust, 'risk_tier') === 'high') factors.push('Customer is high risk tier');
+
+        var acct = this._getAccount(caseGr);
+        if (acct && this._str(acct, 'risk_tier') === 'high') factors.push('Account is high risk tier');
+        if (acct && this._bool(acct, 'fraud_hold_flag')) factors.push('Account has an active fraud hold');
+
+        if (!factors.length) factors.push('No elevated risk factors detected');
+        return factors.join('; ');
+    },
+
+    _computeConfidence: function (caseGr, rec) {
+        var confidence = 50;
+        if (rec.validation && rec.validation.valid) confidence += 25;
+        else confidence -= 15;
+        if (rec.validation && rec.validation.issues) confidence -= (rec.validation.issues.length * 5);
+
+        var stmt = this._str(caseGr, 'customer_statement');
+        if (stmt.length >= 20) confidence += 10;
+        if (this._str(caseGr, 'transaction')) confidence += 10;
+        if (this._str(caseGr, 'case_type')) confidence += 5;
+
+        if (confidence > 100) confidence = 100;
+        if (confidence < 0) confidence = 0;
+        return Math.round(confidence);
+    },
+
+    _buildSummary: function (caseGr, rec) {
+        var parts = [];
+        parts.push(this._caseTypeLabel(this._str(caseGr, 'case_type')) +
+            ' assessed at ' + ('' + rec.risk_level).toUpperCase() + ' risk (score ' + rec.risk_score + '/100).');
+        parts.push('Recommended routing to ' + this._teamLabel(rec.recommended_team) +
+            ' with urgency ' + rec.urgency + ' / ' + ('' + rec.priority).toUpperCase() + '.');
+        if (rec.recommended_actions.length) parts.push('Suggested actions: ' + rec.recommended_actions.join(', ') + '.');
+        if (rec.validation && !rec.validation.valid) parts.push('Validation concerns: ' + rec.validation.issues.join('; ') + '.');
+        return parts.join(' ');
+    },
+
+    // --------------------------------------------------------------- triageCase
+    triageCase: function (caseGr, options) {
+        var out = { applied: false, overrides: [], recommendation: null };
+        if (!caseGr) return out;
+        options = options || {};
+        var force = options.force === true;
+
+        var rec = this.buildRecommendation(caseGr);
+        out.recommendation = rec;
+        var aiText = this._composeAiRecommendation(rec);
+
+        var targets = [
+            { field: 'intent_classification', value: rec.intent },
+            { field: 'risk_score', value: rec.risk_score },
+            { field: 'risk_level', value: rec.risk_level },
+            { field: 'urgency', value: rec.urgency },
+            { field: 'priority', value: rec.priority },
+            { field: 'ai_recommendation', value: aiText },
+            { field: 'policy_guidance', value: rec.policy_guidance }
+        ];
+
+        for (var i = 0; i < targets.length; i++) {
+            var f = targets[i].field;
+            var v = targets[i].value;
+            var existing = this._str(caseGr, f);
+            if (force || existing === '') {
+                caseGr.setValue(f, v);
+            } else {
+                out.overrides.push(f);
+            }
+        }
+
+        if (out.overrides.length) {
+            this.logAiDecision(caseGr, {
+                recommendation: rec,
+                overriddenFields: out.overrides,
+                note: 'Human-set values preserved for: ' + out.overrides.join(', ')
+            });
+        }
+        out.applied = true;
+        return out;
+    },
+
+    _composeAiRecommendation: function (rec) {
+        var lines = [];
+        lines.push('[AI TRIAGE ' + new GlideDateTime().getDisplayValue() + ']');
+        lines.push('Summary: ' + rec.summary);
+        lines.push('Rationale: ' + rec.rationale);
+        lines.push('Confidence: ' + rec.confidence + '%');
+        return lines.join('\n');
+    },
+
+    // ------------------------------------------------------- triageCaseAndUpdate
+    triageCaseAndUpdate: function (caseSysId, options) {
+        if (!caseSysId) return null;
+        var gr = new GlideRecord(this.CASE_TABLE);
+        if (!gr.get(caseSysId)) return null;
+        var out = this.triageCase(gr, options);
+        gr.update();
+        return out;
+    },
+
+    // --------------------------------------------------------------- logAiDecision
+    logAiDecision: function (caseGr, decisionObj) {
+        if (!caseGr) return;
+        decisionObj = decisionObj || {};
+        var stamp = new GlideDateTime().getDisplayValue();
+        var entry = [];
+        entry.push('--- AI DECISION LOG ' + stamp + ' ---');
+
+        var rec = decisionObj.recommendation;
+        if (rec) {
+            entry.push('Risk: ' + rec.risk_level + ' (' + rec.risk_score + '/100), Urgency: ' +
+                rec.urgency + '/' + rec.priority + ', Team: ' + rec.recommended_team);
+            entry.push('Confidence: ' + rec.confidence + '%');
+            if (rec.rationale) entry.push('Rationale: ' + rec.rationale);
+        }
+        if (decisionObj.overriddenFields && decisionObj.overriddenFields.length) {
+            entry.push('Human override preserved on: ' + decisionObj.overriddenFields.join(', '));
+        }
+        if (decisionObj.note) entry.push('Note: ' + decisionObj.note);
+        if (decisionObj.finalDecision) entry.push('Final decision: ' + decisionObj.finalDecision);
+
+        var text = entry.join('\n');
+        var existing = this._str(caseGr, 'ai_recommendation');
+        var combined = existing ? (existing + '\n\n' + text) : text;
+        if (combined.length > 4000) combined = combined.substring(combined.length - 4000);
+        caseGr.setValue('ai_recommendation', combined);
+    },
+
+    type: 'bfd_TriageEngine'
+};
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 09:24:48</sys_created_on>
+        <sys_id>e7ac055262ee40b1b876cf123136e41a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_TriageEngine</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_script_include_e7ac055262ee40b1b876cf123136e41a</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 09:24:48</sys_updated_on>
+    </sys_script_include>
+</record_update>
