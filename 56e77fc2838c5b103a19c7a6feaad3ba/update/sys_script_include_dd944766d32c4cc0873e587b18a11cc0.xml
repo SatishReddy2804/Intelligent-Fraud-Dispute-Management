@@ -1,0 +1,1194 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_1755386_safetr_0.bfd_PortalService</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Customer portal data layer: my-accounts, account-transactions, my-cases, case-detail, create-case, add-comment, submit-csat and triage-preview. Enforces own-records-only access and masked output.</description>
+        <mobile_callable>false</mobile_callable>
+        <name>bfd_PortalService</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var bfd_PortalService = Class.create();
+bfd_PortalService.prototype = {
+    CASE_TABLE: 'x_1755386_safetr_0_bfd_fraud_dispute_case',
+    CUSTOMER_TABLE: 'x_1755386_safetr_0_bfd_customer_profile',
+    ACCOUNT_TABLE: 'x_1755386_safetr_0_bfd_bank_account',
+    TRANSACTION_TABLE: 'x_1755386_safetr_0_bfd_transaction',
+    COMM_TABLE: 'x_1755386_safetr_0_bfd_case_communication',
+    TASK_TABLE: 'x_1755386_safetr_0_bfd_case_task',
+    ATTACHMENT_TABLE: 'sys_attachment',
+
+    TXN_LIMIT_DEFAULT: 20,
+    TXN_LIMIT_MAX: 50,
+    CASE_LIMIT: 100,
+    TIMELINE_LIMIT: 60,
+    MAX_UPLOAD_BYTES: 5242880,
+
+    CASE_TYPES: [
+        'unauthorized_transaction',
+        'duplicate_charge',
+        'payment_failure',
+        'atm_cash_withdrawal_issue',
+        'card_not_received',
+        'other'
+    ],
+    INTAKE_CHANNELS: ['mobile_banking', 'online_banking', 'branch', 'phone', 'email'],
+    /** Statuses that make a case eligible for CSAT capture. */
+    FEEDBACK_STATUSES: ['resolved', 'closed'],
+    ALLOWED_UPLOAD_TYPES: [
+        'application/pdf',
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'image/gif',
+        'image/webp',
+        'text/plain'
+    ],
+
+    initialize: function () {
+        this._customerGr = null;
+        this._customerResolved = false;
+    },
+
+    // ------------------------------------------------------------------ helpers
+    _s: function (v) {
+        return v === null || v === undefined ? '' : ('' + v);
+    },
+    _v: function (gr, field) {
+        if (!gr || !field) return '';
+        return this._s(gr.getValue(field));
+    },
+    _d: function (gr, field) {
+        if (!gr || !field) return '';
+        return this._s(gr.getDisplayValue(field));
+    },
+    _n: function (gr, field) {
+        var n = parseFloat(this._v(gr, field));
+        return isNaN(n) ? 0 : n;
+    },
+    _bool: function (gr, field) {
+        var v = this._v(gr, field);
+        return v === '1' || v === 'true';
+    },
+    _trim: function (v, max) {
+        var s = this._s(v);
+        return s.length > max ? s.substring(0, max) : s;
+    },
+    /** Card data is NEVER returned in full — only the stored last four. */
+    _maskCard: function (lastFour) {
+        var l = this._s(lastFour);
+        return l ? '\u2022\u2022\u2022\u2022 ' + l : '';
+    },
+    _ok: function (data) {
+        return { ok: true, status: 200, data: data };
+    },
+    _err: function (status, code, message) {
+        return { ok: false, status: status, code: code, message: message };
+    },
+
+    /** Writes the service envelope onto a Scripted REST response. */
+    send: function (response, out) {
+        if (out && out.ok === true) {
+            response.setStatus(200);
+            response.setBody(out.data);
+            return;
+        }
+        var status = out && out.status ? out.status : 500;
+        response.setStatus(status);
+        response.setBody({
+            error: {
+                code: (out && out.code) || 'server_error',
+                message: (out && out.message) || 'Unexpected server error.'
+            }
+        });
+    },
+
+    /** Reads a JSON request body defensively. */
+    readBody: function (request) {
+        try {
+            if (request && request.body && request.body.data) {
+                var d = request.body.data;
+                if (typeof d === 'string') return JSON.parse(d);
+                return d;
+            }
+        } catch (e) {
+            gs.warn('[bfd_PortalService.readBody] ' + e);
+        }
+        try {
+            var raw = request && request.body ? this._s(request.body.dataString) : '';
+            return raw ? JSON.parse(raw) : {};
+        } catch (e2) {
+            return {};
+        }
+    },
+
+    /** Reads a single query parameter value. */
+    readParam: function (request, name) {
+        try {
+            var params = request && request.queryParams ? request.queryParams : {};
+            var v = params[name];
+            if (v === null || v === undefined) return '';
+            if (Object.prototype.toString.call(v) === '[object Array]') return this._s(v[0]);
+            return this._s(v);
+        } catch (e) {
+            return '';
+        }
+    },
+
+    // ------------------------------------------------- caller identity (server)
+    /**
+     * Resolves the signed-in user to a SafeTrace customer profile using the
+     * session email only. The client can never supply or influence this value.
+     */
+    _resolveCustomerGr: function () {
+        if (this._customerResolved) return this._customerGr;
+        this._customerResolved = true;
+
+        var email = '';
+        try {
+            email = this._s(gs.getUser().getEmail());
+        } catch (e) {
+            gs.warn('[bfd_PortalService._resolveCustomerGr] ' + e);
+        }
+        if (!email) return null;
+
+        var gr = new GlideRecord(this.CUSTOMER_TABLE);
+        gr.addQuery('email', email);
+        gr.setLimit(1);
+        gr.query();
+        if (gr.next()) {
+            this._customerGr = gr;
+            return gr;
+        }
+        return null;
+    },
+
+    /** Back-compat alias used by internal helpers. */
+    getCustomer: function () {
+        return this._resolveCustomerGr();
+    },
+
+    /**
+     * Public: who am I? Never throws, never leaks another customer's record.
+     * Returns { found:false } when the signed-in user has no profile.
+     */
+    getCurrentCustomer: function () {
+        var c = this._resolveCustomerGr();
+        if (!c) return this._ok({ found: false });
+        return this._ok({
+            found: true,
+            sys_id: c.getUniqueValue(),
+            customer_number: this._v(c, 'customer_number'),
+            full_name: this._v(c, 'full_name'),
+            email: this._v(c, 'email'),
+            preferred_contact_channel: this._v(c, 'preferred_contact_channel'),
+            preferred_contact_channel_label: this._d(c, 'preferred_contact_channel')
+        });
+    },
+
+    _requireCustomer: function () {
+        var c = this._resolveCustomerGr();
+        if (!c) {
+            return this._err(
+                403,
+                'no_customer_profile',
+                'No SafeTrace customer profile is linked to your signed-in email address.'
+            );
+        }
+        return null;
+    },
+
+    _customerPayload: function (c) {
+        return {
+            found: true,
+            sys_id: c.getUniqueValue(),
+            full_name: this._v(c, 'full_name'),
+            customer_number: this._v(c, 'customer_number'),
+            email: this._v(c, 'email'),
+            preferred_contact_channel: this._v(c, 'preferred_contact_channel'),
+            preferred_contact_channel_label: this._d(c, 'preferred_contact_channel')
+        };
+    },
+
+    /** Loads an account only when it belongs to the signed-in customer. */
+    _ownedAccount: function (accountId, customerId) {
+        var id = this._s(accountId);
+        if (!id) return null;
+        var gr = new GlideRecord(this.ACCOUNT_TABLE);
+        gr.addQuery('sys_id', id);
+        gr.addQuery('customer', customerId);
+        gr.setLimit(1);
+        gr.query();
+        return gr.next() ? gr : null;
+    },
+
+    /** Loads a transaction only when it belongs to the signed-in customer. */
+    _ownedTransaction: function (txnId, customerId, accountId) {
+        var id = this._s(txnId);
+        if (!id) return null;
+        var gr = new GlideRecord(this.TRANSACTION_TABLE);
+        gr.addQuery('sys_id', id);
+        gr.addQuery('customer', customerId);
+        if (accountId) gr.addQuery('account', accountId);
+        gr.setLimit(1);
+        gr.query();
+        return gr.next() ? gr : null;
+    },
+
+    /** Loads a case only when it belongs to the signed-in customer. */
+    _ownedCase: function (caseId, customerId) {
+        var id = this._s(caseId);
+        if (!id) return null;
+        var gr = new GlideRecord(this.CASE_TABLE);
+        gr.addQuery('sys_id', id);
+        gr.addQuery('customer', customerId);
+        gr.setLimit(1);
+        gr.query();
+        return gr.next() ? gr : null;
+    },
+
+    // ----------------------------------------------------- shaping (masked only)
+    _accountPayload: function (gr) {
+        return {
+            sys_id: gr.getUniqueValue(),
+            account_number_masked: this._v(gr, 'account_number_masked'),
+            account_type: this._v(gr, 'account_type'),
+            account_type_label: this._d(gr, 'account_type'),
+            account_status: this._v(gr, 'account_status'),
+            account_status_label: this._d(gr, 'account_status'),
+            currency: this._v(gr, 'currency'),
+            available_balance: this._n(gr, 'available_balance'),
+            available_balance_display: this._d(gr, 'available_balance'),
+            fraud_hold_flag: this._bool(gr, 'fraud_hold_flag')
+        };
+    },
+
+    _transactionPayload: function (gr) {
+        return {
+            sys_id: gr.getUniqueValue(),
+            transaction_reference: this._v(gr, 'transaction_reference'),
+            transaction_date_time: this._v(gr, 'transaction_date_time'),
+            transaction_date_display: this._d(gr, 'transaction_date_time'),
+            merchant_name: this._v(gr, 'merchant_name'),
+            merchant_category: this._v(gr, 'merchant_category'),
+            amount: this._n(gr, 'amount'),
+            amount_display: this._d(gr, 'amount'),
+            currency: this._v(gr, 'currency'),
+            card_last_four: this._v(gr, 'card_last_four'),
+            card_masked: this._maskCard(this._v(gr, 'card_last_four')),
+            channel: this._v(gr, 'channel'),
+            channel_label: this._d(gr, 'channel'),
+            transaction_type_label: this._d(gr, 'transaction_type'),
+            status: this._v(gr, 'status'),
+            status_label: this._d(gr, 'status'),
+            country: this._v(gr, 'country'),
+            atm_location: this._v(gr, 'atm_location'),
+            dispute_flag: this._bool(gr, 'dispute_flag')
+        };
+    },
+
+    _commPayload: function (gr) {
+        return {
+            sys_id: gr.getUniqueValue(),
+            kind: 'communication',
+            direction: this._v(gr, 'direction'),
+            direction_label: this._d(gr, 'direction'),
+            channel: this._v(gr, 'channel'),
+            channel_label: this._d(gr, 'channel'),
+            subject: this._v(gr, 'subject'),
+            message: this._v(gr, 'message'),
+            sent_at: this._v(gr, 'sent_at'),
+            sent_at_display: this._d(gr, 'sent_at'),
+            delivery_status_label: this._d(gr, 'delivery_status')
+        };
+    },
+
+    /** Most recent outbound communication on a case, or null. */
+    _latestComm: function (caseId) {
+        var gr = new GlideRecord(this.COMM_TABLE);
+        gr.addQuery('case', caseId);
+        gr.addQuery('direction', 'outbound');
+        gr.orderByDesc('sent_at');
+        gr.orderByDesc('sys_created_on');
+        gr.setLimit(1);
+        gr.query();
+        return gr.next() ? this._commPayload(gr) : null;
+    },
+
+    /**
+     * SLA status: breached when sla_breach_flag is set, at_risk inside the final
+     * 25% of the created -> expected_resolution_date window, otherwise on_track.
+     */
+    _slaStatus: function (gr) {
+        if (this._bool(gr, 'sla_breach_flag')) return 'breached';
+        var status = this._v(gr, 'case_status');
+        if (this.FEEDBACK_STATUSES.indexOf(status) !== -1) return 'on_track';
+
+        var expectedRaw = this._v(gr, 'expected_resolution_date');
+        if (!expectedRaw) return 'on_track';
+        try {
+            var expected = new GlideDateTime(expectedRaw);
+            var created = new GlideDateTime(this._v(gr, 'sys_created_on'));
+            var now = new GlideDateTime();
+            if (now.compareTo(expected) > 0) return 'breached';
+            var total = expected.getNumericValue() - created.getNumericValue();
+            var remaining = expected.getNumericValue() - now.getNumericValue();
+            if (total > 0 && remaining <= total * 0.25) return 'at_risk';
+        } catch (e) {
+            gs.warn('[bfd_PortalService._slaStatus] ' + e);
+        }
+        return 'on_track';
+    },
+
+    /**
+     * Customer-safe case shape. Deliberately excludes ai_recommendation,
+     * policy_guidance, risk_score, risk_level, closure_notes, assigned_agent
+     * and every internal work note.
+     */
+    _casePayload: function (gr) {
+        var status = this._v(gr, 'case_status');
+        return {
+            sys_id: gr.getUniqueValue(),
+            case_number: this._v(gr, 'case_number'),
+            case_type: this._v(gr, 'case_type'),
+            case_type_label: this._d(gr, 'case_type'),
+            case_status: status,
+            case_status_label: this._d(gr, 'case_status'),
+            intake_channel: this._v(gr, 'intake_channel'),
+            intake_channel_label: this._d(gr, 'intake_channel'),
+            urgency: this._v(gr, 'urgency'),
+            urgency_label: this._d(gr, 'urgency'),
+            assigned_team: this._v(gr, 'assigned_team'),
+            assigned_team_label: this._d(gr, 'assigned_team'),
+            disputed_amount: this._n(gr, 'disputed_amount'),
+            disputed_amount_display: this._d(gr, 'disputed_amount'),
+            currency: this._v(gr, 'currency'),
+            incident_date_time: this._v(gr, 'incident_date_time'),
+            incident_date_display: this._d(gr, 'incident_date_time'),
+            customer_statement: this._v(gr, 'customer_statement'),
+            expected_resolution_date: this._v(gr, 'expected_resolution_date'),
+            expected_resolution_display: this._d(gr, 'expected_resolution_date'),
+            actual_resolution_date: this._v(gr, 'actual_resolution_date'),
+            actual_resolution_display: this._d(gr, 'actual_resolution_date'),
+            opened_at: this._v(gr, 'sys_created_on'),
+            opened_display: this._d(gr, 'sys_created_on'),
+            resolution_summary: this._v(gr, 'resolution_summary'),
+            resolution_code: this._v(gr, 'resolution_code'),
+            resolution_code_label: this._d(gr, 'resolution_code'),
+            provisional_credit_flag: this._bool(gr, 'provisional_credit_flag'),
+            provisional_credit_amount: this._n(gr, 'provisional_credit_amount'),
+            provisional_credit_display: this._d(gr, 'provisional_credit_amount'),
+            card_action: this._v(gr, 'card_action'),
+            card_action_label: this._d(gr, 'card_action'),
+            customer_satisfaction_score: this._v(gr, 'customer_satisfaction_score'),
+            customer_feedback: this._v(gr, 'customer_feedback'),
+            sla_breach_flag: this._bool(gr, 'sla_breach_flag'),
+            sla_status: this._slaStatus(gr),
+            feedback_eligible: this.FEEDBACK_STATUSES.indexOf(status) !== -1
+        };
+    },
+
+    // --------------------------------------------------------------- my-accounts
+    getMyAccounts: function () {
+        var guard = this._requireCustomer();
+        if (guard) return guard;
+        var c = this._resolveCustomerGr();
+        var customerId = c.getUniqueValue();
+
+        var accounts = [];
+        var gr = new GlideRecord(this.ACCOUNT_TABLE);
+        gr.addQuery('customer', customerId);
+        gr.orderBy('account_type');
+        gr.orderBy('account_number_masked');
+        gr.query();
+        while (gr.next()) accounts.push(this._accountPayload(gr));
+
+        return this._ok({ customer: this._customerPayload(c), accounts: accounts });
+    },
+
+    // ------------------------------------------------------ recent transactions
+    /**
+     * accountSysId is optional. When supplied it must belong to the signed-in
+     * customer; when omitted every owned transaction is considered.
+     */
+    getMyRecentTransactions: function (accountSysId, limit) {
+        var guard = this._requireCustomer();
+        if (guard) return guard;
+        var customerId = this._resolveCustomerGr().getUniqueValue();
+
+        var max = parseInt(this._s(limit), 10);
+        if (isNaN(max) || max < 1) max = this.TXN_LIMIT_DEFAULT;
+        if (max > this.TXN_LIMIT_MAX) max = this.TXN_LIMIT_MAX;
+
+        var account = null;
+        if (this._s(accountSysId)) {
+            account = this._ownedAccount(accountSysId, customerId);
+            if (!account) {
+                return this._err(404, 'account_not_found', 'That account is not available on your profile.');
+            }
+        }
+
+        var transactions = [];
+        var gr = new GlideRecord(this.TRANSACTION_TABLE);
+        gr.addQuery('customer', customerId);
+        if (account) gr.addQuery('account', account.getUniqueValue());
+        gr.orderByDesc('transaction_date_time');
+        gr.setLimit(max);
+        gr.query();
+        while (gr.next()) transactions.push(this._transactionPayload(gr));
+
+        return this._ok({
+            account: account ? this._accountPayload(account) : null,
+            limit: max,
+            transactions: transactions
+        });
+    },
+
+    // ------------------------------------------------------------------ my-cases
+    getMyCases: function () {
+        var guard = this._requireCustomer();
+        if (guard) return guard;
+        var c = this._resolveCustomerGr();
+
+        var cases = [];
+        var gr = new GlideRecord(this.CASE_TABLE);
+        gr.addQuery('customer', c.getUniqueValue());
+        gr.orderByDesc('sys_created_on');
+        gr.setLimit(this.CASE_LIMIT);
+        gr.query();
+        while (gr.next()) {
+            var row = this._casePayload(gr);
+            row.latest_update = this._latestComm(gr.getUniqueValue());
+            cases.push(row);
+        }
+
+        return this._ok({ customer: this._customerPayload(c), cases: cases });
+    },
+
+    // --------------------------------------------------------------- case-detail
+    _cardActionLabel: function (action) {
+        switch (this._s(action)) {
+            case 'temporary_block':
+                return 'Your card was temporarily blocked to stop further loss';
+            case 'permanent_block':
+                return 'Your card was permanently blocked';
+            case 'replacement_issued':
+                return 'A replacement card was issued and posted to you';
+            default:
+                return '';
+        }
+    },
+
+    _taskActionLabel: function (taskType) {
+        switch (this._s(taskType)) {
+            case 'identity_verification':
+                return 'Your identity was verified';
+            case 'transaction_review':
+                return 'The disputed transaction was reviewed in detail';
+            case 'card_block':
+                return 'A card block was actioned';
+            case 'card_replacement':
+                return 'A replacement card was arranged';
+            case 'chargeback':
+                return 'A chargeback was raised with the card network';
+            case 'merchant_investigation':
+                return 'The merchant was contacted and investigated';
+            case 'payment_reversal':
+                return 'A payment reversal was initiated';
+            case 'atm_investigation':
+                return 'ATM journal records were requested and checked';
+            case 'customer_contact':
+                return 'An agent contacted you about this case';
+            case 'recovery_action':
+                return 'Funds recovery was pursued';
+            default:
+                return '';
+        }
+    },
+
+    /** Builds the derived, customer-facing "actions taken" list. */
+    _actionsTaken: function (caseGr, completedTasks) {
+        var out = [];
+        var seen = {};
+        var push = function (text, at) {
+            if (!text || seen[text]) return;
+            seen[text] = true;
+            out.push({ label: text, at_display: at || '' });
+        };
+
+        var cardLabel = this._cardActionLabel(this._v(caseGr, 'card_action'));
+        if (cardLabel) push(cardLabel, '');
+
+        if (this._bool(caseGr, 'provisional_credit_flag')) {
+            var amt = this._d(caseGr, 'provisional_credit_amount');
+            push('Provisional credit issued' + (amt ? ' (' + amt + ')' : ''), '');
+        }
+
+        var recovery = this._n(caseGr, 'recovery_amount');
+        if (recovery > 0) push('Funds recovered (' + this._d(caseGr, 'recovery_amount') + ')', '');
+
+        for (var i = 0; i < completedTasks.length; i++) {
+            push(this._taskActionLabel(completedTasks[i].task_type), completedTasks[i].completed_display);
+        }
+        return out;
+    },
+
+    _completedTasks: function (caseSysId) {
+        var tasks = [];
+        var gr = new GlideRecord(this.TASK_TABLE);
+        gr.addQuery('case', caseSysId);
+        gr.addQuery('status', 'complete');
+        gr.orderBy('sys_updated_on');
+        gr.query();
+        while (gr.next()) {
+            tasks.push({
+                sys_id: gr.getUniqueValue(),
+                task_type: this._v(gr, 'task_type'),
+                task_type_label: this._d(gr, 'task_type'),
+                completed_at: this._v(gr, 'sys_updated_on'),
+                completed_display: this._d(gr, 'sys_updated_on')
+            });
+        }
+        return tasks;
+    },
+
+    /** Communications plus key status milestones, newest first. */
+    _timeline: function (caseGr, completedTasks) {
+        var caseSysId = caseGr.getUniqueValue();
+        var entries = [];
+
+        var comms = new GlideRecord(this.COMM_TABLE);
+        comms.addQuery('case', caseSysId);
+        comms.orderByDesc('sent_at');
+        comms.orderByDesc('sys_created_on');
+        comms.setLimit(this.TIMELINE_LIMIT);
+        comms.query();
+        while (comms.next()) {
+            var c = this._commPayload(comms);
+            entries.push({
+                id: c.sys_id,
+                kind: 'communication',
+                title: c.subject || 'Case update',
+                body: c.message,
+                direction: c.direction,
+                channel_label: c.channel_label,
+                at: c.sent_at,
+                at_display: c.sent_at_display
+            });
+        }
+
+        entries.push({
+            id: 'milestone-opened',
+            kind: 'milestone',
+            title: 'Report received',
+            body: 'We logged your report and started triage.',
+            direction: '',
+            channel_label: '',
+            at: this._v(caseGr, 'sys_created_on'),
+            at_display: this._d(caseGr, 'sys_created_on')
+        });
+
+        for (var i = 0; i < completedTasks.length; i++) {
+            var label = this._taskActionLabel(completedTasks[i].task_type);
+            if (!label) continue;
+            entries.push({
+                id: 'milestone-task-' + completedTasks[i].sys_id,
+                kind: 'milestone',
+                title: 'Investigation step completed',
+                body: label,
+                direction: '',
+                channel_label: '',
+                at: completedTasks[i].completed_at,
+                at_display: completedTasks[i].completed_display
+            });
+        }
+
+        var actual = this._v(caseGr, 'actual_resolution_date');
+        if (actual) {
+            entries.push({
+                id: 'milestone-resolved',
+                kind: 'milestone',
+                title: 'Case resolved',
+                body: this._v(caseGr, 'resolution_summary') || 'The investigation finished and an outcome was applied.',
+                direction: '',
+                channel_label: '',
+                at: actual,
+                at_display: this._d(caseGr, 'actual_resolution_date')
+            });
+        }
+
+        entries.sort(function (a, b) {
+            var av = a.at || '';
+            var bv = b.at || '';
+            if (av === bv) return 0;
+            return av < bv ? 1 : -1;
+        });
+        return entries;
+    },
+
+    getCaseDetail: function (caseSysId) {
+        var guard = this._requireCustomer();
+        if (guard) return guard;
+        var customerId = this._resolveCustomerGr().getUniqueValue();
+
+        if (!this._s(caseSysId)) {
+            return this._err(400, 'missing_case_id', 'A case reference is required.');
+        }
+
+        var caseGr = this._ownedCase(caseSysId, customerId);
+        if (!caseGr) {
+            return this._err(403, 'not_authorized', 'You are not authorised to view that case.');
+        }
+
+        var caseId = caseGr.getUniqueValue();
+        var tasks = this._completedTasks(caseId);
+        var accountId = this._v(caseGr, 'account');
+        var account = accountId ? this._ownedAccount(accountId, customerId) : null;
+        var txnId = this._v(caseGr, 'transaction');
+        var txn = txnId ? this._ownedTransaction(txnId, customerId, '') : null;
+
+        return this._ok({
+            detail: this._casePayload(caseGr),
+            account: account ? this._accountPayload(account) : null,
+            transaction: txn ? this._transactionPayload(txn) : null,
+            timeline: this._timeline(caseGr, tasks),
+            actions_taken: this._actionsTaken(caseGr, tasks),
+            investigation: {
+                status: this._v(caseGr, 'case_status'),
+                status_label: this._d(caseGr, 'case_status'),
+                assigned_team_label: this._d(caseGr, 'assigned_team'),
+                steps_completed: tasks.length
+            },
+            csat: {
+                eligible: this.FEEDBACK_STATUSES.indexOf(this._v(caseGr, 'case_status')) !== -1,
+                score: this._v(caseGr, 'customer_satisfaction_score'),
+                feedback: this._v(caseGr, 'customer_feedback')
+            }
+        });
+    },
+
+    // ------------------------------------------------------------ triage preview
+    _teamLabel: function (team) {
+        switch (this._s(team)) {
+            case 'fraud_operations':
+                return 'Fraud Operations';
+            case 'cards_operations':
+                return 'Cards Operations';
+            case 'banking_operations':
+                return 'Banking Operations';
+            default:
+                return 'Banking Operations';
+        }
+    },
+
+    _urgencyLabel: function (urgency) {
+        switch (this._s(urgency)) {
+            case 'critical':
+                return 'Treated as urgent';
+            case 'high':
+                return 'High priority';
+            case 'medium':
+                return 'Standard priority';
+            default:
+                return 'Routine';
+        }
+    },
+
+    /** Turns engine recommendations into plain-language customer next steps. */
+    _nextSteps: function (rec, team) {
+        var steps = [];
+        steps.push('Your report is logged and routed to ' + this._teamLabel(team) + '.');
+        var actions = (rec && rec.recommended_actions) || [];
+        var seen = {};
+        for (var i = 0; i < actions.length; i++) {
+            var a = this._s(actions[i]).toLowerCase();
+            var text = '';
+            if (a.indexOf('identity') !== -1) text = 'We may contact you to verify your identity.';
+            else if (a.indexOf('card_block') !== -1 || a.indexOf('block') !== -1)
+                text = 'Your card may be temporarily blocked to stop further loss.';
+            else if (a.indexOf('card_replacement') !== -1 || a.indexOf('replacement') !== -1)
+                text = 'A replacement card can be issued and posted to you.';
+            else if (a.indexOf('transaction_review') !== -1)
+                text = 'An agent reviews the disputed transaction in detail.';
+            else if (a.indexOf('chargeback') !== -1) text = 'We may raise a chargeback with the merchant network.';
+            else if (a.indexOf('merchant') !== -1) text = 'We contact the merchant to investigate the charge.';
+            else if (a.indexOf('payment_reversal') !== -1 || a.indexOf('reversal') !== -1)
+                text = 'An eligible payment reversal or refund is initiated.';
+            else if (a.indexOf('atm') !== -1) text = 'We request ATM logs and journal records from the operator.';
+            else if (a.indexOf('approval') !== -1) text = 'High-value outcomes go to a team lead for approval.';
+            else if (a.indexOf('customer_contact') !== -1) text = 'An agent contacts you with an update.';
+            if (text && !seen[text]) {
+                seen[text] = true;
+                steps.push(text);
+            }
+        }
+        steps.push('You can track every update in My cases on this portal.');
+        return steps;
+    },
+
+    /**
+     * Builds an unsaved, in-memory case and asks bfd_TriageEngine /
+     * bfd_RoutingEngine to assess it. Nothing is inserted or updated, and only
+     * customer-appropriate output is returned — never the risk score, the
+     * internal rationale or the policy guidance.
+     */
+    previewAssessment: function (payload) {
+        var guard = this._requireCustomer();
+        if (guard) return guard;
+        var customerId = this._resolveCustomerGr().getUniqueValue();
+
+        var prepared = this._prepareCaseInput(payload, customerId);
+        if (prepared.ok === false) return prepared;
+
+        return this._ok(this._assess(prepared.data, customerId));
+    },
+
+    _assess: function (input, customerId) {
+        var safe = {
+            urgency: 'medium',
+            urgency_label: this._urgencyLabel('medium'),
+            team_label: this._teamLabel(''),
+            expected_resolution_display: '',
+            next_steps: []
+        };
+        try {
+            var sim = new GlideRecord(this.CASE_TABLE);
+            sim.initialize();
+            sim.setValue('customer', customerId);
+            sim.setValue('account', input.accountId);
+            if (input.transactionId) sim.setValue('transaction', input.transactionId);
+            sim.setValue('case_type', input.caseType);
+            sim.setValue('intake_channel', input.intakeChannel);
+            sim.setValue('customer_statement', input.statement);
+            sim.setValue('incident_date_time', input.incidentDateTime);
+            sim.setValue('disputed_amount', input.disputedAmount);
+            if (input.currency) sim.setValue('currency', input.currency);
+
+            var rec = new bfd_TriageEngine().buildRecommendation(sim);
+            sim.setValue('risk_level', rec.risk_level);
+            sim.setValue('urgency', rec.urgency);
+
+            var engine = new bfd_RoutingEngine();
+            var routed = engine.route(sim);
+            var team = routed && routed.team ? routed.team : rec.recommended_team;
+            if (routed && routed.sla_hours > 0) {
+                engine.computeExpectedResolution(sim, routed.sla_hours);
+            }
+
+            safe.urgency = this._s(rec.urgency) || 'medium';
+            safe.urgency_label = this._urgencyLabel(safe.urgency);
+            safe.team_label = this._teamLabel(team);
+            safe.expected_resolution_display = this._d(sim, 'expected_resolution_date');
+            safe.next_steps = this._nextSteps(rec, team);
+        } catch (e) {
+            gs.warn('[bfd_PortalService._assess] ' + e);
+            safe.next_steps = this._nextSteps(null, '');
+        }
+        return safe;
+    },
+
+    // ---------------------------------------------------------------- submitCase
+    /** Validates and normalises client input; ownership is re-checked here. */
+    _prepareCaseInput: function (payload, customerId) {
+        var p = payload || {};
+        var caseType = this._s(p.case_type);
+        if (this.CASE_TYPES.indexOf(caseType) === -1) {
+            return this._err(400, 'invalid_case_type', 'Choose a valid issue type.');
+        }
+
+        var preferred = this._s(p.preferred_contact_method) || this._s(p.intake_channel);
+        if (this.INTAKE_CHANNELS.indexOf(preferred) === -1) preferred = '';
+
+        var account = this._ownedAccount(p.account, customerId);
+        if (!account) {
+            return this._err(403, 'invalid_account', 'Select one of your own accounts.');
+        }
+
+        var transactionId = '';
+        var txnCurrency = '';
+        var txnAmount = 0;
+        if (this._s(p.transaction)) {
+            var txn = this._ownedTransaction(p.transaction, customerId, account.getUniqueValue());
+            if (!txn) {
+                return this._err(403, 'invalid_transaction', 'Select a transaction from the chosen account.');
+            }
+            transactionId = txn.getUniqueValue();
+            txnCurrency = this._v(txn, 'currency');
+            txnAmount = this._n(txn, 'amount');
+        }
+
+        var statement = this._trim(p.customer_statement, 4000);
+        if (statement.replace(/\s/g, '').length < 10) {
+            return this._err(400, 'invalid_statement', 'Describe what happened in at least 10 characters.');
+        }
+
+        var incident = this._toDateTime(p.incident_date_time);
+        if (!incident) {
+            return this._err(400, 'invalid_incident_date', 'Enter a valid incident date and time.');
+        }
+        if (new GlideDateTime(incident).compareTo(new GlideDateTime()) > 0) {
+            return this._err(400, 'future_incident_date', 'The incident date cannot be in the future.');
+        }
+
+        var amount = parseFloat(this._s(p.disputed_amount));
+        if (isNaN(amount) || amount < 0) amount = txnAmount;
+        if (amount > 99999999) {
+            return this._err(400, 'invalid_amount', 'Enter a disputed amount below 99,999,999.');
+        }
+
+        return this._ok({
+            accountId: account.getUniqueValue(),
+            transactionId: transactionId,
+            caseType: caseType,
+            // Intake channel is fixed for this channel; the customer's chosen
+            // contact method is recorded separately in the statement footer.
+            intakeChannel: 'mobile_banking',
+            preferredContact: preferred,
+            statement: statement,
+            incidentDateTime: incident,
+            disputedAmount: amount,
+            currency: txnCurrency || this._v(account, 'currency')
+        });
+    },
+
+    _toDateTime: function (raw) {
+        var s = this._s(raw).replace('T', ' ');
+        if (!s) return '';
+        if (s.length === 16) s += ':00';
+        try {
+            var gdt = new GlideDateTime();
+            gdt.setDisplayValue(s, 'yyyy-MM-dd HH:mm:ss');
+            var value = this._s(gdt.getValue());
+            if (value) return value;
+        } catch (e) {
+            gs.warn('[bfd_PortalService._toDateTime] ' + e);
+        }
+        try {
+            return this._s(new GlideDateTime(s).getValue());
+        } catch (e2) {
+            return '';
+        }
+    },
+
+    _contactLabel: function (channel) {
+        switch (this._s(channel)) {
+            case 'mobile_banking':
+                return 'Mobile banking app';
+            case 'online_banking':
+                return 'Online banking';
+            case 'email':
+                return 'Email';
+            case 'phone':
+                return 'Phone';
+            case 'branch':
+                return 'Branch';
+            default:
+                return '';
+        }
+    },
+
+    /**
+     * Inserts the case. Triage, routing, SLA dates, duplicate detection, task
+     * creation and customer notifications are all owned by the existing
+     * business rules and the bfd_flow_case_intake flow — nothing is duplicated
+     * here.
+     */
+    submitCase: function (payload) {
+        var guard = this._requireCustomer();
+        if (guard) return guard;
+        var customerId = this._resolveCustomerGr().getUniqueValue();
+
+        var prepared = this._prepareCaseInput(payload, customerId);
+        if (prepared.ok === false) return prepared;
+        var input = prepared.data;
+
+        var statement = input.statement;
+        var contactLabel = this._contactLabel(input.preferredContact);
+        if (contactLabel) {
+            statement = this._trim(statement + '\n\nPreferred contact method: ' + contactLabel, 4000);
+        }
+
+        var gr = new GlideRecord(this.CASE_TABLE);
+        gr.initialize();
+        gr.setValue('customer', customerId);
+        gr.setValue('account', input.accountId);
+        if (input.transactionId) gr.setValue('transaction', input.transactionId);
+        gr.setValue('case_type', input.caseType);
+        gr.setValue('intake_channel', input.intakeChannel);
+        gr.setValue('customer_statement', statement);
+        gr.setValue('incident_date_time', input.incidentDateTime);
+        gr.setValue('disputed_amount', input.disputedAmount);
+        if (input.currency) gr.setValue('currency', input.currency);
+        gr.setValue('case_status', 'new');
+
+        var newId = '';
+        try {
+            newId = this._s(gr.insert());
+        } catch (e) {
+            gs.error('[bfd_PortalService.submitCase] ' + e);
+        }
+        if (!newId) {
+            return this._err(500, 'create_failed', 'We could not log your report. Please try again.');
+        }
+
+        var assessment = this._assess(input, customerId);
+        var fresh = this._ownedCase(newId, customerId);
+        if (!fresh) {
+            return this._ok({
+                sys_id: newId,
+                case_number: '',
+                expected_resolution_date: '',
+                expected_resolution_display: '',
+                assigned_team: '',
+                assigned_team_label: '',
+                case_status: 'new',
+                assessment: assessment,
+                duplicate: { is_duplicate: false, of_case_number: '', of_case_sys_id: '' }
+            });
+        }
+
+        var duplicate = { is_duplicate: false, of_case_number: '', of_case_sys_id: '' };
+        var dupId = this._v(fresh, 'duplicate_of_case');
+        if (dupId) {
+            duplicate.is_duplicate = true;
+            duplicate.of_case_sys_id = dupId;
+            var dup = this._ownedCase(dupId, customerId);
+            if (dup) duplicate.of_case_number = this._v(dup, 'case_number');
+        }
+
+        return this._ok({
+            sys_id: fresh.getUniqueValue(),
+            case_number: this._v(fresh, 'case_number'),
+            case_status: this._v(fresh, 'case_status'),
+            case_status_label: this._d(fresh, 'case_status'),
+            expected_resolution_date: this._v(fresh, 'expected_resolution_date'),
+            expected_resolution_display: this._d(fresh, 'expected_resolution_date'),
+            assigned_team: this._v(fresh, 'assigned_team'),
+            assigned_team_label: this._d(fresh, 'assigned_team'),
+            assessment: assessment,
+            duplicate: duplicate
+        });
+    },
+
+    // ------------------------------------------------------------ addCaseComment
+    addCaseComment: function (caseSysId, message) {
+        var guard = this._requireCustomer();
+        if (guard) return guard;
+        var c = this._resolveCustomerGr();
+        var customerId = c.getUniqueValue();
+
+        var caseGr = this._ownedCase(caseSysId, customerId);
+        if (!caseGr) {
+            return this._err(403, 'not_authorized', 'You are not authorised to comment on that case.');
+        }
+
+        var text = this._trim(message, 4000);
+        if (text.replace(/\s/g, '').length < 2) {
+            return this._err(400, 'empty_comment', 'Enter a comment before sending.');
+        }
+
+        var comm = new GlideRecord(this.COMM_TABLE);
+        comm.initialize();
+        comm.setValue('case', caseGr.getUniqueValue());
+        comm.setValue('customer', customerId);
+        comm.setValue('channel', 'in_app');
+        comm.setValue('direction', 'inbound');
+        comm.setValue('subject', 'Customer comment');
+        comm.setValue('message', text);
+        comm.setValue('sent_at', new GlideDateTime().getValue());
+        comm.setValue('delivery_status', 'sent');
+        comm.setValue('triggered_by', 'Customer portal');
+
+        var commId = '';
+        try {
+            commId = this._s(comm.insert());
+        } catch (e) {
+            gs.error('[bfd_PortalService.addCaseComment] ' + e);
+        }
+        if (!commId) {
+            return this._err(500, 'comment_failed', 'We could not save your comment. Please try again.');
+        }
+
+        var saved = new GlideRecord(this.COMM_TABLE);
+        if (saved.get(commId)) {
+            var p = this._commPayload(saved);
+            return this._ok({
+                entry: {
+                    id: p.sys_id,
+                    kind: 'communication',
+                    title: p.subject,
+                    body: p.message,
+                    direction: p.direction,
+                    channel_label: p.channel_label,
+                    at: p.sent_at,
+                    at_display: p.sent_at_display
+                }
+            });
+        }
+        return this._ok({ entry: null });
+    },
+
+    // ------------------------------------------------------------- submitFeedback
+    submitFeedback: function (caseSysId, score, comments) {
+        var guard = this._requireCustomer();
+        if (guard) return guard;
+        var customerId = this._resolveCustomerGr().getUniqueValue();
+
+        var caseGr = this._ownedCase(caseSysId, customerId);
+        if (!caseGr) {
+            return this._err(403, 'not_authorized', 'You are not authorised to rate that case.');
+        }
+        if (this.FEEDBACK_STATUSES.indexOf(this._v(caseGr, 'case_status')) === -1) {
+            return this._err(
+                400,
+                'case_not_closed',
+                'Feedback can only be given once the case is resolved or closed.'
+            );
+        }
+
+        var existing = this._v(caseGr, 'customer_satisfaction_score');
+        if (existing) {
+            return this._err(409, 'already_submitted', 'You have already rated this case.');
+        }
+
+        var rating = parseInt(this._s(score), 10);
+        if (isNaN(rating) || rating < 1 || rating > 5) {
+            return this._err(400, 'invalid_score', 'Choose a satisfaction score between 1 and 5.');
+        }
+
+        caseGr.setValue('customer_satisfaction_score', rating);
+        caseGr.setValue('customer_feedback', this._trim(comments, 4000));
+        try {
+            caseGr.update();
+        } catch (e) {
+            gs.error('[bfd_PortalService.submitFeedback] ' + e);
+            return this._err(500, 'feedback_failed', 'We could not save your feedback. Please try again.');
+        }
+
+        return this._ok({
+            customer_satisfaction_score: rating,
+            customer_feedback: this._v(caseGr, 'customer_feedback')
+        });
+    },
+
+    // ---------------------------------------------------------------- attachments
+    listCaseAttachments: function (caseSysId) {
+        var guard = this._requireCustomer();
+        if (guard) return guard;
+        var customerId = this._resolveCustomerGr().getUniqueValue();
+
+        var caseGr = this._ownedCase(caseSysId, customerId);
+        if (!caseGr) {
+            return this._err(403, 'not_authorized', 'You are not authorised to view those documents.');
+        }
+
+        var files = [];
+        try {
+            var gr = new GlideRecord(this.ATTACHMENT_TABLE);
+            gr.addQuery('table_name', this.CASE_TABLE);
+            gr.addQuery('table_sys_id', caseGr.getUniqueValue());
+            gr.orderByDesc('sys_created_on');
+            gr.query();
+            while (gr.next()) {
+                files.push({
+                    sys_id: gr.getUniqueValue(),
+                    file_name: this._v(gr, 'file_name'),
+                    content_type: this._v(gr, 'content_type'),
+                    size_bytes: this._n(gr, 'size_bytes'),
+                    uploaded_display: this._d(gr, 'sys_created_on')
+                });
+            }
+        } catch (e) {
+            gs.warn('[bfd_PortalService.listCaseAttachments] ' + e);
+            return this._err(
+                500,
+                'attachment_read_failed',
+                'Documents could not be listed. Attachment access may need configuring.'
+            );
+        }
+        return this._ok({ attachments: files });
+    },
+
+    /**
+     * Accepts a base64 payload and attaches it to an owned case. The client may
+     * only name a case it owns; the table and record are chosen server-side.
+     */
+    uploadCaseAttachment: function (payload) {
+        var guard = this._requireCustomer();
+        if (guard) return guard;
+        var customerId = this._resolveCustomerGr().getUniqueValue();
+
+        var p = payload || {};
+        var caseGr = this._ownedCase(p.case_id, customerId);
+        if (!caseGr) {
+            return this._err(403, 'not_authorized', 'You are not authorised to upload to that case.');
+        }
+
+        var fileName = this._trim(this._s(p.file_name).replace(/[\\\/\r\n]/g, '_'), 200);
+        if (!fileName) {
+            return this._err(400, 'invalid_file_name', 'The file needs a name.');
+        }
+
+        var contentType = this._s(p.content_type).toLowerCase();
+        if (this.ALLOWED_UPLOAD_TYPES.indexOf(contentType) === -1) {
+            return this._err(
+                400,
+                'unsupported_file_type',
+                'Upload a PDF, plain text file or an image (PNG, JPG, GIF or WebP).'
+            );
+        }
+
+        var base64 = this._s(p.content_base64);
+        if (!base64) {
+            return this._err(400, 'empty_file', 'The selected file appears to be empty.');
+        }
+        var approxBytes = Math.floor((base64.length * 3) / 4);
+        if (approxBytes > this.MAX_UPLOAD_BYTES) {
+            return this._err(400, 'file_too_large', 'Files must be 5 MB or smaller.');
+        }
+
+        var attachmentId = '';
+        try {
+            attachmentId = this._s(new GlideSysAttachment().writeBase64(caseGr, fileName, contentType, base64));
+        } catch (e) {
+            gs.error('[bfd_PortalService.uploadCaseAttachment] ' + e);
+            return this._err(
+                500,
+                'attachment_write_failed',
+                'The document could not be saved. Attachment access may need configuring on this instance.'
+            );
+        }
+        if (!attachmentId) {
+            return this._err(
+                500,
+                'attachment_write_failed',
+                'The document could not be saved. Attachment access may need configuring on this instance.'
+            );
+        }
+
+        return this._ok({
+            sys_id: attachmentId,
+            file_name: fileName,
+            content_type: contentType,
+            size_bytes: approxBytes
+        });
+    },
+
+    type: 'bfd_PortalService'
+};
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 11:34:00</sys_created_on>
+        <sys_id>dd944766d32c4cc0873e587b18a11cc0</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_PortalService</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_script_include_dd944766d32c4cc0873e587b18a11cc0</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 11:34:00</sys_updated_on>
+    </sys_script_include>
+</record_update>
