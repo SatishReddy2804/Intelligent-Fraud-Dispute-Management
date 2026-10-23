@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_ui_action">
+    <sys_ui_action action="INSERT_OR_UPDATE">
+        <action_name>bfd_ui_issue_provisional_credit</action_name>
+        <active>true</active>
+        <client>false</client>
+        <client_script_v2/>
+        <comments/>
+        <condition>current.case_status != 'closed' &amp;&amp; current.case_status != 'resolved' &amp;&amp; current.provisional_credit_flag != true</condition>
+        <form_action>true</form_action>
+        <form_button>true</form_button>
+        <form_button_icon/>
+        <form_button_v2>false</form_button_v2>
+        <form_context_menu>false</form_context_menu>
+        <form_link>false</form_link>
+        <form_menu_button_v2>false</form_menu_button_v2>
+        <form_style>primary</form_style>
+        <format_for_configurable_workspace>false</format_for_configurable_workspace>
+        <hint>Credit the customer while the dispute is investigated. Amounts above 500 require approval.</hint>
+        <isolate_script>false</isolate_script>
+        <list_action>false</list_action>
+        <list_banner_button>false</list_banner_button>
+        <list_button>false</list_button>
+        <list_button_icon/>
+        <list_choice>false</list_choice>
+        <list_context_menu>false</list_context_menu>
+        <list_link>false</list_link>
+        <list_save_with_form_button>false</list_save_with_form_button>
+        <list_style/>
+        <messages/>
+        <name>Issue provisional credit</name>
+        <onclick/>
+        <order>700</order>
+        <script><![CDATA[// bfd_ui_issue_provisional_credit — derive the credit amount, enforce the
+// 500 approval threshold, then flag the credit on the case.
+(function issueProvisionalCreditAction() {
+    var TASK_TABLE = 'x_1755386_safetr_0_bfd_case_task';
+    var THRESHOLD = 500;
+    var engine = new bfd_TriageEngine();
+
+    var amount = parseFloat(current.getValue('provisional_credit_amount') || '0');
+    if (isNaN(amount) || amount <= 0) {
+        amount = parseFloat(current.getValue('disputed_amount') || '0');
+    }
+    if (isNaN(amount) || amount <= 0) {
+        gs.addErrorMessage(
+            'No provisional credit amount could be derived. Enter a Provisional credit amount (or a Disputed amount) and try again.'
+        );
+        action.setRedirectURL(current);
+        return;
+    }
+
+    if (current.getValue('provisional_credit_flag') === 'true' || current.getValue('provisional_credit_flag') === '1') {
+        gs.addInfoMessage('A provisional credit has already been issued on this case.');
+        action.setRedirectURL(current);
+        return;
+    }
+
+    var canAuthorise =
+        gs.hasRole('x_1755386_safetr_0.bfd_team_lead') ||
+        gs.hasRole('x_1755386_safetr_0.bfd_admin') ||
+        gs.hasRole('admin');
+
+    if (amount > THRESHOLD && !canAuthorise) {
+        var approval = new GlideRecord(TASK_TABLE);
+        approval.initialize();
+        approval.setValue('case', current.getUniqueValue());
+        approval.setValue('task_type', 'approval');
+        approval.setValue('status', 'open');
+        approval.setValue('priority', current.getValue('priority') || 'p2');
+        approval.setValue(
+            'outcome',
+            'Approval requested for a provisional credit of ' +
+                amount +
+                ' ' +
+                (current.getValue('currency') || '') +
+                ' (above the ' +
+                THRESHOLD +
+                ' threshold).'
+        );
+        if (current.getValue('assigned_group')) approval.setValue('assigned_group', current.getValue('assigned_group'));
+        var due = new GlideDateTime();
+        due.addDaysLocalTime(1);
+        approval.setValue('due_date', due.getValue());
+        approval.insert();
+
+        current.setValue('provisional_credit_amount', amount);
+        current.setValue('case_status', 'pending_approval');
+        engine.logAiDecision(current, {
+            note:
+                'Agent ' +
+                gs.getUserDisplayName() +
+                ' requested a provisional credit of ' +
+                amount +
+                ' which exceeds the ' +
+                THRESHOLD +
+                ' approval threshold. Case moved to Pending approval; credit NOT applied.',
+            finalDecision: 'provisional_credit_pending_approval',
+        });
+        current.update();
+
+        gs.addInfoMessage(
+            'A provisional credit of ' +
+                amount +
+                ' is above the ' +
+                THRESHOLD +
+                ' threshold and needs team lead approval. The case is now "Pending approval" and an Approval task has been raised — the credit has NOT been applied yet.'
+        );
+        action.setRedirectURL(current);
+        return;
+    }
+
+    current.setValue('provisional_credit_flag', true);
+    current.setValue('provisional_credit_amount', amount);
+    engine.logAiDecision(current, {
+        note:
+            'Provisional credit of ' +
+            amount +
+            ' ' +
+            (current.getValue('currency') || '') +
+            ' issued by ' +
+            gs.getUserDisplayName() +
+            '.',
+        finalDecision: 'provisional_credit_issued',
+    });
+    current.update();
+
+    gs.addInfoMessage(
+        'Provisional credit of ' + amount + ' issued and recorded on this case, with the decision written to the audit trail.'
+    );
+    action.setRedirectURL(current);
+})();
+]]></script>
+        <show_form_icon_only>false</show_form_icon_only>
+        <show_insert>true</show_insert>
+        <show_list_icon_only>false</show_list_icon_only>
+        <show_multiple_update>false</show_multiple_update>
+        <show_query>false</show_query>
+        <show_update>true</show_update>
+        <sys_class_name>sys_ui_action</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 13:08:27</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>5ed1ca28a9e14008ac63772fc2766488</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Issue provisional credit</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_ui_action_5ed1ca28a9e14008ac63772fc2766488</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 13:08:27</sys_updated_on>
+        <table>x_1755386_safetr_0_bfd_fraud_dispute_case</table>
+        <ui11_compatible>false</ui11_compatible>
+        <ui16_compatible>false</ui16_compatible>
+    </sys_ui_action>
+</record_update>

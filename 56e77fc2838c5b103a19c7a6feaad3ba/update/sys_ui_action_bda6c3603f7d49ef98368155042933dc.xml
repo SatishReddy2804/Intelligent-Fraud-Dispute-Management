@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_ui_action">
+    <sys_ui_action action="INSERT_OR_UPDATE">
+        <action_name>bfd_ui_block_card_permanent</action_name>
+        <active>true</active>
+        <client>false</client>
+        <client_script_v2/>
+        <comments/>
+        <condition>current.case_status != 'closed' &amp;&amp; current.case_status != 'resolved' &amp;&amp; current.card_action != 'permanent_block'</condition>
+        <form_action>true</form_action>
+        <form_button>true</form_button>
+        <form_button_icon/>
+        <form_button_v2>false</form_button_v2>
+        <form_context_menu>false</form_context_menu>
+        <form_link>false</form_link>
+        <form_menu_button_v2>false</form_menu_button_v2>
+        <form_style>destructive</form_style>
+        <format_for_configurable_workspace>false</format_for_configurable_workspace>
+        <hint>Permanently block the card. High-value cases are routed for team lead approval first.</hint>
+        <isolate_script>false</isolate_script>
+        <list_action>false</list_action>
+        <list_banner_button>false</list_banner_button>
+        <list_button>false</list_button>
+        <list_button_icon/>
+        <list_choice>false</list_choice>
+        <list_context_menu>false</list_context_menu>
+        <list_link>false</list_link>
+        <list_save_with_form_button>false</list_save_with_form_button>
+        <list_style/>
+        <messages/>
+        <name>Block card (permanent)</name>
+        <onclick/>
+        <order>400</order>
+        <script><![CDATA[// bfd_ui_block_card_permanent — a permanently blocked card is a financial
+// action, so bfd_CaseUtils.highValueApprovalRequired gates it. Agents raise an
+// approval; team leads and app admins may authorise directly.
+(function blockCardPermanentAction() {
+    var TASK_TABLE = 'x_1755386_safetr_0_bfd_case_task';
+    var utils = new bfd_CaseUtils();
+    var engine = new bfd_TriageEngine();
+
+    var disputed = parseFloat(current.getValue('disputed_amount') || '0');
+    if (isNaN(disputed)) disputed = 0;
+
+    var canAuthorise =
+        gs.hasRole('x_1755386_safetr_0.bfd_team_lead') ||
+        gs.hasRole('x_1755386_safetr_0.bfd_admin') ||
+        gs.hasRole('admin');
+
+    var needsApproval =
+        (utils.highValueApprovalRequired(current) || disputed > utils.HIGH_VALUE_THRESHOLD) && !canAuthorise;
+
+    if (needsApproval) {
+        var approval = new GlideRecord(TASK_TABLE);
+        approval.initialize();
+        approval.setValue('case', current.getUniqueValue());
+        approval.setValue('task_type', 'approval');
+        approval.setValue('status', 'open');
+        approval.setValue('priority', current.getValue('priority') || 'p2');
+        approval.setValue(
+            'outcome',
+            'Approval requested for a PERMANENT card block (disputed amount ' + disputed + ').'
+        );
+        if (current.getValue('assigned_group')) approval.setValue('assigned_group', current.getValue('assigned_group'));
+        var approvalDue = new GlideDateTime();
+        approvalDue.addDaysLocalTime(1);
+        approval.setValue('due_date', approvalDue.getValue());
+        approval.insert();
+
+        current.setValue('case_status', 'pending_approval');
+        engine.logAiDecision(current, {
+            note:
+                'Agent ' +
+                gs.getUserDisplayName() +
+                ' requested a PERMANENT card block. Approval is required (high-value financial action); case moved to Pending approval.',
+            finalDecision: 'permanent_block_pending_approval',
+        });
+        current.update();
+
+        gs.addInfoMessage(
+            'A permanent card block on this case is a high-value action and needs team lead approval. The case is now "Pending approval" and an Approval task has been raised — the block has NOT been applied yet.'
+        );
+        action.setRedirectURL(current);
+        return;
+    }
+
+    var task = new GlideRecord(TASK_TABLE);
+    task.initialize();
+    task.setValue('case', current.getUniqueValue());
+    task.setValue('task_type', 'card_block');
+    task.setValue('status', 'complete');
+    task.setValue('priority', current.getValue('priority') || 'p1');
+    task.setValue('outcome', 'Permanent card block authorised and applied by ' + gs.getUserDisplayName() + '.');
+    if (current.getValue('assigned_group')) task.setValue('assigned_group', current.getValue('assigned_group'));
+    if (current.getValue('assigned_agent')) task.setValue('assigned_agent', current.getValue('assigned_agent'));
+    task.setValue('due_date', new GlideDateTime().getValue());
+    task.insert();
+
+    current.setValue('card_action', 'permanent_block');
+    engine.logAiDecision(current, {
+        note: 'PERMANENT card block authorised and applied by ' + gs.getUserDisplayName() + '.',
+        finalDecision: 'card_action=permanent_block',
+    });
+    current.update();
+
+    gs.addInfoMessage(
+        'Permanent card block applied. A completed "Card block" task has been added and the action is recorded in the audit trail.'
+    );
+    action.setRedirectURL(current);
+})();
+]]></script>
+        <show_form_icon_only>false</show_form_icon_only>
+        <show_insert>true</show_insert>
+        <show_list_icon_only>false</show_list_icon_only>
+        <show_multiple_update>false</show_multiple_update>
+        <show_query>false</show_query>
+        <show_update>true</show_update>
+        <sys_class_name>sys_ui_action</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 13:08:27</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>bda6c3603f7d49ef98368155042933dc</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Block card (permanent)</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_ui_action_bda6c3603f7d49ef98368155042933dc</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 13:08:27</sys_updated_on>
+        <table>x_1755386_safetr_0_bfd_fraud_dispute_case</table>
+        <ui11_compatible>false</ui11_compatible>
+        <ui16_compatible>false</ui16_compatible>
+    </sys_ui_action>
+</record_update>

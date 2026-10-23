@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_atf_test">
+    <sys_atf_test action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <copied_from/>
+        <description>Validates that the configurable bfd_routing_rule table drives team selection by case type: a duplicate_charge case must land on assigned_team = banking_operations, and a card_not_received case must land on assigned_team = cards_operations. Each case uses its own fixture customer so duplicate detection cannot interfere.</description>
+        <enable_parameterized_testing>false</enable_parameterized_testing>
+        <fail_on_server_error>false</fail_on_server_error>
+        <name>bfd_atf_banking_routing</name>
+        <parameters/>
+        <remember/>
+        <sn_atf_tg_generated>false</sn_atf_tg_generated>
+        <sys_class_name>sys_atf_test</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 14:13:14</sys_created_on>
+        <sys_id>072c1758d1e44115b46ab1b8348439ea</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_atf_banking_routing</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_atf_test_072c1758d1e44115b46ab1b8348439ea</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 14:13:14</sys_updated_on>
+        <test_origin>manual</test_origin>
+    </sys_atf_test>
+    <sys_variable_value action="delete_multiple" query="document_key=072c1758d1e44115b46ab1b8348439ea"/>
+</record_update>

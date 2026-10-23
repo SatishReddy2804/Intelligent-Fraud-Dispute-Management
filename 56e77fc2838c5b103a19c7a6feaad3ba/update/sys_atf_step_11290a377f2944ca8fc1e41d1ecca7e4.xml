@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_atf_step">
+    <sys_atf_step action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <callable_outputs/>
+        <copied_from/>
+        <description/>
+        <display_name>Run Server Side Script</display_name>
+        <inputs/>
+        <mugshots_cache_json/>
+        <notes/>
+        <order>1</order>
+        <step_config display_value="Run Server Side Script">41de4a935332120028bc29cac2dc349a</step_config>
+        <sys_class_name>sys_atf_step</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 14:13:13</sys_created_on>
+        <sys_id>11290a377f2944ca8fc1e41d1ecca7e4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Run Server Side Script</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_atf_step_11290a377f2944ca8fc1e41d1ecca7e4</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 14:13:13</sys_updated_on>
+        <table/>
+        <test display_value="bfd_atf_resolution_and_metrics">75a2977cdca44283964636a680ccc28d</test>
+        <timeout/>
+        <warning_message/>
+    </sys_atf_step>
+    <sys_variable_value action="delete_multiple" query="document_key=11290a377f2944ca8fc1e41d1ecca7e4"/>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>sys_atf_step</document>
+        <document_key>11290a377f2944ca8fc1e41d1ecca7e4</document_key>
+        <order>100</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 17:55:49</sys_created_on>
+        <sys_id>429c44db957a43e891c6de788eeffbee</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 17:55:49</sys_updated_on>
+        <value>3.1</value>
+        <variable display_value="Jasmine version">42f2564b73031300440211d8faf6a777</variable>
+    </sys_variable_value>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>sys_atf_step</document>
+        <document_key>11290a377f2944ca8fc1e41d1ecca7e4</document_key>
+        <order>200</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 17:55:49</sys_created_on>
+        <sys_id>5e22837cf8874a63bcffb264144358d7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 17:55:49</sys_updated_on>
+        <value>(function (outputs, steps, params, stepResult, assertEqual) {
+var CUST='x_1755386_safetr_0_bfd_customer_profile',ACCT='x_1755386_safetr_0_bfd_bank_account',TXN='x_1755386_safetr_0_bfd_transaction',CASE='x_1755386_safetr_0_bfd_fraud_dispute_case',TASK='x_1755386_safetr_0_bfd_case_task',SNAP='x_1755386_safetr_0_bfd_case_metric_snapshot';
+var CASE_STATUSES=['new','triage','pending_customer_information','under_investigation','pending_approval','action_taken','resolved','closed','reopened'];
+var TEAMS=['fraud_operations','cards_operations','banking_operations'],LEVELS=['critical','high','medium','low'],PRIORITIES=['p1','p2','p3','p4'];
+function need(c,m){ if(!c){ throw new Error('ASSERTION FAILED: '+m); } }
+function uniq(){ return ''+new GlideDateTime().getNumericValue()+Math.floor(Math.random()*100000); }
+function hoursAgo(h){ var g=new GlideDateTime(); g.addSeconds(-1*h*3600); return g.getValue(); }
+function val(gr,f){ if(!gr){ return ''; } var v=gr.getValue(f); return (v===null||v===undefined)?'':(''+v); }
+function num(gr,f){ var n=parseFloat(val(gr,f)); return isNaN(n)?0:n; }
+function load(t,id){ var gr=new GlideRecord(t); return gr.get(id)?gr:null; }
+function inSet(v,a){ return a.indexOf(''+v)!==-1; }
+function mkCustomer(tier){ var u=uniq(); var gr=new GlideRecord(CUST); gr.initialize(); gr.setValue('customer_number','ATFC'+u); gr.setValue('full_name','ATF Fixture Customer '+u); gr.setValue('email','atf.'+u+'@safetrace-atf.invalid'); gr.setValue('mobile_phone','+15550000000'); gr.setValue('kyc_status','verified'); gr.setValue('risk_tier',tier||'low'); gr.setValue('preferred_contact_channel','email'); gr.setValue('active_flag',true); var id=''+gr.insert(); need(id,'fixture customer could not be inserted'); return id; }
+function mkAccount(cid,tier,hold){ var u=uniq(); var gr=new GlideRecord(ACCT); gr.initialize(); gr.setValue('customer',cid); gr.setValue('account_number_masked','ATF-****'+u); gr.setValue('account_type','checking'); gr.setValue('account_status','active'); gr.setValue('currency','USD'); gr.setValue('available_balance',5000); gr.setValue('risk_tier',tier||'low'); gr.setValue('fraud_hold_flag',hold===true); var id=''+gr.insert(); need(id,'fixture account could not be inserted'); return id; }
+function mkTxn(cid,aid,o){ o=o||{}; var u=uniq(); var gr=new GlideRecord(TXN); gr.initialize(); gr.setValue('transaction_reference','ATFTXN'+u); gr.setValue('account',aid); gr.setValue('customer',cid); gr.setValue('transaction_date_time',o.when||hoursAgo(12)); gr.setValue('merchant_name',o.merchant||('ATF Merchant '+u)); gr.setValue('merchant_category','retail'); gr.setValue('channel',o.channel||'pos'); gr.setValue('transaction_type','debit'); gr.setValue('amount',(o.amount===undefined||o.amount===null)?180:o.amount); gr.setValue('currency','USD'); gr.setValue('status',o.status||'posted'); gr.setValue('card_last_four',o.card||(''+u).slice(-4)); gr.setValue('country',o.country||'US'); gr.setValue('is_recurring',false); gr.setValue('fraud_indicator',o.fraud===true); gr.setValue('dispute_flag',false); var id=''+gr.insert(); need(id,'fixture transaction could not be inserted'); return id; }
+function mkCase(f){ var gr=new GlideRecord(CASE); gr.initialize(); for(var k in f){ if(f.hasOwnProperty(k)){ gr.setValue(k,f[k]); } } var id=''+gr.insert(); need(id,'fixture case could not be inserted'); return id; }
+function mkTask(cid,type,status){ var gr=new GlideRecord(TASK); gr.initialize(); gr.setValue('case',cid); gr.setValue('task_type',type); gr.setValue('status',status||'open'); gr.setValue('priority','p3'); var id=''+gr.insert(); need(id,'fixture task could not be inserted'); return id; }
+function completeOpenTasks(cid){ var gr=new GlideRecord(TASK); gr.addQuery('case',cid); gr.addQuery('status','IN','open,work_in_progress'); gr.query(); var n=0; while(gr.next()){ gr.setValue('status','complete'); gr.setValue('outcome','Completed by ATF fixture.'); gr.update(); n++; } return n; }
+
+    var customerId = mkCustomer('medium');
+    var accountId = mkAccount(customerId, 'low', false);
+    var txnId = mkTxn(customerId, accountId, { amount: 740.6, when: hoursAgo(26), channel: 'online' });
+
+    var caseId = mkCase({
+        customer: customerId,
+        account: accountId,
+        transaction: txnId,
+        case_type: 'unauthorized_transaction',
+        intake_channel: 'mobile_banking',
+        customer_statement: 'I do not recognize this online payment and I did not make it.',
+        incident_date_time: hoursAgo(26),
+        disputed_amount: 740.6,
+        currency: 'USD',
+        case_status: 'under_investigation'
+    });
+
+    // Clear the closure gate: no mandatory task may remain open.
+    completeOpenTasks(caseId);
+    mkTask(caseId, 'identity_verification', 'complete');
+    mkTask(caseId, 'transaction_review', 'complete');
+
+    // ---------- resolve ----------
+    var resolving = load(CASE, caseId);
+    need(resolving, 'the case could not be re-read before resolving');
+    resolving.setValue('resolution_code', 'fraud_confirmed_refunded');
+    resolving.setValue('resolution_summary', 'Fraud confirmed. Funds refunded to the customer and the card was reissued.');
+    resolving.setValue('recovery_amount', 740.6);
+    resolving.setValue('customer_satisfaction_score', 5);
+    resolving.setValue('case_status', 'resolved');
+    resolving.update();
+
+    var resolved = load(CASE, caseId);
+    need(val(resolved, 'case_status') === 'resolved', 'the case should be resolved, got ' + val(resolved, 'case_status'));
+    need(val(resolved, 'actual_resolution_date') !== '', 'actual_resolution_date should be stamped on resolve');
+    var stampedAt = val(resolved, 'actual_resolution_date');
+
+    // ---------- close ----------
+    completeOpenTasks(caseId);
+    var closing = load(CASE, caseId);
+    closing.setValue('closure_notes', 'Closed by the ATF resolution/metrics test.');
+    closing.setValue('case_status', 'closed');
+    closing.update();
+
+    var closed = load(CASE, caseId);
+    need(val(closed, 'case_status') === 'closed', 'the case should be closed, got ' + val(closed, 'case_status'));
+    need(val(closed, 'actual_resolution_date') !== '', 'actual_resolution_date should remain stamped after closure');
+    need(val(closed, 'actual_resolution_date') === stampedAt, 'actual_resolution_date should not be re-stamped on closure (was ' + stampedAt + ', now ' + val(closed, 'actual_resolution_date') + ')');
+
+    // ---------- reporting snapshot ----------
+    var snapId = '' + new bfd_FlowSupport().createMetricSnapshot(caseId);
+    need(snapId !== '' &amp;&amp; snapId !== 'null' &amp;&amp; snapId !== 'undefined', 'createMetricSnapshot() did not return a sys_id');
+
+    var snap = load(SNAP, snapId);
+    need(snap, 'the bfd_case_metric_snapshot row could not be re-read');
+    need(val(snap, 'case') === caseId, 'snapshot.case should point at the case, got ' + val(snap, 'case'));
+    need(val(snap, 'metric_date') !== '', 'snapshot.metric_date was not populated');
+    need(val(snap, 'case_type') !== '', 'snapshot.case_type was not populated');
+    need(val(snap, 'team') !== '', 'snapshot.team was not populated');
+    need(inSet(val(snap, 'sla_status'), ['on_track', 'at_risk', 'breached']), 'snapshot.sla_status should be on_track/at_risk/breached, got ' + val(snap, 'sla_status'));
+    need(num(snap, 'resolution_time_hours') &gt; 0, 'snapshot.resolution_time_hours should be greater than 0');
+
+    stepResult.setOutputMessage('Resolution + metrics OK: resolved at ' + stampedAt + ', snapshot team=' + val(snap, 'team') + ' sla_status=' + val(snap, 'sla_status') + ' resolution_hours=' + val(snap, 'resolution_time_hours'));
+})(outputs, steps, params, stepResult, assertEqual);</value>
+        <variable display_value="Test script">989d9e235324220002c6435723dc3484</variable>
+    </sys_variable_value>
+</record_update>

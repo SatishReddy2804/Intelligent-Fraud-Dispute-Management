@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_ui_action">
+    <sys_ui_action action="INSERT_OR_UPDATE">
+        <action_name>bfd_ui_escalate_case</action_name>
+        <active>true</active>
+        <client>false</client>
+        <client_script_v2/>
+        <comments/>
+        <condition>current.case_status != 'closed' &amp;&amp; current.case_status != 'resolved'</condition>
+        <form_action>true</form_action>
+        <form_button>true</form_button>
+        <form_button_icon/>
+        <form_button_v2>false</form_button_v2>
+        <form_context_menu>false</form_context_menu>
+        <form_link>false</form_link>
+        <form_menu_button_v2>false</form_menu_button_v2>
+        <form_style>destructive</form_style>
+        <format_for_configurable_workspace>false</format_for_configurable_workspace>
+        <hint>Raise the escalation level and notify the team lead.</hint>
+        <isolate_script>false</isolate_script>
+        <list_action>false</list_action>
+        <list_banner_button>false</list_banner_button>
+        <list_button>false</list_button>
+        <list_button_icon/>
+        <list_choice>false</list_choice>
+        <list_context_menu>false</list_context_menu>
+        <list_link>false</list_link>
+        <list_save_with_form_button>false</list_save_with_form_button>
+        <list_style/>
+        <messages/>
+        <name>Escalate case</name>
+        <onclick/>
+        <order>1000</order>
+        <script><![CDATA[// bfd_ui_escalate_case — raise the escalation level, make the SLA position
+// explicit, and let the existing escalation notification fire on the change.
+(function escalateCaseAction() {
+    var engine = new bfd_TriageEngine();
+
+    var level = parseInt(current.getValue('escalation_level') || '0', 10);
+    if (isNaN(level) || level < 0) level = 0;
+    var next = level + 1;
+    current.setValue('escalation_level', next);
+
+    var slaNote = '';
+    var expected = current.getValue('expected_resolution_date');
+    var breached = current.getValue('sla_breach_flag') === 'true' || current.getValue('sla_breach_flag') === '1';
+    if (!breached && expected) {
+        var due = new GlideDateTime(expected);
+        if (due.getNumericValue() < new GlideDateTime().getNumericValue()) {
+            current.setValue('sla_breach_flag', true);
+            breached = true;
+            slaNote = ' The expected resolution date has passed, so the SLA breach flag has been set.';
+        }
+    } else if (breached) {
+        slaNote = ' This case is already flagged as an SLA breach.';
+    }
+
+    engine.logAiDecision(current, {
+        note:
+            'Case escalated by ' +
+            gs.getUserDisplayName() +
+            ' from escalation level ' +
+            level +
+            ' to ' +
+            next +
+            '.' +
+            slaNote,
+        finalDecision: 'escalation_level=' + next,
+    });
+    current.update();
+
+    gs.addInfoMessage(
+        'Case escalated to level ' +
+            next +
+            '. The escalation notification will be sent to the team lead and the change is recorded in the audit trail.' +
+            slaNote
+    );
+    action.setRedirectURL(current);
+})();
+]]></script>
+        <show_form_icon_only>false</show_form_icon_only>
+        <show_insert>true</show_insert>
+        <show_list_icon_only>false</show_list_icon_only>
+        <show_multiple_update>false</show_multiple_update>
+        <show_query>false</show_query>
+        <show_update>true</show_update>
+        <sys_class_name>sys_ui_action</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 13:08:26</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>23c9c6b4944c457babef5bf3079095b8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Escalate case</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_ui_action_23c9c6b4944c457babef5bf3079095b8</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 13:08:26</sys_updated_on>
+        <table>x_1755386_safetr_0_bfd_fraud_dispute_case</table>
+        <ui11_compatible>false</ui11_compatible>
+        <ui16_compatible>false</ui16_compatible>
+    </sys_ui_action>
+</record_update>

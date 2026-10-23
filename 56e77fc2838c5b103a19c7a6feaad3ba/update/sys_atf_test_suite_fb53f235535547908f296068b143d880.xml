@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_atf_test_suite">
+    <sys_atf_test_suite action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <description>End-to-end server-side coverage for SafeTrace: customer intake and AI triage, high-risk fraud routing, configurable team routing, duplicate detection, the high-value approval gate, the closure guard (both sides), resolution dates and the reporting metric snapshot, the triage agent assessment surface, and the human override of the advisory AI recommendation.</description>
+        <input_filter/>
+        <name>BFD - Fraud &amp; Dispute End to End</name>
+        <parent/>
+        <sn_atf_tg_generated>false</sn_atf_tg_generated>
+        <sys_class_name>sys_atf_test_suite</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 14:13:15</sys_created_on>
+        <sys_id>fb53f235535547908f296068b143d880</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>BFD - Fraud &amp; Dispute End to End</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_atf_test_suite_fb53f235535547908f296068b143d880</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 14:13:15</sys_updated_on>
+    </sys_atf_test_suite>
+</record_update>

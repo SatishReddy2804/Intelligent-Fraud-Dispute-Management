@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_section caption="AI Triage" section_id="328bc2e970a942f8a13c798a9c6264ed" sys_domain="global" table="x_1755386_safetr_0_bfd_fraud_dispute_case" version="3" view="">
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.begin_split</element>
+            <position>0</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>2d9c302b62f34860942347f62a85fc20</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="AI Triage" display_value="AI Triage" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">328bc2e970a942f8a13c798a9c6264ed</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type>.begin_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>intent_classification</element>
+            <position>1</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>3e958412cd1249e99a7563e88b82d660</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="AI Triage" display_value="AI Triage" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">328bc2e970a942f8a13c798a9c6264ed</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>risk_score</element>
+            <position>2</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>60009bb4b02e41f4a664cb7839050231</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="AI Triage" display_value="AI Triage" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">328bc2e970a942f8a13c798a9c6264ed</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.split</element>
+            <position>3</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>b29c9e529e724652875307f40a7cfaff</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="AI Triage" display_value="AI Triage" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">328bc2e970a942f8a13c798a9c6264ed</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type>.split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>risk_level</element>
+            <position>4</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>fea4ed9663834041aa4766726ba4862a</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="AI Triage" display_value="AI Triage" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">328bc2e970a942f8a13c798a9c6264ed</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.end_split</element>
+            <position>5</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>76959961723643fa83b636f6c2ff1f9f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="AI Triage" display_value="AI Triage" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">328bc2e970a942f8a13c798a9c6264ed</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type>.end_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>ai_recommendation</element>
+            <position>6</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>565dc6feb6124e9d80747aa3cb6f7ca9</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="AI Triage" display_value="AI Triage" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">328bc2e970a942f8a13c798a9c6264ed</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>policy_guidance</element>
+            <position>7</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>7cf018e728be43e08f085dfb68506e41</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="AI Triage" display_value="AI Triage" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">328bc2e970a942f8a13c798a9c6264ed</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption>AI Triage</caption>
+            <header>false</header>
+            <name>x_1755386_safetr_0_bfd_fraud_dispute_case</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 13:08:37</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>328bc2e970a942f8a13c798a9c6264ed</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_1755386_safetr_0_bfd_fraud_dispute_case</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+            <sys_update_name>sys_ui_section_328bc2e970a942f8a13c798a9c6264ed</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 13:08:37</sys_updated_on>
+            <sys_user/>
+            <title>false</title>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>

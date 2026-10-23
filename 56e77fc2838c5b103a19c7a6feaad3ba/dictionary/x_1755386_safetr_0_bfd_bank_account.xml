@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="6c893399cab04fbc98d35db59abd16b3" label="Bank Account" name="x_1755386_safetr_0_bfd_bank_account" type="collection">
+        <element label="Fraud Hold" name="fraud_hold_flag" type="boolean"/>
+        <element label="Risk Tier" name="risk_tier" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Medium" sequence="2" value="medium"/>
+                <element inactive_on_update="false" label="High" sequence="3" value="high"/>
+                <element inactive_on_update="false" label="Low" sequence="1" value="low"/>
+            </choice>
+        </element>
+        <element default="USD" label="Currency" max_length="10" name="currency" type="string"/>
+        <element label="Available Balance" name="available_balance" type="decimal"/>
+        <element display="true" label="Account Number (Masked)" max_length="40" name="account_number_masked" type="string"/>
+        <element label="Customer" name="customer" reference="x_1755386_safetr_0_bfd_customer_profile" type="reference"/>
+        <element label="Opened Date" name="opened_date" type="glide_date"/>
+        <element label="Branch" max_length="100" name="branch" type="string"/>
+        <element label="Account Type" name="account_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Credit card" sequence="3" value="credit_card"/>
+                <element inactive_on_update="false" label="Current" sequence="1" value="current"/>
+                <element inactive_on_update="false" label="Savings" sequence="2" value="savings"/>
+                <element inactive_on_update="false" label="Loan" sequence="4" value="loan"/>
+            </choice>
+        </element>
+        <element label="Account Status" name="account_status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Active" sequence="1" value="active"/>
+                <element inactive_on_update="false" label="Closed" sequence="3" value="closed"/>
+                <element inactive_on_update="false" label="Dormant" sequence="2" value="dormant"/>
+                <element inactive_on_update="false" label="Frozen" sequence="4" value="frozen"/>
+            </choice>
+        </element>
+        <index name="index">
+            <element name="customer"/>
+        </index>
+    </element>
+</database>

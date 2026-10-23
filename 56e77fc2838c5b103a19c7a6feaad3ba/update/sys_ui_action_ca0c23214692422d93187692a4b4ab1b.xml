@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_ui_action">
+    <sys_ui_action action="INSERT_OR_UPDATE">
+        <action_name>bfd_ui_mark_duplicate</action_name>
+        <active>true</active>
+        <client>false</client>
+        <client_script_v2/>
+        <comments/>
+        <condition>current.case_status != 'closed'</condition>
+        <form_action>true</form_action>
+        <form_button>true</form_button>
+        <form_button_icon/>
+        <form_button_v2>false</form_button_v2>
+        <form_context_menu>true</form_context_menu>
+        <form_link>false</form_link>
+        <form_menu_button_v2>false</form_menu_button_v2>
+        <form_style>unstyled</form_style>
+        <format_for_configurable_workspace>false</format_for_configurable_workspace>
+        <hint>Run duplicate detection and link this case to the original dispute if one exists.</hint>
+        <isolate_script>false</isolate_script>
+        <list_action>false</list_action>
+        <list_banner_button>false</list_banner_button>
+        <list_button>false</list_button>
+        <list_button_icon/>
+        <list_choice>false</list_choice>
+        <list_context_menu>false</list_context_menu>
+        <list_link>false</list_link>
+        <list_save_with_form_button>false</list_save_with_form_button>
+        <list_style/>
+        <messages/>
+        <name>Mark as duplicate</name>
+        <onclick/>
+        <order>900</order>
+        <script><![CDATA[// bfd_ui_mark_duplicate — run the duplicate detector and, when a prior case is
+// found, link this case to the original and bump the recurrence count.
+(function markDuplicateAction() {
+    var CASE_TABLE = 'x_1755386_safetr_0_bfd_fraud_dispute_case';
+    var detector = new bfd_DuplicateDetector();
+    var engine = new bfd_TriageEngine();
+
+    var found = detector.findDuplicate(current);
+
+    if (!found || found.isDuplicate !== true || !found.originalCaseSysId) {
+        gs.addInfoMessage(
+            'No duplicate or recurring dispute was found for this customer. The case has been left unchanged.'
+        );
+        engine.logAiDecision(current, {
+            note: 'Agent ran duplicate detection — no matching prior case found.',
+            finalDecision: 'duplicate_check_no_match',
+        });
+        current.update();
+        action.setRedirectURL(current);
+        return;
+    }
+
+    // linkDuplicate sets duplicate_of_case + recurrence_count on the record.
+    var customerMessage = detector.linkDuplicate(current);
+
+    var originalNumber = found.originalCaseSysId;
+    var original = new GlideRecord(CASE_TABLE);
+    if (original.get(found.originalCaseSysId)) {
+        originalNumber = original.getValue('case_number') || found.originalCaseSysId;
+    }
+
+    engine.logAiDecision(current, {
+        note:
+            'Agent marked this case as a duplicate of ' +
+            originalNumber +
+            '. Reason: ' +
+            (found.reason || 'matching customer / transaction pattern') +
+            '. Prior matching cases: ' +
+            (found.priorCount || 0) +
+            '.',
+        finalDecision: 'marked_duplicate_of=' + originalNumber,
+    });
+    current.update();
+
+    gs.addInfoMessage(
+        'Duplicate found: this case has been linked to original case ' +
+            originalNumber +
+            ' and the recurrence count has been incremented. Reason: ' +
+            (found.reason || 'matching customer / transaction pattern')
+    );
+    if (customerMessage) {
+        gs.addInfoMessage('Customer-facing wording: ' + customerMessage);
+    }
+    action.setRedirectURL(current);
+})();
+]]></script>
+        <show_form_icon_only>false</show_form_icon_only>
+        <show_insert>true</show_insert>
+        <show_list_icon_only>false</show_list_icon_only>
+        <show_multiple_update>false</show_multiple_update>
+        <show_query>false</show_query>
+        <show_update>true</show_update>
+        <sys_class_name>sys_ui_action</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 13:08:27</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>ca0c23214692422d93187692a4b4ab1b</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Mark as duplicate</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_ui_action_ca0c23214692422d93187692a4b4ab1b</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 13:08:27</sys_updated_on>
+        <table>x_1755386_safetr_0_bfd_fraud_dispute_case</table>
+        <ui11_compatible>false</ui11_compatible>
+        <ui16_compatible>false</ui16_compatible>
+    </sys_ui_action>
+</record_update>

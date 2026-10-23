@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="287d47ec655f479cb343ce6904cba584" label="Customer Profile" name="x_1755386_safetr_0_bfd_customer_profile" type="collection">
+        <element label="Relationship Manager" name="relationship_manager" reference="sys_user" type="reference"/>
+        <element label="Risk Tier" name="risk_tier" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="High" sequence="3" value="high"/>
+                <element inactive_on_update="false" label="Medium" sequence="2" value="medium"/>
+                <element inactive_on_update="false" label="Low" sequence="1" value="low"/>
+            </choice>
+        </element>
+        <element default="javascript:getNextObjNumberPadded();" display="true" label="Customer Number" max_length="40" name="customer_number" type="string"/>
+        <element label="Email" max_length="255" name="email" type="string"/>
+        <element label="Full Name" max_length="255" name="full_name" type="string"/>
+        <element label="Preferred Contact Channel" name="preferred_contact_channel" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Phone" sequence="4" value="phone"/>
+                <element inactive_on_update="false" label="In-app" sequence="1" value="in_app"/>
+                <element inactive_on_update="false" label="SMS" sequence="3" value="sms"/>
+                <element inactive_on_update="false" label="Email" sequence="2" value="email"/>
+            </choice>
+        </element>
+        <element default="true" label="Active" name="active_flag" type="boolean"/>
+        <element label="KYC Status" name="kyc_status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Pending" sequence="2" value="pending"/>
+                <element inactive_on_update="false" label="Not started" sequence="4" value="not_started"/>
+                <element inactive_on_update="false" label="Failed" sequence="3" value="failed"/>
+                <element inactive_on_update="false" label="Verified" sequence="1" value="verified"/>
+            </choice>
+        </element>
+        <element label="Mobile Phone" max_length="40" name="mobile_phone" type="string"/>
+        <element label="Date of Birth" name="date_of_birth" type="glide_date"/>
+        <index name="index">
+            <element name="relationship_manager"/>
+        </index>
+    </element>
+</database>

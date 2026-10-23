@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_atf_test">
+    <sys_atf_test action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <copied_from/>
+        <description>Calls bfd_TriageAgent.classifyAndAssess() with a free-text unauthorized-transaction statement plus loose identifiers (customer_number, masked account number, transaction reference) and asserts it returns a non-empty intent, a numeric risk_score between 0 and 100, a risk_level, a recommended_team, at least one recommended action and a confidence value, that card data comes back masked, and that NO case was created (assessment-only dry run).</description>
+        <enable_parameterized_testing>false</enable_parameterized_testing>
+        <fail_on_server_error>true</fail_on_server_error>
+        <name>bfd_atf_triage_agent_assessment</name>
+        <parameters/>
+        <remember/>
+        <sn_atf_tg_generated>false</sn_atf_tg_generated>
+        <sys_class_name>sys_atf_test</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 14:13:15</sys_created_on>
+        <sys_id>bbfc8d1b548641c488d84dcc8d038690</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_atf_triage_agent_assessment</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_atf_test_bbfc8d1b548641c488d84dcc8d038690</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 14:13:15</sys_updated_on>
+        <test_origin>manual</test_origin>
+    </sys_atf_test>
+    <sys_variable_value action="delete_multiple" query="document_key=bbfc8d1b548641c488d84dcc8d038690"/>
+</record_update>

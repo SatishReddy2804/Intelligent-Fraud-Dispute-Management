@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_atf_step">
+    <sys_atf_step action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <callable_outputs/>
+        <copied_from/>
+        <description/>
+        <display_name>Run Server Side Script</display_name>
+        <inputs/>
+        <mugshots_cache_json/>
+        <notes/>
+        <order>1</order>
+        <step_config display_value="Run Server Side Script">41de4a935332120028bc29cac2dc349a</step_config>
+        <sys_class_name>sys_atf_step</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 14:13:14</sys_created_on>
+        <sys_id>bd8d7d4c0b6e483189796723a4555b4e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Run Server Side Script</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_atf_step_bd8d7d4c0b6e483189796723a4555b4e</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 14:13:14</sys_updated_on>
+        <table/>
+        <test display_value="bfd_atf_closure_guard">0b6173de535d4df3ba5b858ce5557392</test>
+        <timeout/>
+        <warning_message/>
+    </sys_atf_step>
+    <sys_variable_value action="delete_multiple" query="document_key=bd8d7d4c0b6e483189796723a4555b4e"/>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>sys_atf_step</document>
+        <document_key>bd8d7d4c0b6e483189796723a4555b4e</document_key>
+        <order>200</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 17:55:51</sys_created_on>
+        <sys_id>3bb168b0463c40b8895752d9cbbc5541</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 17:55:51</sys_updated_on>
+        <value>(function (outputs, steps, params, stepResult, assertEqual) {
+var CUST='x_1755386_safetr_0_bfd_customer_profile',ACCT='x_1755386_safetr_0_bfd_bank_account',TXN='x_1755386_safetr_0_bfd_transaction',CASE='x_1755386_safetr_0_bfd_fraud_dispute_case',TASK='x_1755386_safetr_0_bfd_case_task',SNAP='x_1755386_safetr_0_bfd_case_metric_snapshot';
+var CASE_STATUSES=['new','triage','pending_customer_information','under_investigation','pending_approval','action_taken','resolved','closed','reopened'];
+var TEAMS=['fraud_operations','cards_operations','banking_operations'],LEVELS=['critical','high','medium','low'],PRIORITIES=['p1','p2','p3','p4'];
+function need(c,m){ if(!c){ throw new Error('ASSERTION FAILED: '+m); } }
+function uniq(){ return ''+new GlideDateTime().getNumericValue()+Math.floor(Math.random()*100000); }
+function hoursAgo(h){ var g=new GlideDateTime(); g.addSeconds(-1*h*3600); return g.getValue(); }
+function val(gr,f){ if(!gr){ return ''; } var v=gr.getValue(f); return (v===null||v===undefined)?'':(''+v); }
+function num(gr,f){ var n=parseFloat(val(gr,f)); return isNaN(n)?0:n; }
+function load(t,id){ var gr=new GlideRecord(t); return gr.get(id)?gr:null; }
+function inSet(v,a){ return a.indexOf(''+v)!==-1; }
+function mkCustomer(tier){ var u=uniq(); var gr=new GlideRecord(CUST); gr.initialize(); gr.setValue('customer_number','ATFC'+u); gr.setValue('full_name','ATF Fixture Customer '+u); gr.setValue('email','atf.'+u+'@safetrace-atf.invalid'); gr.setValue('mobile_phone','+15550000000'); gr.setValue('kyc_status','verified'); gr.setValue('risk_tier',tier||'low'); gr.setValue('preferred_contact_channel','email'); gr.setValue('active_flag',true); var id=''+gr.insert(); need(id,'fixture customer could not be inserted'); return id; }
+function mkAccount(cid,tier,hold){ var u=uniq(); var gr=new GlideRecord(ACCT); gr.initialize(); gr.setValue('customer',cid); gr.setValue('account_number_masked','ATF-****'+u); gr.setValue('account_type','checking'); gr.setValue('account_status','active'); gr.setValue('currency','USD'); gr.setValue('available_balance',5000); gr.setValue('risk_tier',tier||'low'); gr.setValue('fraud_hold_flag',hold===true); var id=''+gr.insert(); need(id,'fixture account could not be inserted'); return id; }
+function mkTxn(cid,aid,o){ o=o||{}; var u=uniq(); var gr=new GlideRecord(TXN); gr.initialize(); gr.setValue('transaction_reference','ATFTXN'+u); gr.setValue('account',aid); gr.setValue('customer',cid); gr.setValue('transaction_date_time',o.when||hoursAgo(12)); gr.setValue('merchant_name',o.merchant||('ATF Merchant '+u)); gr.setValue('merchant_category','retail'); gr.setValue('channel',o.channel||'pos'); gr.setValue('transaction_type','debit'); gr.setValue('amount',(o.amount===undefined||o.amount===null)?180:o.amount); gr.setValue('currency','USD'); gr.setValue('status',o.status||'posted'); gr.setValue('card_last_four',o.card||(''+u).slice(-4)); gr.setValue('country',o.country||'US'); gr.setValue('is_recurring',false); gr.setValue('fraud_indicator',o.fraud===true); gr.setValue('dispute_flag',false); var id=''+gr.insert(); need(id,'fixture transaction could not be inserted'); return id; }
+function mkCase(f){ var gr=new GlideRecord(CASE); gr.initialize(); for(var k in f){ if(f.hasOwnProperty(k)){ gr.setValue(k,f[k]); } } var id=''+gr.insert(); need(id,'fixture case could not be inserted'); return id; }
+function mkTask(cid,type,status){ var gr=new GlideRecord(TASK); gr.initialize(); gr.setValue('case',cid); gr.setValue('task_type',type); gr.setValue('status',status||'open'); gr.setValue('priority','p3'); var id=''+gr.insert(); need(id,'fixture task could not be inserted'); return id; }
+function completeOpenTasks(cid){ var gr=new GlideRecord(TASK); gr.addQuery('case',cid); gr.addQuery('status','IN','open,work_in_progress'); gr.query(); var n=0; while(gr.next()){ gr.setValue('status','complete'); gr.setValue('outcome','Completed by ATF fixture.'); gr.update(); n++; } return n; }
+
+    var customerId = mkCustomer('low');
+    var accountId = mkAccount(customerId, 'low', false);
+    var txnId = mkTxn(customerId, accountId, { amount: 99.95, when: hoursAgo(50), channel: 'pos' });
+
+    var caseId = mkCase({
+        customer: customerId,
+        account: accountId,
+        transaction: txnId,
+        case_type: 'duplicate_charge',
+        intake_channel: 'online_banking',
+        customer_statement: 'I believe this charge was taken twice and would like it checked.',
+        incident_date_time: hoursAgo(50),
+        disputed_amount: 99.95,
+        currency: 'USD',
+        case_status: 'under_investigation'
+    });
+
+    // Mandatory task types are identity_verification, transaction_review and approval.
+    mkTask(caseId, 'identity_verification', 'complete');
+    var openTaskId = mkTask(caseId, 'transaction_review', 'open');
+
+    // ---------- negative side: closure must be PREVENTED ----------
+    var attempt = load(CASE, caseId);
+    need(attempt, 'the case could not be re-read before the blocked closure attempt');
+    need(val(attempt, 'resolution_code') === '', 'fixture problem: resolution_code should still be empty');
+    need(new bfd_CaseUtils().mandatoryTasksComplete(attempt) === false, 'fixture problem: an incomplete mandatory task should make mandatoryTasksComplete() false');
+
+    attempt.setValue('case_status', 'closed');
+    attempt.update();
+
+    var blocked = load(CASE, caseId);
+    need(blocked, 'the case could not be re-read after the blocked closure attempt');
+    need(val(blocked, 'case_status') !== 'closed', 'closure should have been PREVENTED (incomplete mandatory task, no resolution_code/summary) but case_status is ' + val(blocked, 'case_status'));
+    need(val(blocked, 'actual_resolution_date') === '', 'actual_resolution_date must not be stamped when closure is blocked');
+
+    // ---------- positive side: clear the gate, then close ----------
+    var completed = completeOpenTasks(caseId);
+    need(completed &gt; 0, 'expected at least one open task to complete, completed ' + completed);
+
+    var task = load(TASK, openTaskId);
+    need(task &amp;&amp; val(task, 'status') === 'complete', 'the mandatory transaction_review task was not completed');
+
+    var closing = load(CASE, caseId);
+    need(new bfd_CaseUtils().mandatoryTasksComplete(closing) === true, 'mandatoryTasksComplete() should be true once every mandatory task is complete');
+    closing.setValue('resolution_code', 'duplicate_reversed');
+    closing.setValue('resolution_summary', 'Merchant confirmed the duplicate authorisation and the second charge was reversed.');
+    closing.setValue('closure_notes', 'Closed by the ATF closure-guard test.');
+    closing.setValue('case_status', 'closed');
+    closing.update();
+
+    var closed = load(CASE, caseId);
+    need(closed, 'the case could not be re-read after the successful closure');
+    need(val(closed, 'case_status') === 'closed', 'closure should now SUCCEED but case_status is ' + val(closed, 'case_status'));
+    need(val(closed, 'actual_resolution_date') !== '', 'actual_resolution_date should be stamped when the case closes');
+
+    stepResult.setOutputMessage('Closure guard OK: blocked while incomplete, then closed at ' + val(closed, 'actual_resolution_date'));
+})(outputs, steps, params, stepResult, assertEqual);</value>
+        <variable display_value="Test script">989d9e235324220002c6435723dc3484</variable>
+    </sys_variable_value>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>sys_atf_step</document>
+        <document_key>bd8d7d4c0b6e483189796723a4555b4e</document_key>
+        <order>100</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 17:55:51</sys_created_on>
+        <sys_id>f4cb3c8e1f6c4c10869a408e9c192df8</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 17:55:51</sys_updated_on>
+        <value>3.1</value>
+        <variable display_value="Jasmine version">42f2564b73031300440211d8faf6a777</variable>
+    </sys_variable_value>
+</record_update>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>POST</http_method>
+        <name>intake</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+    // POST /intake — create the case; platform business rules and flows then
+    // own triage, routing, duplicate linking, tasks and notifications.
+    var agent = new bfd_TriageAgent();
+    agent.send(response, agent.intakeCase(agent.readBody(request)));
+})(request, response);
+]]></operation_script>
+        <operation_uri>/api/x_1755386_safetr_0/bfd_agent_api/intake</operation_uri>
+        <produces>application/json</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/intake</relative_path>
+        <request_example>{"statement":"Someone used my card for a payment I did not authorise","customer_number":"CUST0001","account_number_masked":"****1234","transaction_reference":"TXN00012","amount":2450.5,"channel":"phone"}</request_example>
+        <requires_acl_authorization>true</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>true</requires_snc_internal_role>
+        <short_description>Creates the case and returns case_number plus the customer-safe assessment. Tria</short_description>
+        <support_trailing_slash>false</support_trailing_slash>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 14:14:37</sys_created_on>
+        <sys_id>9a753242ac0949f1b44dd5c4e3729046</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>intake</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_ws_operation_9a753242ac0949f1b44dd5c4e3729046</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 14:14:37</sys_updated_on>
+        <web_service_definition display_value="SafeTrace Triage Agent API">e58418e853c64d1abf23ebb6481e054b</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

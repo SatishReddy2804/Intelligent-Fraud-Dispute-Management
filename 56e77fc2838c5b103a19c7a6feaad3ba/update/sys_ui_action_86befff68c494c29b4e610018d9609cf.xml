@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_ui_action">
+    <sys_ui_action action="INSERT_OR_UPDATE">
+        <action_name>bfd_ui_initiate_chargeback</action_name>
+        <active>true</active>
+        <client>false</client>
+        <client_script_v2/>
+        <comments/>
+        <condition>current.case_status != 'closed' &amp;&amp; current.case_status != 'resolved'</condition>
+        <form_action>true</form_action>
+        <form_button>true</form_button>
+        <form_button_icon/>
+        <form_button_v2>false</form_button_v2>
+        <form_context_menu>false</form_context_menu>
+        <form_link>false</form_link>
+        <form_menu_button_v2>false</form_menu_button_v2>
+        <form_style>unstyled</form_style>
+        <format_for_configurable_workspace>false</format_for_configurable_workspace>
+        <hint>Raise a chargeback against the merchant and move the case into investigation.</hint>
+        <isolate_script>false</isolate_script>
+        <list_action>false</list_action>
+        <list_banner_button>false</list_banner_button>
+        <list_button>false</list_button>
+        <list_button_icon/>
+        <list_choice>false</list_choice>
+        <list_context_menu>false</list_context_menu>
+        <list_link>false</list_link>
+        <list_save_with_form_button>false</list_save_with_form_button>
+        <list_style/>
+        <messages/>
+        <name>Initiate chargeback</name>
+        <onclick/>
+        <order>600</order>
+        <script><![CDATA[// bfd_ui_initiate_chargeback — raise a chargeback task against the merchant
+// and move the case into investigation if it is still earlier in the lifecycle.
+(function initiateChargebackAction() {
+    var TASK_TABLE = 'x_1755386_safetr_0_bfd_case_task';
+    var EARLY = ',new,triage,pending_customer_information,reopened,';
+
+    var task = new GlideRecord(TASK_TABLE);
+    task.initialize();
+    task.setValue('case', current.getUniqueValue());
+    task.setValue('task_type', 'chargeback');
+    task.setValue('status', 'open');
+    task.setValue('priority', current.getValue('priority') || 'p2');
+    task.setValue(
+        'outcome',
+        'Chargeback initiated by ' +
+            gs.getUserDisplayName() +
+            ' for disputed amount ' +
+            (current.getValue('disputed_amount') || '0') +
+            ' ' +
+            (current.getValue('currency') || '')
+    );
+    if (current.getValue('assigned_group')) task.setValue('assigned_group', current.getValue('assigned_group'));
+    var due = new GlideDateTime();
+    due.addDaysLocalTime(10);
+    task.setValue('due_date', due.getValue());
+    task.insert();
+
+    var statusNote = '';
+    var status = current.getValue('case_status') || '';
+    if (EARLY.indexOf(',' + status + ',') > -1) {
+        current.setValue('case_status', 'under_investigation');
+        statusNote = ' Case status moved from "' + status + '" to "under_investigation".';
+    }
+
+    new bfd_TriageEngine().logAiDecision(current, {
+        note: 'Chargeback initiated. Task ' + task.getValue('number') + ' raised to the case group.' + statusNote,
+        finalDecision: 'chargeback_initiated',
+    });
+    current.update();
+
+    gs.addInfoMessage(
+        'Chargeback initiated. Task ' +
+            task.getValue('number') +
+            ' has been raised to the assigned group with a 10 day due date.' +
+            statusNote
+    );
+    action.setRedirectURL(current);
+})();
+]]></script>
+        <show_form_icon_only>false</show_form_icon_only>
+        <show_insert>true</show_insert>
+        <show_list_icon_only>false</show_list_icon_only>
+        <show_multiple_update>false</show_multiple_update>
+        <show_query>false</show_query>
+        <show_update>true</show_update>
+        <sys_class_name>sys_ui_action</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 13:08:27</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>86befff68c494c29b4e610018d9609cf</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Initiate chargeback</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_ui_action_86befff68c494c29b4e610018d9609cf</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 13:08:27</sys_updated_on>
+        <table>x_1755386_safetr_0_bfd_fraud_dispute_case</table>
+        <ui11_compatible>false</ui11_compatible>
+        <ui16_compatible>false</ui16_compatible>
+    </sys_ui_action>
+</record_update>

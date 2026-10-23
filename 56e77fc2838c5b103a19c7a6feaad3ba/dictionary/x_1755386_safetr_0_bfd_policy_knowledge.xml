@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="78e2c94d7e374efbb2dff464f4a41448" label="Policy Knowledge" name="x_1755386_safetr_0_bfd_policy_knowledge" type="collection">
+        <element label="Guidance Text" max_length="4000" name="guidance_text" type="string"/>
+        <element label="Effective From" name="effective_from" type="glide_date"/>
+        <element default="true" label="Active" name="active_flag" type="boolean"/>
+        <element label="Case Type" name="case_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="ATM/cash withdrawal issue" sequence="4" value="atm_cash_withdrawal_issue"/>
+                <element inactive_on_update="false" label="Duplicate charge" sequence="2" value="duplicate_charge"/>
+                <element inactive_on_update="false" label="Unauthorized transaction" sequence="1" value="unauthorized_transaction"/>
+                <element inactive_on_update="false" label="Any" sequence="7" value="any"/>
+                <element inactive_on_update="false" label="Card not received" sequence="5" value="card_not_received"/>
+                <element inactive_on_update="false" label="Payment failure" sequence="3" value="payment_failure"/>
+                <element inactive_on_update="false" label="Other" sequence="6" value="other"/>
+            </choice>
+        </element>
+        <element label="Effective To" name="effective_to" type="glide_date"/>
+        <element display="true" label="Policy Title" max_length="255" name="policy_title" type="string"/>
+        <element label="Risk Level" name="risk_level" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="High" sequence="2" value="high"/>
+                <element inactive_on_update="false" label="Low" sequence="4" value="low"/>
+                <element inactive_on_update="false" label="Critical" sequence="1" value="critical"/>
+                <element inactive_on_update="false" label="Medium" sequence="3" value="medium"/>
+                <element inactive_on_update="false" label="Any" sequence="5" value="any"/>
+            </choice>
+        </element>
+        <element label="Keywords" max_length="500" name="keywords" type="string"/>
+        <element label="Policy Category" max_length="100" name="policy_category" type="string"/>
+    </element>
+</database>

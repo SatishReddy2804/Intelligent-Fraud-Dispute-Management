@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_app_module">
+    <sys_app_module action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <application display_value="Fraud &amp; Dispute Resolution">251a9e3edf164d9abc120739cfcfbdcf</application>
+        <assessment/>
+        <device_type/>
+        <filter/>
+        <hint>The customer-facing SafeTrace portal, so agents can see what the customer sees.</hint>
+        <homepage/>
+        <image/>
+        <karuna_route/>
+        <link_type>DIRECT</link_type>
+        <map_page/>
+        <mobile_title/>
+        <mobile_view_name>Mobile</mobile_view_name>
+        <name/>
+        <order>600</order>
+        <override_menu_roles>false</override_menu_roles>
+        <query>x_1755386_safetr_0_bfd_portal.do</query>
+        <report/>
+        <require_confirmation>true</require_confirmation>
+        <roles>x_1755386_safetr_0.bfd_team_lead,x_1755386_safetr_0.bfd_admin</roles>
+        <route/>
+        <screen/>
+        <sys_class_name>sys_app_module</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 13:07:24</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>a33c4ecf701244e583a324477b27123e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Customer portal (preview)</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_app_module_a33c4ecf701244e583a324477b27123e</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 13:07:24</sys_updated_on>
+        <timeline_page/>
+        <title>Customer portal (preview)</title>
+        <uncancelable>false</uncancelable>
+        <ux_list/>
+        <view_name/>
+        <window_name/>
+    </sys_app_module>
+</record_update>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_section caption="Communication" section_id="360034d98edd4cafb2d80da0e32ba73f" sys_domain="global" table="x_1755386_safetr_0_bfd_case_communication" version="3" view="">
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.begin_split</element>
+            <position>0</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>4e377f7eba8241a89e3fdb7cdf39e1ea</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Communication" display_value="Communication" name="x_1755386_safetr_0_bfd_case_communication" sys_domain="global" view="Default view">360034d98edd4cafb2d80da0e32ba73f</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type>.begin_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>case</element>
+            <position>1</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>14aab6ffaabe4b319deda9fa3ad66435</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Communication" display_value="Communication" name="x_1755386_safetr_0_bfd_case_communication" sys_domain="global" view="Default view">360034d98edd4cafb2d80da0e32ba73f</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>customer</element>
+            <position>2</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>0f7bc979a115479d8a97521fecd8dd46</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Communication" display_value="Communication" name="x_1755386_safetr_0_bfd_case_communication" sys_domain="global" view="Default view">360034d98edd4cafb2d80da0e32ba73f</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>channel</element>
+            <position>3</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>7c83fab709f346d98e9030deda8481e3</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Communication" display_value="Communication" name="x_1755386_safetr_0_bfd_case_communication" sys_domain="global" view="Default view">360034d98edd4cafb2d80da0e32ba73f</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>direction</element>
+            <position>4</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>9bb73f8b63654943ba73f024f1e2042a</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Communication" display_value="Communication" name="x_1755386_safetr_0_bfd_case_communication" sys_domain="global" view="Default view">360034d98edd4cafb2d80da0e32ba73f</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.split</element>
+            <position>5</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>4608fbc157184cd1aed52b41d1a7f9da</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Communication" display_value="Communication" name="x_1755386_safetr_0_bfd_case_communication" sys_domain="global" view="Default view">360034d98edd4cafb2d80da0e32ba73f</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type>.split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>sent_at</element>
+            <position>6</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>3810bf480ebb41b3820494fe287484f9</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Communication" display_value="Communication" name="x_1755386_safetr_0_bfd_case_communication" sys_domain="global" view="Default view">360034d98edd4cafb2d80da0e32ba73f</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>delivery_status</element>
+            <position>7</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>1e2a0136f141401eb85440097dc663d1</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Communication" display_value="Communication" name="x_1755386_safetr_0_bfd_case_communication" sys_domain="global" view="Default view">360034d98edd4cafb2d80da0e32ba73f</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>triggered_by</element>
+            <position>8</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>7bcc09af68754bbea1912aff9391421a</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Communication" display_value="Communication" name="x_1755386_safetr_0_bfd_case_communication" sys_domain="global" view="Default view">360034d98edd4cafb2d80da0e32ba73f</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.end_split</element>
+            <position>9</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>eeef5667c84b4093b553843331b8fc5d</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Communication" display_value="Communication" name="x_1755386_safetr_0_bfd_case_communication" sys_domain="global" view="Default view">360034d98edd4cafb2d80da0e32ba73f</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type>.end_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>subject</element>
+            <position>10</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>6018870bfccd4a24860ed1342ac3d261</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Communication" display_value="Communication" name="x_1755386_safetr_0_bfd_case_communication" sys_domain="global" view="Default view">360034d98edd4cafb2d80da0e32ba73f</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>message</element>
+            <position>11</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:15</sys_created_on>
+            <sys_id>6133cb9d3a114ee8a54c373cd40dd752</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Communication" display_value="Communication" name="x_1755386_safetr_0_bfd_case_communication" sys_domain="global" view="Default view">360034d98edd4cafb2d80da0e32ba73f</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:15</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption>Communication</caption>
+            <header>false</header>
+            <name>x_1755386_safetr_0_bfd_case_communication</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 13:08:37</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>360034d98edd4cafb2d80da0e32ba73f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_1755386_safetr_0_bfd_case_communication</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+            <sys_update_name>sys_ui_section_360034d98edd4cafb2d80da0e32ba73f</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 13:08:37</sys_updated_on>
+            <sys_user/>
+            <title>false</title>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>

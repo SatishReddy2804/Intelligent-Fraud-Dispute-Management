@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_action_role">
+    <sys_ui_action_role action="INSERT_OR_UPDATE">
+        <sys_class_name>sys_ui_action_role</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 13:08:32</sys_created_on>
+        <sys_id>ca7b2db76dbc4615b6633b810133c02d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Initiate payment reversal.x_1755386_safetr_0.bfd_banking_agent</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_ui_action display_value="Initiate payment reversal">5165e928d3bd4df494a704a5a96effd4</sys_ui_action>
+        <sys_update_name>sys_ui_action_role_ca7b2db76dbc4615b6633b810133c02d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 13:08:32</sys_updated_on>
+        <sys_user_role display_value="x_1755386_safetr_0.bfd_banking_agent" name="x_1755386_safetr_0.bfd_banking_agent">da5d72dddf124c9095a4077deae103bd</sys_user_role>
+    </sys_ui_action_role>
+</record_update>

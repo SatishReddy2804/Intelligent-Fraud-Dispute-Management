@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="2c6bb31aafc94a3ebb72aa7396a944a7" label="Fraud / Dispute Case" name="x_1755386_safetr_0_bfd_fraud_dispute_case" type="collection">
+        <element label="Urgency" name="urgency" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="High" sequence="2" value="high"/>
+                <element inactive_on_update="false" label="Medium" sequence="3" value="medium"/>
+                <element inactive_on_update="false" label="Critical" sequence="1" value="critical"/>
+                <element inactive_on_update="false" label="Low" sequence="4" value="low"/>
+            </choice>
+        </element>
+        <element label="Disputed Amount" name="disputed_amount" type="decimal"/>
+        <element default="javascript:getNextObjNumberPadded();" display="true" label="Case Number" max_length="40" name="case_number" type="string"/>
+        <element label="Customer Feedback" max_length="4000" name="customer_feedback" type="string"/>
+        <element label="Duplicate of Case" name="duplicate_of_case" reference="x_1755386_safetr_0_bfd_fraud_dispute_case" type="reference"/>
+        <element label="Policy Guidance" max_length="4000" name="policy_guidance" type="string"/>
+        <element label="Resolution Summary" max_length="4000" name="resolution_summary" type="string"/>
+        <element label="Priority" name="priority" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="P2" sequence="2" value="p2"/>
+                <element inactive_on_update="false" label="P1" sequence="1" value="p1"/>
+                <element inactive_on_update="false" label="P3" sequence="3" value="p3"/>
+                <element inactive_on_update="false" label="P4" sequence="4" value="p4"/>
+            </choice>
+        </element>
+        <element label="Recurrence Count" name="recurrence_count" type="integer"/>
+        <element label="Provisional Credit" name="provisional_credit_flag" type="boolean"/>
+        <element label="Expected Resolution Date" name="expected_resolution_date" type="glide_date_time"/>
+        <element label="Intent Classification" max_length="255" name="intent_classification" type="string"/>
+        <element default="USD" label="Currency" max_length="10" name="currency" type="string"/>
+        <element label="Intake Channel" name="intake_channel" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Mobile banking" sequence="1" value="mobile_banking"/>
+                <element inactive_on_update="false" label="Branch" sequence="3" value="branch"/>
+                <element inactive_on_update="false" label="Online banking" sequence="2" value="online_banking"/>
+                <element inactive_on_update="false" label="Email" sequence="5" value="email"/>
+                <element inactive_on_update="false" label="Phone" sequence="4" value="phone"/>
+            </choice>
+        </element>
+        <element label="Actual Resolution Date" name="actual_resolution_date" type="glide_date_time"/>
+        <element label="Assigned Group" name="assigned_group" reference="sys_user_group" type="reference"/>
+        <element label="Card Action" name="card_action" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Permanent block" sequence="3" value="permanent_block"/>
+                <element inactive_on_update="false" label="None" sequence="1" value="none"/>
+                <element inactive_on_update="false" label="Replacement issued" sequence="4" value="replacement_issued"/>
+                <element inactive_on_update="false" label="Temporary block" sequence="2" value="temporary_block"/>
+            </choice>
+        </element>
+        <element label="Customer" name="customer" reference="x_1755386_safetr_0_bfd_customer_profile" type="reference"/>
+        <element label="Provisional Credit Amount" name="provisional_credit_amount" type="decimal"/>
+        <element label="SLA Breach" name="sla_breach_flag" type="boolean"/>
+        <element label="Escalation Level" name="escalation_level" type="integer"/>
+        <element label="Case Type" name="case_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Duplicate charge" sequence="2" value="duplicate_charge"/>
+                <element inactive_on_update="false" label="Payment failure" sequence="3" value="payment_failure"/>
+                <element inactive_on_update="false" label="Card not received" sequence="5" value="card_not_received"/>
+                <element inactive_on_update="false" label="Unauthorized transaction" sequence="1" value="unauthorized_transaction"/>
+                <element inactive_on_update="false" label="Other" sequence="6" value="other"/>
+                <element inactive_on_update="false" label="ATM/cash withdrawal issue" sequence="4" value="atm_cash_withdrawal_issue"/>
+            </choice>
+        </element>
+        <element label="Resolution Code" name="resolution_code" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="No action required" sequence="5" value="no_action_required"/>
+                <element inactive_on_update="false" label="Chargeback won" sequence="6" value="chargeback_won"/>
+                <element inactive_on_update="false" label="Chargeback lost" sequence="7" value="chargeback_lost"/>
+                <element inactive_on_update="false" label="Fraud confirmed - refunded" sequence="1" value="fraud_confirmed_refunded"/>
+                <element inactive_on_update="false" label="Payment corrected" sequence="4" value="payment_corrected"/>
+                <element inactive_on_update="false" label="Fraud not confirmed" sequence="2" value="fraud_not_confirmed"/>
+                <element inactive_on_update="false" label="Duplicate reversed" sequence="3" value="duplicate_reversed"/>
+            </choice>
+        </element>
+        <element label="Closure Notes" max_length="4000" name="closure_notes" type="string"/>
+        <element label="AI Recommendation" max_length="4000" name="ai_recommendation" type="string"/>
+        <element label="Account" name="account" reference="x_1755386_safetr_0_bfd_bank_account" type="reference"/>
+        <element label="Case Status" name="case_status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="New" sequence="1" value="new"/>
+                <element inactive_on_update="false" label="Action taken" sequence="6" value="action_taken"/>
+                <element inactive_on_update="false" label="Pending approval" sequence="5" value="pending_approval"/>
+                <element inactive_on_update="false" label="Pending customer information" sequence="3" value="pending_customer_information"/>
+                <element inactive_on_update="false" label="Triage" sequence="2" value="triage"/>
+                <element inactive_on_update="false" label="Reopened" sequence="9" value="reopened"/>
+                <element inactive_on_update="false" label="Resolved" sequence="7" value="resolved"/>
+                <element inactive_on_update="false" label="Under investigation" sequence="4" value="under_investigation"/>
+                <element inactive_on_update="false" label="Closed" sequence="8" value="closed"/>
+            </choice>
+        </element>
+        <element label="Assigned Team" name="assigned_team" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Cards Operations" sequence="2" value="cards_operations"/>
+                <element inactive_on_update="false" label="Banking Operations" sequence="3" value="banking_operations"/>
+                <element inactive_on_update="false" label="Fraud Operations" sequence="1" value="fraud_operations"/>
+            </choice>
+        </element>
+        <element label="Transaction" name="transaction" reference="x_1755386_safetr_0_bfd_transaction" type="reference"/>
+        <element label="Customer Satisfaction Score" name="customer_satisfaction_score" type="integer"/>
+        <element label="Assigned Agent" name="assigned_agent" reference="sys_user" type="reference"/>
+        <element label="Risk Level" name="risk_level" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Low" sequence="4" value="low"/>
+                <element inactive_on_update="false" label="High" sequence="2" value="high"/>
+                <element inactive_on_update="false" label="Medium" sequence="3" value="medium"/>
+                <element inactive_on_update="false" label="Critical" sequence="1" value="critical"/>
+            </choice>
+        </element>
+        <element label="Customer Statement" max_length="4000" name="customer_statement" type="string"/>
+        <element label="Risk Score" name="risk_score" type="integer"/>
+        <element label="Recovery Amount" name="recovery_amount" type="decimal"/>
+        <element label="Incident Date/Time" name="incident_date_time" type="glide_date_time"/>
+        <index name="index">
+            <element name="account"/>
+        </index>
+        <index name="index2">
+            <element name="assigned_agent"/>
+        </index>
+        <index name="index3">
+            <element name="assigned_group"/>
+        </index>
+        <index name="index4">
+            <element name="customer"/>
+        </index>
+        <index name="index5">
+            <element name="duplicate_of_case"/>
+        </index>
+        <index name="index6">
+            <element name="transaction"/>
+        </index>
+    </element>
+</database>

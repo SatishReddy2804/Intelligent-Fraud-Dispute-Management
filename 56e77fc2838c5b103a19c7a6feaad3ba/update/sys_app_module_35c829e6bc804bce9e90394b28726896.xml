@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_app_module">
+    <sys_app_module action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <application display_value="Fraud &amp; Dispute Resolution">251a9e3edf164d9abc120739cfcfbdcf</application>
+        <assessment/>
+        <device_type/>
+        <filter table="x_1755386_safetr_0_bfd_fraud_dispute_case">assigned_agent=javascript:gs.getUserID()^case_statusNOT INresolved,closed^EQ<item endquery="false" field="assigned_agent" goto="false" newquery="false" operator="=" or="false" value="javascript:gs.getUserID()"/>
+            <item endquery="false" field="case_status" goto="false" newquery="false" operator="NOT IN" or="false" value="resolved,closed"/>
+            <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
+        </filter>
+        <hint>Open cases where you are the assigned agent.</hint>
+        <homepage/>
+        <image/>
+        <karuna_route/>
+        <link_type>FILTER</link_type>
+        <map_page/>
+        <mobile_title/>
+        <mobile_view_name>Mobile</mobile_view_name>
+        <name>x_1755386_safetr_0_bfd_fraud_dispute_case</name>
+        <order>210</order>
+        <override_menu_roles>false</override_menu_roles>
+        <query/>
+        <report/>
+        <require_confirmation>true</require_confirmation>
+        <roles>x_1755386_safetr_0.bfd_fraud_agent,x_1755386_safetr_0.bfd_card_agent,x_1755386_safetr_0.bfd_banking_agent,x_1755386_safetr_0.bfd_team_lead,x_1755386_safetr_0.bfd_admin</roles>
+        <route/>
+        <screen/>
+        <sys_class_name>sys_app_module</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 13:07:23</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>35c829e6bc804bce9e90394b28726896</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>My cases</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_app_module_35c829e6bc804bce9e90394b28726896</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 13:07:23</sys_updated_on>
+        <timeline_page/>
+        <title>My cases</title>
+        <uncancelable>false</uncancelable>
+        <ux_list/>
+        <view_name/>
+        <window_name/>
+    </sys_app_module>
+</record_update>

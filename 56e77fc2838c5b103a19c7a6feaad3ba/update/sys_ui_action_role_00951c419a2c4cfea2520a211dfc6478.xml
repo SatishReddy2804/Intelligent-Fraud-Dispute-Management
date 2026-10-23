@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_action_role">
+    <sys_ui_action_role action="INSERT_OR_UPDATE">
+        <sys_class_name>sys_ui_action_role</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 13:08:27</sys_created_on>
+        <sys_id>00951c419a2c4cfea2520a211dfc6478</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Resolve case.x_1755386_safetr_0.bfd_admin</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_ui_action display_value="Resolve case">4e7e53c752674649847efe55c122e47a</sys_ui_action>
+        <sys_update_name>sys_ui_action_role_00951c419a2c4cfea2520a211dfc6478</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 13:08:27</sys_updated_on>
+        <sys_user_role display_value="x_1755386_safetr_0.bfd_admin" name="x_1755386_safetr_0.bfd_admin">d692e11f3c4e4563a216112e21e09c53</sys_user_role>
+    </sys_ui_action_role>
+</record_update>

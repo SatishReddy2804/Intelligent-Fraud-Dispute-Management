@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_ui_action">
+    <sys_ui_action action="INSERT_OR_UPDATE">
+        <action_name>bfd_ui_close_case</action_name>
+        <active>true</active>
+        <client>false</client>
+        <client_script_v2/>
+        <comments/>
+        <condition>current.case_status != 'closed'</condition>
+        <form_action>true</form_action>
+        <form_button>true</form_button>
+        <form_button_icon/>
+        <form_button_v2>false</form_button_v2>
+        <form_context_menu>false</form_context_menu>
+        <form_link>false</form_link>
+        <form_menu_button_v2>false</form_menu_button_v2>
+        <form_style>primary</form_style>
+        <format_for_configurable_workspace>false</format_for_configurable_workspace>
+        <hint>Close the case. Blocked until mandatory tasks and resolution fields are complete.</hint>
+        <isolate_script>false</isolate_script>
+        <list_action>false</list_action>
+        <list_banner_button>false</list_banner_button>
+        <list_button>false</list_button>
+        <list_button_icon/>
+        <list_choice>false</list_choice>
+        <list_context_menu>false</list_context_menu>
+        <list_link>false</list_link>
+        <list_save_with_form_button>false</list_save_with_form_button>
+        <list_style/>
+        <messages/>
+        <name>Close case</name>
+        <onclick/>
+        <order>1200</order>
+        <script><![CDATA[// bfd_ui_close_case — attempt the transition to closed. The existing
+// closure-guard business rule aborts the update and adds its own error message
+// when mandatory tasks or resolution fields are incomplete, so this action
+// re-reads the record afterwards and reports the outcome cleanly.
+(function closeCaseAction() {
+    var CASE_TABLE = 'x_1755386_safetr_0_bfd_fraud_dispute_case';
+    var caseId = current.getUniqueValue();
+
+    if (current.getValue('case_status') === 'closed') {
+        gs.addInfoMessage('This case is already closed.');
+        action.setRedirectURL(current);
+        return;
+    }
+
+    current.setValue('case_status', 'closed');
+    new bfd_TriageEngine().logAiDecision(current, {
+        note: 'Closure requested by ' + gs.getUserDisplayName() + '.',
+        finalDecision: 'close_requested',
+    });
+    current.update();
+
+    var check = new GlideRecord(CASE_TABLE);
+    if (check.get(caseId) && check.getValue('case_status') === 'closed') {
+        gs.addInfoMessage('Case closed. The closure notification and metric snapshot have been triggered.');
+    } else {
+        gs.addErrorMessage(
+            'The case could not be closed. Resolve the blocking items listed above (a resolution code, a resolution summary and completion of all mandatory tasks are required), then try again.'
+        );
+    }
+
+    action.setRedirectURL(current);
+})();
+]]></script>
+        <show_form_icon_only>false</show_form_icon_only>
+        <show_insert>true</show_insert>
+        <show_list_icon_only>false</show_list_icon_only>
+        <show_multiple_update>false</show_multiple_update>
+        <show_query>false</show_query>
+        <show_update>true</show_update>
+        <sys_class_name>sys_ui_action</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 13:08:27</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>911afcee924440dc89761b5d419d1bc2</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Close case</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_ui_action_911afcee924440dc89761b5d419d1bc2</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 13:08:27</sys_updated_on>
+        <table>x_1755386_safetr_0_bfd_fraud_dispute_case</table>
+        <ui11_compatible>false</ui11_compatible>
+        <ui16_compatible>false</ui16_compatible>
+    </sys_ui_action>
+</record_update>

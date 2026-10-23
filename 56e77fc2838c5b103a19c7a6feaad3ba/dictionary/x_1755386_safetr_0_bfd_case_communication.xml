@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="96ace9414cc84c14beb3724b4649df78" label="Case Communication" name="x_1755386_safetr_0_bfd_case_communication" type="collection">
+        <element label="Delivery Status" name="delivery_status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Failed" sequence="3" value="failed"/>
+                <element inactive_on_update="false" label="Read" sequence="4" value="read"/>
+                <element inactive_on_update="false" label="Delivered" sequence="2" value="delivered"/>
+                <element inactive_on_update="false" label="Sent" sequence="1" value="sent"/>
+            </choice>
+        </element>
+        <element label="Sent At" name="sent_at" type="glide_date_time"/>
+        <element label="Case" name="case" reference="x_1755386_safetr_0_bfd_fraud_dispute_case" type="reference"/>
+        <element display="true" label="Subject" max_length="255" name="subject" type="string"/>
+        <element label="Channel" name="channel" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Email" sequence="2" value="email"/>
+                <element inactive_on_update="false" label="Phone" sequence="4" value="phone"/>
+                <element inactive_on_update="false" label="SMS" sequence="3" value="sms"/>
+                <element inactive_on_update="false" label="In-app" sequence="1" value="in_app"/>
+            </choice>
+        </element>
+        <element label="Message" max_length="4000" name="message" type="string"/>
+        <element label="Triggered By" max_length="255" name="triggered_by" type="string"/>
+        <element label="Customer" name="customer" reference="x_1755386_safetr_0_bfd_customer_profile" type="reference"/>
+        <element label="Direction" name="direction" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Outbound" sequence="1" value="outbound"/>
+                <element inactive_on_update="false" label="Inbound" sequence="2" value="inbound"/>
+            </choice>
+        </element>
+        <index name="index">
+            <element name="case"/>
+        </index>
+        <index name="index2">
+            <element name="customer"/>
+        </index>
+    </element>
+</database>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="1f06339b33054730934a3225cd8549e2" label="Case Metric Snapshot" name="x_1755386_safetr_0_bfd_case_metric_snapshot" type="collection">
+        <element label="Metric Date" name="metric_date" type="glide_date"/>
+        <element label="Case Type" name="case_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="ATM/cash withdrawal issue" sequence="4" value="atm_cash_withdrawal_issue"/>
+                <element inactive_on_update="false" label="Duplicate charge" sequence="2" value="duplicate_charge"/>
+                <element inactive_on_update="false" label="Card not received" sequence="5" value="card_not_received"/>
+                <element inactive_on_update="false" label="Other" sequence="6" value="other"/>
+                <element inactive_on_update="false" label="Payment failure" sequence="3" value="payment_failure"/>
+                <element inactive_on_update="false" label="Unauthorized transaction" sequence="1" value="unauthorized_transaction"/>
+            </choice>
+        </element>
+        <element label="Recovery Amount" name="recovery_amount" type="decimal"/>
+        <element label="Case" name="case" reference="x_1755386_safetr_0_bfd_fraud_dispute_case" type="reference"/>
+        <element label="SLA Status" name="sla_status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="On track" sequence="1" value="on_track"/>
+                <element inactive_on_update="false" label="Breached" sequence="3" value="breached"/>
+                <element inactive_on_update="false" label="At risk" sequence="2" value="at_risk"/>
+            </choice>
+        </element>
+        <element label="CSAT Score" name="csat_score" type="integer"/>
+        <element label="Resolution Time (Hours)" name="resolution_time_hours" type="decimal"/>
+        <element label="Team" name="team" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Fraud Operations" sequence="1" value="fraud_operations"/>
+                <element inactive_on_update="false" label="Cards Operations" sequence="2" value="cards_operations"/>
+                <element inactive_on_update="false" label="Banking Operations" sequence="3" value="banking_operations"/>
+            </choice>
+        </element>
+        <element label="Age (Hours)" name="age_hours" type="decimal"/>
+        <index name="index">
+            <element name="case"/>
+        </index>
+    </element>
+</database>

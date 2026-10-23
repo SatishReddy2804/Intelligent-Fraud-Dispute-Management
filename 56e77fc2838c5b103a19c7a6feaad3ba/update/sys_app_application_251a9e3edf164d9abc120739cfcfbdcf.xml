@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_app_application">
+    <sys_app_application action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category/>
+        <description>SafeTrace agent and operations navigation.</description>
+        <device_type>browser</device_type>
+        <hint>SafeTrace fraud and dispute operations: console, cases, reference data and reporting.</hint>
+        <name>bfd_fraud_dispute</name>
+        <order>100</order>
+        <roles>x_1755386_safetr_0.bfd_fraud_agent,x_1755386_safetr_0.bfd_card_agent,x_1755386_safetr_0.bfd_banking_agent,x_1755386_safetr_0.bfd_team_lead,x_1755386_safetr_0.bfd_admin</roles>
+        <sys_class_name>sys_app_application</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 13:07:22</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>251a9e3edf164d9abc120739cfcfbdcf</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Fraud &amp; Dispute Resolution</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_app_application_251a9e3edf164d9abc120739cfcfbdcf</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 13:07:22</sys_updated_on>
+        <title>Fraud &amp; Dispute Resolution</title>
+        <view_name/>
+    </sys_app_application>
+</record_update>

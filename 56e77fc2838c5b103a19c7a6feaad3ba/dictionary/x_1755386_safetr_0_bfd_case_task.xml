@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="816d22bb269b4372959363c5739885d4" label="Case Task" name="x_1755386_safetr_0_bfd_case_task" type="collection">
+        <element label="Assigned Group" name="assigned_group" reference="sys_user_group" type="reference"/>
+        <element label="Task Type" name="task_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="ATM investigation" sequence="8" value="atm_investigation"/>
+                <element inactive_on_update="false" label="Card block" sequence="3" value="card_block"/>
+                <element inactive_on_update="false" label="Merchant investigation" sequence="6" value="merchant_investigation"/>
+                <element inactive_on_update="false" label="Transaction review" sequence="2" value="transaction_review"/>
+                <element inactive_on_update="false" label="Identity verification" sequence="1" value="identity_verification"/>
+                <element inactive_on_update="false" label="Chargeback" sequence="5" value="chargeback"/>
+                <element inactive_on_update="false" label="Recovery action" sequence="11" value="recovery_action"/>
+                <element inactive_on_update="false" label="Payment reversal" sequence="7" value="payment_reversal"/>
+                <element inactive_on_update="false" label="Customer contact" sequence="9" value="customer_contact"/>
+                <element inactive_on_update="false" label="Card replacement" sequence="4" value="card_replacement"/>
+                <element inactive_on_update="false" label="Approval" sequence="10" value="approval"/>
+            </choice>
+        </element>
+        <element label="Due Date" name="due_date" type="glide_date_time"/>
+        <element label="Status" name="status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Open" sequence="1" value="open"/>
+                <element inactive_on_update="false" label="Cancelled" sequence="4" value="cancelled"/>
+                <element inactive_on_update="false" label="Complete" sequence="3" value="complete"/>
+                <element inactive_on_update="false" label="Work in progress" sequence="2" value="work_in_progress"/>
+            </choice>
+        </element>
+        <element label="Case" name="case" reference="x_1755386_safetr_0_bfd_fraud_dispute_case" type="reference"/>
+        <element label="Work notes" name="work_notes" type="journal_input"/>
+        <element default="javascript:getNextObjNumberPadded();" display="true" label="Number" max_length="40" name="number" type="string"/>
+        <element label="Priority" name="priority" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="P4" sequence="4" value="p4"/>
+                <element inactive_on_update="false" label="P1" sequence="1" value="p1"/>
+                <element inactive_on_update="false" label="P2" sequence="2" value="p2"/>
+                <element inactive_on_update="false" label="P3" sequence="3" value="p3"/>
+            </choice>
+        </element>
+        <element label="Assigned Agent" name="assigned_agent" reference="sys_user" type="reference"/>
+        <element label="Outcome" max_length="4000" name="outcome" type="string"/>
+        <index name="index">
+            <element name="assigned_agent"/>
+        </index>
+        <index name="index2">
+            <element name="assigned_group"/>
+        </index>
+        <index name="index3">
+            <element name="case"/>
+        </index>
+    </element>
+</database>

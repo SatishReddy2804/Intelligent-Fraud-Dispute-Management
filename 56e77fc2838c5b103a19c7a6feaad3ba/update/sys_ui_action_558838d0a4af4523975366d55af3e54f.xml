@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_ui_action">
+    <sys_ui_action action="INSERT_OR_UPDATE">
+        <action_name>bfd_ui_retriage_case</action_name>
+        <active>true</active>
+        <client>false</client>
+        <client_script_v2/>
+        <comments/>
+        <condition>current.case_status != 'closed'</condition>
+        <form_action>true</form_action>
+        <form_button>true</form_button>
+        <form_button_icon/>
+        <form_button_v2>false</form_button_v2>
+        <form_context_menu>true</form_context_menu>
+        <form_link>false</form_link>
+        <form_menu_button_v2>false</form_menu_button_v2>
+        <form_style>unstyled</form_style>
+        <format_for_configurable_workspace>false</format_for_configurable_workspace>
+        <hint>Regenerate the AI assessment after correcting the case facts. Overwrites the previous assessment.</hint>
+        <isolate_script>false</isolate_script>
+        <list_action>false</list_action>
+        <list_banner_button>false</list_banner_button>
+        <list_button>false</list_button>
+        <list_button_icon/>
+        <list_choice>false</list_choice>
+        <list_context_menu>false</list_context_menu>
+        <list_link>false</list_link>
+        <list_save_with_form_button>false</list_save_with_form_button>
+        <list_style/>
+        <messages/>
+        <name>Re-run AI triage</name>
+        <onclick/>
+        <order>1300</order>
+        <script><![CDATA[// bfd_ui_retriage_case — force the AI assessment to be regenerated after an
+// agent has corrected the case facts. force:true overwrites the previously
+// derived intent / risk / urgency / priority / recommendation values.
+(function retriageCaseAction() {
+    var CASE_TABLE = 'x_1755386_safetr_0_bfd_fraud_dispute_case';
+    var caseId = current.getUniqueValue();
+    var engine = new bfd_TriageEngine();
+
+    var before = {
+        risk_level: current.getValue('risk_level') || '(empty)',
+        risk_score: current.getValue('risk_score') || '0',
+        priority: current.getValue('priority') || '(empty)',
+        intent: current.getValue('intent_classification') || '(empty)',
+    };
+
+    var out = engine.triageCaseAndUpdate(caseId, { force: true });
+
+    if (!out) {
+        gs.addErrorMessage('Re-triage could not be run for this case.');
+        action.setRedirectURL(current);
+        return;
+    }
+
+    var gr = new GlideRecord(CASE_TABLE);
+    if (!gr.get(caseId)) {
+        gs.addErrorMessage('Re-triage completed but the case could not be re-read.');
+        action.setRedirectURL(current);
+        return;
+    }
+
+    engine.logAiDecision(gr, {
+        recommendation: out.recommendation,
+        note:
+            'Agent ' +
+            gs.getUserDisplayName() +
+            ' forced a re-triage after editing the case facts. Previous values — intent: ' +
+            before.intent +
+            ', risk: ' +
+            before.risk_level +
+            ' (' +
+            before.risk_score +
+            '), priority: ' +
+            before.priority +
+            '.',
+        finalDecision: 'retriage_forced',
+    });
+    gr.update();
+
+    gs.addInfoMessage(
+        'AI assessment regenerated. Risk is now ' +
+            (gr.getValue('risk_level') || 'unknown') +
+            ' (' +
+            (gr.getValue('risk_score') || '0') +
+            '/100), priority ' +
+            (gr.getValue('priority') || 'unknown') +
+            '. The override is recorded in the audit trail.'
+    );
+    action.setRedirectURL(current);
+})();
+]]></script>
+        <show_form_icon_only>false</show_form_icon_only>
+        <show_insert>true</show_insert>
+        <show_list_icon_only>false</show_list_icon_only>
+        <show_multiple_update>false</show_multiple_update>
+        <show_query>false</show_query>
+        <show_update>true</show_update>
+        <sys_class_name>sys_ui_action</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 13:08:27</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>558838d0a4af4523975366d55af3e54f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Re-run AI triage</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_ui_action_558838d0a4af4523975366d55af3e54f</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 13:08:27</sys_updated_on>
+        <table>x_1755386_safetr_0_bfd_fraud_dispute_case</table>
+        <ui11_compatible>false</ui11_compatible>
+        <ui16_compatible>false</ui16_compatible>
+    </sys_ui_action>
+</record_update>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_section caption="Task" section_id="54c62147e0aa4f348c68351f4f602224" sys_domain="global" table="x_1755386_safetr_0_bfd_case_task" version="3" view="">
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.begin_split</element>
+            <position>0</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:16</sys_created_on>
+            <sys_id>e21a7852bbee4f46b3da7c7c55923d24</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Task" display_value="Task" name="x_1755386_safetr_0_bfd_case_task" sys_domain="global" view="Default view">54c62147e0aa4f348c68351f4f602224</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:16</sys_updated_on>
+            <sys_user/>
+            <type>.begin_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>number</element>
+            <position>1</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:16</sys_created_on>
+            <sys_id>88b150b06f5a4ab2b1f6b60cd1d71c16</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Task" display_value="Task" name="x_1755386_safetr_0_bfd_case_task" sys_domain="global" view="Default view">54c62147e0aa4f348c68351f4f602224</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:16</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>case</element>
+            <position>2</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:16</sys_created_on>
+            <sys_id>ba9fc57d855143d0a5e8096c4eaafab6</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Task" display_value="Task" name="x_1755386_safetr_0_bfd_case_task" sys_domain="global" view="Default view">54c62147e0aa4f348c68351f4f602224</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:16</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>task_type</element>
+            <position>3</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:16</sys_created_on>
+            <sys_id>89caac3959fb4656b3b22d8afb19c689</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Task" display_value="Task" name="x_1755386_safetr_0_bfd_case_task" sys_domain="global" view="Default view">54c62147e0aa4f348c68351f4f602224</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:16</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>priority</element>
+            <position>4</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:16</sys_created_on>
+            <sys_id>5e7c4174606348c6809609d7ea8cbbd8</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Task" display_value="Task" name="x_1755386_safetr_0_bfd_case_task" sys_domain="global" view="Default view">54c62147e0aa4f348c68351f4f602224</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:16</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.split</element>
+            <position>5</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:16</sys_created_on>
+            <sys_id>36f3de4005c94f988e2e1a343a8c6f2c</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Task" display_value="Task" name="x_1755386_safetr_0_bfd_case_task" sys_domain="global" view="Default view">54c62147e0aa4f348c68351f4f602224</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:16</sys_updated_on>
+            <sys_user/>
+            <type>.split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>status</element>
+            <position>6</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:16</sys_created_on>
+            <sys_id>7c43d8f3003a428f9a006e5f88e4ba3f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Task" display_value="Task" name="x_1755386_safetr_0_bfd_case_task" sys_domain="global" view="Default view">54c62147e0aa4f348c68351f4f602224</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:16</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>assigned_group</element>
+            <position>7</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:16</sys_created_on>
+            <sys_id>c2ce4a4f06c14146887a84cddf6edae3</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Task" display_value="Task" name="x_1755386_safetr_0_bfd_case_task" sys_domain="global" view="Default view">54c62147e0aa4f348c68351f4f602224</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:16</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>assigned_agent</element>
+            <position>8</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:16</sys_created_on>
+            <sys_id>4e4346a59d9b46a4adec51b563ab3a91</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Task" display_value="Task" name="x_1755386_safetr_0_bfd_case_task" sys_domain="global" view="Default view">54c62147e0aa4f348c68351f4f602224</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:16</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>due_date</element>
+            <position>9</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:16</sys_created_on>
+            <sys_id>82c0a071c6834ce099a9f7649800274b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Task" display_value="Task" name="x_1755386_safetr_0_bfd_case_task" sys_domain="global" view="Default view">54c62147e0aa4f348c68351f4f602224</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:16</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.end_split</element>
+            <position>10</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:16</sys_created_on>
+            <sys_id>ad8c9ffb8be1429fb26d902682b96c22</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Task" display_value="Task" name="x_1755386_safetr_0_bfd_case_task" sys_domain="global" view="Default view">54c62147e0aa4f348c68351f4f602224</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:16</sys_updated_on>
+            <sys_user/>
+            <type>.end_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>outcome</element>
+            <position>11</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:16</sys_created_on>
+            <sys_id>69b0f8126d254bd492c284c52fe8f218</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Task" display_value="Task" name="x_1755386_safetr_0_bfd_case_task" sys_domain="global" view="Default view">54c62147e0aa4f348c68351f4f602224</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:16</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>work_notes</element>
+            <position>12</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:16</sys_created_on>
+            <sys_id>71d9505bc6a14a1fbbce8a1a2256cb50</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Task" display_value="Task" name="x_1755386_safetr_0_bfd_case_task" sys_domain="global" view="Default view">54c62147e0aa4f348c68351f4f602224</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:16</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption>Task</caption>
+            <header>false</header>
+            <name>x_1755386_safetr_0_bfd_case_task</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 13:08:38</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>54c62147e0aa4f348c68351f4f602224</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_1755386_safetr_0_bfd_case_task</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+            <sys_update_name>sys_ui_section_54c62147e0aa4f348c68351f4f602224</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 13:08:38</sys_updated_on>
+            <sys_user/>
+            <title>false</title>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>

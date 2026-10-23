@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_section caption="Case Overview" section_id="a14ef603ab004ece9c185cb828d01ffb" sys_domain="global" table="x_1755386_safetr_0_bfd_fraud_dispute_case" version="3" view="">
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.begin_split</element>
+            <position>0</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>354af910ba0d42919fbfffa11adf99b1</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type>.begin_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>case_number</element>
+            <position>1</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>1aefb51cf9f94433997b14064dcd9fcc</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>customer</element>
+            <position>2</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>82ce660804dc48c5811823c96c29fddc</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>account</element>
+            <position>3</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>6f94529e13e64cce8c4e067548c72fe5</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>transaction</element>
+            <position>4</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>c4eaf61607c64ebe8ac2c734f31a00d4</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>case_type</element>
+            <position>5</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>34bedde3d90f45ec90d7e1f4547c1e7a</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>intake_channel</element>
+            <position>6</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>e5453038f13447ee9dcd1a610e0f89b8</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.split</element>
+            <position>7</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>086f54425d2042349fd7aebbbb5b95f9</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type>.split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>case_status</element>
+            <position>8</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>29f4eb907ff94f45884bd4226f7a781b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>priority</element>
+            <position>9</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>8dfba0cc6b634aa49b2ba3482b4d2743</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>urgency</element>
+            <position>10</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>330d2bf5c82c4e2caa651440792190d6</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>incident_date_time</element>
+            <position>11</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>5d10d281ea964710924e23d0e039b752</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>disputed_amount</element>
+            <position>12</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>7c3e6e443fae4f348805107e42d07f6b</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>currency</element>
+            <position>13</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>571ae1abc83344f39b67a415d35591c1</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.end_split</element>
+            <position>14</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>16bce6c6d3e34fd28378125eadfb4f4c</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type>.end_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>customer_statement</element>
+            <position>15</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:17</sys_created_on>
+            <sys_id>0482768810384db0afbdcc40a4e81ffd</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Case Overview" display_value="Case Overview" name="x_1755386_safetr_0_bfd_fraud_dispute_case" sys_domain="global" view="Default view">a14ef603ab004ece9c185cb828d01ffb</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption>Case Overview</caption>
+            <header>false</header>
+            <name>x_1755386_safetr_0_bfd_fraud_dispute_case</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 13:08:38</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>a14ef603ab004ece9c185cb828d01ffb</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_1755386_safetr_0_bfd_fraud_dispute_case</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+            <sys_update_name>sys_ui_section_a14ef603ab004ece9c185cb828d01ffb</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 13:08:38</sys_updated_on>
+            <sys_user/>
+            <title>false</title>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>

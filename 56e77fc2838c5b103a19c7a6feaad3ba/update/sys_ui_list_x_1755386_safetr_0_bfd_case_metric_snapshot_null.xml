@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_list parent="" relationship="" sys_domain="global" table="x_1755386_safetr_0_bfd_case_metric_snapshot" version="2" view="">
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>case</element>
+            <list_id display_value="x_1755386_safetr_0_bfd_case_metric_snapshot" element="NULL" name="x_1755386_safetr_0_bfd_case_metric_snapshot" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">165491a117b14da989323e2a3ec9c016</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>0</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:13</sys_created_on>
+            <sys_id>fc62b5dc0a854c578f2ce99cd8c4e0a9</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:13</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>metric_date</element>
+            <list_id display_value="x_1755386_safetr_0_bfd_case_metric_snapshot" element="NULL" name="x_1755386_safetr_0_bfd_case_metric_snapshot" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">165491a117b14da989323e2a3ec9c016</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>1</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:13</sys_created_on>
+            <sys_id>69c01f16792b4d34b7ea7bfd8c1e8d57</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:13</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>case_type</element>
+            <list_id display_value="x_1755386_safetr_0_bfd_case_metric_snapshot" element="NULL" name="x_1755386_safetr_0_bfd_case_metric_snapshot" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">165491a117b14da989323e2a3ec9c016</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>2</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:13</sys_created_on>
+            <sys_id>52a69c02439a4b0e8f535a94550fb127</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:13</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>team</element>
+            <list_id display_value="x_1755386_safetr_0_bfd_case_metric_snapshot" element="NULL" name="x_1755386_safetr_0_bfd_case_metric_snapshot" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">165491a117b14da989323e2a3ec9c016</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>3</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:13</sys_created_on>
+            <sys_id>58bdbe11c9364ad8a242789e92b4a371</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:13</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>sla_status</element>
+            <list_id display_value="x_1755386_safetr_0_bfd_case_metric_snapshot" element="NULL" name="x_1755386_safetr_0_bfd_case_metric_snapshot" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">165491a117b14da989323e2a3ec9c016</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>4</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:13</sys_created_on>
+            <sys_id>81146d24f3f94d1f9521cc1d8a8f50d7</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:13</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>true</average_value>
+            <element>age_hours</element>
+            <list_id display_value="x_1755386_safetr_0_bfd_case_metric_snapshot" element="NULL" name="x_1755386_safetr_0_bfd_case_metric_snapshot" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">165491a117b14da989323e2a3ec9c016</list_id>
+            <max_value>true</max_value>
+            <min_value>false</min_value>
+            <position>5</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:13</sys_created_on>
+            <sys_id>df561fada5fd42bc973046c2400bf0a8</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:13</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>true</average_value>
+            <element>resolution_time_hours</element>
+            <list_id display_value="x_1755386_safetr_0_bfd_case_metric_snapshot" element="NULL" name="x_1755386_safetr_0_bfd_case_metric_snapshot" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">165491a117b14da989323e2a3ec9c016</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>6</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:13</sys_created_on>
+            <sys_id>9cead688268e47289cf4b1263b5a06dc</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:13</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>recovery_amount</element>
+            <list_id display_value="x_1755386_safetr_0_bfd_case_metric_snapshot" element="NULL" name="x_1755386_safetr_0_bfd_case_metric_snapshot" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">165491a117b14da989323e2a3ec9c016</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>7</position>
+            <sum>true</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:13</sys_created_on>
+            <sys_id>1e59b694e6ee4f74abf34980ae0e63d3</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:13</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>true</average_value>
+            <element>csat_score</element>
+            <list_id display_value="x_1755386_safetr_0_bfd_case_metric_snapshot" element="NULL" name="x_1755386_safetr_0_bfd_case_metric_snapshot" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">165491a117b14da989323e2a3ec9c016</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>8</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:13</sys_created_on>
+            <sys_id>d3fee1a783764b069f82ea92cd79579e</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:13</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element/>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <name>x_1755386_safetr_0_bfd_case_metric_snapshot</name>
+            <parent/>
+            <position/>
+            <relationship/>
+            <sum>false</sum>
+            <sys_class_name>sys_ui_list</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2026-10-22 17:57:13</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>165491a117b14da989323e2a3ec9c016</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_1755386_safetr_0_bfd_case_metric_snapshot</sys_name>
+            <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+            <sys_update_name>sys_ui_list_x_1755386_safetr_0_bfd_case_metric_snapshot_null</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2026-10-22 17:57:13</sys_updated_on>
+            <sys_user/>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_list>
+    </sys_ui_list>
+</record_update>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="d5cf00daa99744cebb9c5b06b5aac8d0" label="Routing Rule" name="x_1755386_safetr_0_bfd_routing_rule" type="collection">
+        <element label="Amount Threshold" name="amount_threshold" type="decimal"/>
+        <element label="Assigned Group" name="assigned_group" reference="sys_user_group" type="reference"/>
+        <element label="Assigned Team" name="assigned_team" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Fraud Operations" sequence="1" value="fraud_operations"/>
+                <element inactive_on_update="false" label="Cards Operations" sequence="2" value="cards_operations"/>
+                <element inactive_on_update="false" label="Banking Operations" sequence="3" value="banking_operations"/>
+            </choice>
+        </element>
+        <element default="true" label="Active" name="active_flag" type="boolean"/>
+        <element label="Execution Order" name="execution_order" type="integer"/>
+        <element label="SLA Hours" name="sla_hours" type="integer"/>
+        <element label="Channel" name="channel" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Online banking" sequence="2" value="online_banking"/>
+                <element inactive_on_update="false" label="Mobile banking" sequence="1" value="mobile_banking"/>
+                <element inactive_on_update="false" label="Email" sequence="5" value="email"/>
+                <element inactive_on_update="false" label="Phone" sequence="4" value="phone"/>
+                <element inactive_on_update="false" label="Any" sequence="6" value="any"/>
+                <element inactive_on_update="false" label="Branch" sequence="3" value="branch"/>
+            </choice>
+        </element>
+        <element label="Case Type" name="case_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Payment failure" sequence="3" value="payment_failure"/>
+                <element inactive_on_update="false" label="Duplicate charge" sequence="2" value="duplicate_charge"/>
+                <element inactive_on_update="false" label="Unauthorized transaction" sequence="1" value="unauthorized_transaction"/>
+                <element inactive_on_update="false" label="ATM/cash withdrawal issue" sequence="4" value="atm_cash_withdrawal_issue"/>
+                <element inactive_on_update="false" label="Card not received" sequence="5" value="card_not_received"/>
+                <element inactive_on_update="false" label="Other" sequence="6" value="other"/>
+                <element inactive_on_update="false" label="Any" sequence="7" value="any"/>
+            </choice>
+        </element>
+        <element label="Risk Level" name="risk_level" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Critical" sequence="1" value="critical"/>
+                <element inactive_on_update="false" label="Medium" sequence="3" value="medium"/>
+                <element inactive_on_update="false" label="Any" sequence="5" value="any"/>
+                <element inactive_on_update="false" label="High" sequence="2" value="high"/>
+                <element inactive_on_update="false" label="Low" sequence="4" value="low"/>
+            </choice>
+        </element>
+        <element label="Priority" name="priority" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="P2" sequence="2" value="p2"/>
+                <element inactive_on_update="false" label="P1" sequence="1" value="p1"/>
+                <element inactive_on_update="false" label="P3" sequence="3" value="p3"/>
+                <element inactive_on_update="false" label="P4" sequence="4" value="p4"/>
+            </choice>
+        </element>
+        <element display="true" label="Rule Name" max_length="255" name="rule_name" type="string"/>
+        <index name="index">
+            <element name="assigned_group"/>
+        </index>
+    </element>
+</database>

@@ -1,0 +1,1372 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_1755386_safetr_0.bfd_TriageAgent</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Agent-callable triage surface for AI Agent / Virtual Agent / external orchestrators: classifyAndAssess, validateSubmission, intakeCase, explainRecommendation, overrideRecommendation, getPolicyFor. Delegates to the existing SafeTrace engines; AI output is advisory only.</description>
+        <mobile_callable>false</mobile_callable>
+        <name>bfd_TriageAgent</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var bfd_TriageAgent = Class.create();
+bfd_TriageAgent.prototype = {
+    CASE_TABLE: 'x_1755386_safetr_0_bfd_fraud_dispute_case',
+    CUSTOMER_TABLE: 'x_1755386_safetr_0_bfd_customer_profile',
+    ACCOUNT_TABLE: 'x_1755386_safetr_0_bfd_bank_account',
+    TRANSACTION_TABLE: 'x_1755386_safetr_0_bfd_transaction',
+    GROUP_TABLE: 'sys_user_group',
+
+    CASE_TYPES: [
+        'unauthorized_transaction',
+        'duplicate_charge',
+        'payment_failure',
+        'atm_cash_withdrawal_issue',
+        'card_not_received',
+        'other'
+    ],
+    INTAKE_CHANNELS: ['mobile_banking', 'online_banking', 'branch', 'phone', 'email'],
+    TEAMS: ['fraud_operations', 'cards_operations', 'banking_operations'],
+    PRIORITIES: ['p1', 'p2', 'p3', 'p4'],
+    URGENCIES: ['critical', 'high', 'medium', 'low'],
+    RISK_LEVELS: ['critical', 'high', 'medium', 'low'],
+    CARD_ACTIONS: ['none', 'temporary_block', 'permanent_block', 'replacement_issued'],
+
+    /** Roles that may read/triage records belonging to any customer. */
+    STAFF_ROLES: [
+        'admin',
+        'x_1755386_safetr_0.bfd_admin',
+        'x_1755386_safetr_0.bfd_team_lead',
+        'x_1755386_safetr_0.bfd_fraud_agent',
+        'x_1755386_safetr_0.bfd_card_agent',
+        'x_1755386_safetr_0.bfd_banking_agent'
+    ],
+    /** Roles that may apply a human override on top of an AI recommendation. */
+    OVERRIDE_ROLES: [
+        'admin',
+        'x_1755386_safetr_0.bfd_admin',
+        'x_1755386_safetr_0.bfd_team_lead',
+        'x_1755386_safetr_0.bfd_fraud_agent',
+        'x_1755386_safetr_0.bfd_card_agent',
+        'x_1755386_safetr_0.bfd_banking_agent'
+    ],
+    /** Fields a human is allowed to override. Everything else is ignored. */
+    OVERRIDABLE: [
+        'case_type',
+        'intent_classification',
+        'urgency',
+        'priority',
+        'risk_level',
+        'assigned_team',
+        'assigned_group',
+        'assigned_agent',
+        'card_action'
+    ],
+
+    MAX_STATEMENT: 4000,
+
+    initialize: function () {
+        this._sessionCustomerId = null;
+        this._sessionResolved = false;
+    },
+
+    // =====================================================================
+    // small, defensive helpers
+    // =====================================================================
+    _s: function (v) {
+        return v === null || v === undefined ? '' : '' + v;
+    },
+    _v: function (gr, field) {
+        if (!gr || !field) return '';
+        return this._s(gr.getValue(field));
+    },
+    _d: function (gr, field) {
+        if (!gr || !field) return '';
+        return this._s(gr.getDisplayValue(field));
+    },
+    _n: function (v) {
+        var n = parseFloat(this._s(v));
+        return isNaN(n) ? 0 : n;
+    },
+    _bool: function (gr, field) {
+        var v = this._v(gr, field);
+        return v === '1' || v === 'true';
+    },
+    _trim: function (v, max) {
+        var s = this._s(v);
+        return s.length > max ? s.substring(0, max) : s;
+    },
+    _inList: function (list, value) {
+        return list.indexOf(this._s(value)) !== -1;
+    },
+    _lower: function (v) {
+        return this._s(v).toLowerCase();
+    },
+    _ok: function (data) {
+        return { ok: true, status: 200, data: data };
+    },
+    _err: function (status, code, message) {
+        return { ok: false, status: status, code: code, message: message };
+    },
+
+    /** Last four characters of a masked account/card string, digits only. */
+    _lastFour: function (value) {
+        var digits = this._s(value).replace(/[^0-9]/g, '');
+        if (!digits) return '';
+        return digits.length <= 4 ? digits : digits.substring(digits.length - 4);
+    },
+    /**
+     * Account/card numbers are NEVER echoed in full. Only the already-masked
+     * stored value and the derived last four leave this class.
+     */
+    _maskNumber: function (value) {
+        var four = this._lastFour(value);
+        return four ? '\u2022\u2022\u2022\u2022 ' + four : '';
+    },
+
+    /** Writes the service envelope onto a Scripted REST response. */
+    send: function (response, out) {
+        if (out && out.ok === true) {
+            response.setStatus(200);
+            response.setBody(out.data);
+            return;
+        }
+        var status = out && out.status ? out.status : 500;
+        response.setStatus(status);
+        response.setBody({
+            error: {
+                code: (out && out.code) || 'server_error',
+                message: (out && out.message) || 'Unexpected server error.'
+            }
+        });
+    },
+
+    /** Reads a JSON request body defensively. Always returns an object. */
+    readBody: function (request) {
+        try {
+            if (request && request.body && request.body.data) {
+                var d = request.body.data;
+                if (typeof d === 'string') return JSON.parse(d);
+                if (d && typeof d === 'object') return d;
+            }
+        } catch (e) {
+            gs.warn('[bfd_TriageAgent.readBody] ' + e);
+        }
+        try {
+            var raw = request && request.body ? this._s(request.body.dataString) : '';
+            return raw ? JSON.parse(raw) : {};
+        } catch (e2) {
+            return {};
+        }
+    },
+
+    /** Reads a single query parameter value. */
+    readParam: function (request, name) {
+        try {
+            var params = request && request.queryParams ? request.queryParams : {};
+            var v = params[name];
+            if (v === null || v === undefined) return '';
+            if (Object.prototype.toString.call(v) === '[object Array]') return this._s(v[0]);
+            return this._s(v);
+        } catch (e) {
+            return '';
+        }
+    },
+
+    _toDateTime: function (raw) {
+        var s = this._s(raw).replace('T', ' ');
+        if (!s) return '';
+        if (s.length === 10) s += ' 00:00:00';
+        if (s.length === 16) s += ':00';
+        try {
+            var gdt = new GlideDateTime();
+            gdt.setDisplayValue(s, 'yyyy-MM-dd HH:mm:ss');
+            var value = this._s(gdt.getValue());
+            if (value) return value;
+        } catch (e) {
+            gs.warn('[bfd_TriageAgent._toDateTime] ' + e);
+        }
+        try {
+            return this._s(new GlideDateTime(s).getValue());
+        } catch (e2) {
+            return '';
+        }
+    },
+
+    // =====================================================================
+    // identity & authorisation
+    // =====================================================================
+    _hasAnyRole: function (roles) {
+        for (var i = 0; i < roles.length; i++) {
+            try {
+                if (gs.hasRole(roles[i])) return true;
+            } catch (e) {
+                gs.warn('[bfd_TriageAgent._hasAnyRole] ' + e);
+            }
+        }
+        return false;
+    },
+
+    isStaff: function () {
+        return this._hasAnyRole(this.STAFF_ROLES);
+    },
+
+    canOverride: function () {
+        return this._hasAnyRole(this.OVERRIDE_ROLES);
+    },
+
+    /**
+     * Resolves the SIGNED-IN user to a customer profile from the session email
+     * only. A client-supplied customer identifier can never influence this.
+     */
+    _sessionCustomer: function () {
+        if (this._sessionResolved) return this._sessionCustomerId;
+        this._sessionResolved = true;
+        var email = '';
+        try {
+            email = this._s(gs.getUser().getEmail());
+        } catch (e) {
+            gs.warn('[bfd_TriageAgent._sessionCustomer] ' + e);
+        }
+        if (!email) return null;
+        var gr = new GlideRecord(this.CUSTOMER_TABLE);
+        gr.addQuery('email', email);
+        gr.setLimit(1);
+        gr.query();
+        this._sessionCustomerId = gr.next() ? gr.getUniqueValue() : null;
+        return this._sessionCustomerId;
+    },
+
+    /**
+     * Decides which customer this call is allowed to read.
+     *   staff  -> may look the customer up from the supplied identifiers
+     *   caller -> locked to their own profile; supplied identifiers are ignored
+     *   neither -> 403
+     * Returns { ok:true, data:{ staff, customerId } } or an error envelope.
+     */
+    _authorizeScope: function () {
+        if (this.isStaff()) {
+            return this._ok({ staff: true, customerId: '' });
+        }
+        var own = this._sessionCustomer();
+        if (own) {
+            return this._ok({ staff: false, customerId: own });
+        }
+        return this._err(
+            403,
+            'not_authorized',
+            'This endpoint requires a SafeTrace operations role or a linked customer profile.'
+        );
+    },
+
+    // =====================================================================
+    // entity resolution
+    // =====================================================================
+    _findOne: function (table, field, value) {
+        if (!this._s(value)) return null;
+        var gr = new GlideRecord(table);
+        gr.addQuery(field, this._s(value));
+        gr.setLimit(1);
+        gr.query();
+        return gr.next() ? gr : null;
+    },
+
+    _getById: function (table, sysId) {
+        if (!this._s(sysId)) return null;
+        var gr = new GlideRecord(table);
+        return gr.get(this._s(sysId)) ? gr : null;
+    },
+
+    /**
+     * Resolves {customer, account, transaction} from loose identifiers.
+     * Returns a report of what matched and what could not be resolved — the
+     * agent needs to be able to say "I could not find that account".
+     */
+    resolveEntities: function (payload, scope) {
+        var p = payload || {};
+        var out = {
+            customer: null,
+            account: null,
+            transaction: null,
+            resolved: [],
+            unresolved: []
+        };
+
+        // ---- customer
+        if (scope && scope.staff === false) {
+            out.customer = this._getById(this.CUSTOMER_TABLE, scope.customerId);
+            if (out.customer) {
+                out.resolved.push({
+                    entity: 'customer',
+                    matched_on: 'signed-in session',
+                    value: this._v(out.customer, 'customer_number')
+                });
+            }
+        } else {
+            if (this._s(p.customer_number)) {
+                out.customer = this._findOne(this.CUSTOMER_TABLE, 'customer_number', p.customer_number);
+                if (out.customer) {
+                    out.resolved.push({
+                        entity: 'customer',
+                        matched_on: 'customer_number',
+                        value: this._v(out.customer, 'customer_number')
+                    });
+                } else {
+                    out.unresolved.push({
+                        entity: 'customer',
+                        attempted_with: 'customer_number',
+                        reason: 'No active customer profile matches that customer number.'
+                    });
+                }
+            }
+            if (!out.customer && this._s(p.customer_email)) {
+                out.customer = this._findOne(this.CUSTOMER_TABLE, 'email', p.customer_email);
+                if (out.customer) {
+                    out.resolved.push({
+                        entity: 'customer',
+                        matched_on: 'customer_email',
+                        value: this._v(out.customer, 'customer_number')
+                    });
+                } else {
+                    out.unresolved.push({
+                        entity: 'customer',
+                        attempted_with: 'customer_email',
+                        reason: 'No customer profile matches that email address.'
+                    });
+                }
+            }
+            if (!out.customer && this._s(p.customer)) {
+                out.customer = this._getById(this.CUSTOMER_TABLE, p.customer);
+                if (out.customer) {
+                    out.resolved.push({
+                        entity: 'customer',
+                        matched_on: 'customer sys_id',
+                        value: this._v(out.customer, 'customer_number')
+                    });
+                }
+            }
+            if (!out.customer && !this._s(p.customer_number) && !this._s(p.customer_email) && !this._s(p.customer)) {
+                out.unresolved.push({
+                    entity: 'customer',
+                    attempted_with: 'none supplied',
+                    reason: 'No customer_number, customer_email or customer sys_id was provided.'
+                });
+            }
+        }
+
+        var customerId = out.customer ? out.customer.getUniqueValue() : '';
+
+        // ---- account (masked number or sys_id), always re-checked against the customer
+        var accountKey = this._s(p.account_number_masked) || this._s(p.account_number) || '';
+        if (accountKey) {
+            var acct = this._findOne(this.ACCOUNT_TABLE, 'account_number_masked', accountKey);
+            if (!acct) {
+                // tolerate a caller that only knows the last four
+                var four = this._lastFour(accountKey);
+                if (four) {
+                    var cand = new GlideRecord(this.ACCOUNT_TABLE);
+                    if (customerId) cand.addQuery('customer', customerId);
+                    cand.addQuery('account_number_masked', 'ENDSWITH', four);
+                    cand.setLimit(2);
+                    cand.query();
+                    var hits = [];
+                    while (cand.next()) hits.push(cand.getUniqueValue());
+                    if (hits.length === 1) acct = this._getById(this.ACCOUNT_TABLE, hits[0]);
+                }
+            }
+            if (acct && customerId && this._v(acct, 'customer') !== customerId) {
+                out.unresolved.push({
+                    entity: 'account',
+                    attempted_with: 'account_number_masked',
+                    reason: 'That account does not belong to the resolved customer.'
+                });
+                acct = null;
+            }
+            if (acct) {
+                out.account = acct;
+                out.resolved.push({
+                    entity: 'account',
+                    matched_on: 'account_number_masked',
+                    value: this._maskNumber(this._v(acct, 'account_number_masked'))
+                });
+            } else if (!out.unresolved.length || out.unresolved[out.unresolved.length - 1].entity !== 'account') {
+                out.unresolved.push({
+                    entity: 'account',
+                    attempted_with: 'account_number_masked',
+                    reason: 'No account matches the supplied (masked) account number.'
+                });
+            }
+        } else if (this._s(p.account)) {
+            var byId = this._getById(this.ACCOUNT_TABLE, p.account);
+            if (byId && (!customerId || this._v(byId, 'customer') === customerId)) {
+                out.account = byId;
+                out.resolved.push({
+                    entity: 'account',
+                    matched_on: 'account sys_id',
+                    value: this._maskNumber(this._v(byId, 'account_number_masked'))
+                });
+            } else {
+                out.unresolved.push({
+                    entity: 'account',
+                    attempted_with: 'account sys_id',
+                    reason: 'That account does not exist or does not belong to the resolved customer.'
+                });
+            }
+        }
+
+        // ---- transaction (reference or sys_id)
+        var txnKey = this._s(p.transaction_reference);
+        var txn = null;
+        if (txnKey) {
+            txn = this._findOne(this.TRANSACTION_TABLE, 'transaction_reference', txnKey);
+            if (!txn) {
+                out.unresolved.push({
+                    entity: 'transaction',
+                    attempted_with: 'transaction_reference',
+                    reason: 'No transaction matches that reference.'
+                });
+            }
+        } else if (this._s(p.transaction)) {
+            txn = this._getById(this.TRANSACTION_TABLE, p.transaction);
+            if (!txn) {
+                out.unresolved.push({
+                    entity: 'transaction',
+                    attempted_with: 'transaction sys_id',
+                    reason: 'No transaction matches that sys_id.'
+                });
+            }
+        }
+        if (txn) {
+            var txnCustomer = this._v(txn, 'customer');
+            if (customerId && txnCustomer && txnCustomer !== customerId) {
+                out.unresolved.push({
+                    entity: 'transaction',
+                    attempted_with: txnKey ? 'transaction_reference' : 'transaction sys_id',
+                    reason: 'That transaction belongs to a different customer.'
+                });
+                txn = null;
+            }
+        }
+        if (txn) {
+            out.transaction = txn;
+            out.resolved.push({
+                entity: 'transaction',
+                matched_on: txnKey ? 'transaction_reference' : 'transaction sys_id',
+                value: this._v(txn, 'transaction_reference')
+            });
+            // Back-fill the customer / account from a trusted transaction row.
+            if (!out.customer && (!scope || scope.staff === true)) {
+                out.customer = this._getById(this.CUSTOMER_TABLE, this._v(txn, 'customer'));
+                if (out.customer) {
+                    out.resolved.push({
+                        entity: 'customer',
+                        matched_on: 'derived from transaction',
+                        value: this._v(out.customer, 'customer_number')
+                    });
+                }
+            }
+            if (!out.account) {
+                var derived = this._getById(this.ACCOUNT_TABLE, this._v(txn, 'account'));
+                var derivedCustomerOk =
+                    derived && (!out.customer || this._v(derived, 'customer') === out.customer.getUniqueValue());
+                if (derived && derivedCustomerOk) {
+                    out.account = derived;
+                    out.resolved.push({
+                        entity: 'account',
+                        matched_on: 'derived from transaction',
+                        value: this._maskNumber(this._v(derived, 'account_number_masked'))
+                    });
+                }
+            }
+        }
+
+        return out;
+    },
+
+    /** Public, masked view of the resolution report. */
+    _entityReport: function (res) {
+        return {
+            customer: res.customer
+                ? {
+                      sys_id: res.customer.getUniqueValue(),
+                      customer_number: this._v(res.customer, 'customer_number'),
+                      full_name: this._v(res.customer, 'full_name'),
+                      risk_tier: this._v(res.customer, 'risk_tier'),
+                      kyc_status: this._v(res.customer, 'kyc_status'),
+                      active: this._bool(res.customer, 'active_flag')
+                  }
+                : null,
+            account: res.account
+                ? {
+                      sys_id: res.account.getUniqueValue(),
+                      account_number_masked: this._v(res.account, 'account_number_masked'),
+                      last_four: this._lastFour(this._v(res.account, 'account_number_masked')),
+                      account_type: this._v(res.account, 'account_type'),
+                      account_status: this._v(res.account, 'account_status'),
+                      risk_tier: this._v(res.account, 'risk_tier'),
+                      fraud_hold_flag: this._bool(res.account, 'fraud_hold_flag')
+                  }
+                : null,
+            transaction: res.transaction
+                ? {
+                      sys_id: res.transaction.getUniqueValue(),
+                      transaction_reference: this._v(res.transaction, 'transaction_reference'),
+                      transaction_date_time: this._v(res.transaction, 'transaction_date_time'),
+                      merchant_name: this._v(res.transaction, 'merchant_name'),
+                      amount: this._n(this._v(res.transaction, 'amount')),
+                      currency: this._v(res.transaction, 'currency'),
+                      channel: this._v(res.transaction, 'channel'),
+                      card_masked: this._maskNumber(this._v(res.transaction, 'card_last_four')),
+                      card_last_four: this._lastFour(this._v(res.transaction, 'card_last_four')),
+                      country: this._v(res.transaction, 'country'),
+                      fraud_indicator: this._bool(res.transaction, 'fraud_indicator')
+                  }
+                : null,
+            resolved: res.resolved,
+            unresolved: res.unresolved
+        };
+    },
+
+    // =====================================================================
+    // case_type inference from free text
+    // =====================================================================
+    /**
+     * Scores the statement against each case type. The transaction row (when
+     * resolved) breaks ties — e.g. an ATM withdrawal channel.
+     */
+    inferCaseType: function (statement, txnGr) {
+        var text = this._lower(statement);
+        var scores = {
+            unauthorized_transaction: 0,
+            duplicate_charge: 0,
+            payment_failure: 0,
+            atm_cash_withdrawal_issue: 0,
+            card_not_received: 0,
+            other: 0
+        };
+        var hit = function (key, phrases, weight) {
+            for (var i = 0; i < phrases.length; i++) {
+                if (text.indexOf(phrases[i]) !== -1) {
+                    scores[key] += weight;
+                    return;
+                }
+            }
+        };
+
+        hit('duplicate_charge', ['charged twice', 'double charge', 'charged two times', 'duplicate charge', 'duplicate payment', 'billed twice'], 6);
+        hit('duplicate_charge', ['twice', 'duplicate', 'same charge again'], 3);
+
+        hit('card_not_received', ['card has not arrived', 'card never arrived', 'new card not received', 'card not received', 'never received my card', 'card did not arrive', 'replacement card never'], 6);
+
+        hit('atm_cash_withdrawal_issue', ['atm', 'cash machine', 'cashpoint', 'no cash dispensed', 'cash did not come out', 'machine kept my card'], 6);
+
+        hit('payment_failure', ['payment failed', 'payment was declined', 'declined', 'could not pay', 'transfer failed', 'money was taken but the payment failed', 'payment did not go through'], 5);
+
+        hit('unauthorized_transaction', ['did not make', "didn't make", 'did not authorise', 'did not authorize', 'unauthorized', 'unauthorised', 'fraud', 'fraudulent', 'do not recognize', "don't recognize", 'do not recognise', 'someone used my card', 'stolen', 'scam'], 7);
+
+        if (txnGr) {
+            if (this._lower(this._v(txnGr, 'channel')) === 'atm') scores.atm_cash_withdrawal_issue += 3;
+            if (this._bool(txnGr, 'fraud_indicator')) scores.unauthorized_transaction += 3;
+            var st = this._lower(this._v(txnGr, 'status'));
+            if (st === 'declined' || st === 'failed') scores.payment_failure += 3;
+        }
+
+        var best = 'other';
+        var bestScore = 0;
+        for (var key in scores) {
+            if (!scores.hasOwnProperty(key)) continue;
+            if (scores[key] > bestScore) {
+                bestScore = scores[key];
+                best = key;
+            }
+        }
+        return {
+            case_type: bestScore > 0 ? best : 'other',
+            score: bestScore,
+            // 55% floor so a weak-but-present signal still reads as a guess
+            confidence: bestScore <= 0 ? 35 : Math.min(95, 55 + bestScore * 5)
+        };
+    },
+
+    // =====================================================================
+    // shared assessment core (never inserts anything)
+    // =====================================================================
+    /**
+     * Normalises an agent payload into the field set the engines expect.
+     * Returns { ok:true, data:{...} } or an error envelope.
+     */
+    _prepare: function (payload, scope) {
+        var p = payload || {};
+        var res = this.resolveEntities(p, scope);
+
+        var statement = this._trim(p.statement || p.customer_statement, this.MAX_STATEMENT);
+        if (statement.replace(/\s/g, '').length < 10) {
+            return this._err(
+                400,
+                'invalid_statement',
+                'Provide the customer statement (at least 10 characters of free text).'
+            );
+        }
+
+        var inferred = this.inferCaseType(statement, res.transaction);
+        var caseType = this._s(p.case_type);
+        var caseTypeSource = 'supplied';
+        if (!this._inList(this.CASE_TYPES, caseType)) {
+            caseType = inferred.case_type;
+            caseTypeSource = 'inferred_from_statement';
+        }
+
+        var channel = this._s(p.channel) || this._s(p.intake_channel);
+        if (channel === 'chat' || channel === 'virtual_agent' || channel === 'ai_agent') {
+            channel = 'online_banking';
+        }
+        if (!this._inList(this.INTAKE_CHANNELS, channel)) channel = 'online_banking';
+
+        var incident = this._toDateTime(p.date || p.incident_date_time);
+        if (!incident && res.transaction) {
+            incident = this._v(res.transaction, 'transaction_date_time');
+        }
+        if (!incident) incident = new GlideDateTime().getValue();
+        if (new GlideDateTime(incident).compareTo(new GlideDateTime()) > 0) {
+            return this._err(400, 'future_incident_date', 'The incident date cannot be in the future.');
+        }
+
+        var amount = parseFloat(this._s(p.amount || p.disputed_amount));
+        if (isNaN(amount) || amount < 0) {
+            amount = res.transaction ? this._n(this._v(res.transaction, 'amount')) : 0;
+        }
+        if (amount > 99999999) {
+            return this._err(400, 'invalid_amount', 'Disputed amount must be below 99,999,999.');
+        }
+
+        var currency = '';
+        if (res.transaction) currency = this._v(res.transaction, 'currency');
+        if (!currency && res.account) currency = this._v(res.account, 'currency');
+
+        return this._ok({
+            entities: res,
+            statement: statement,
+            caseType: caseType,
+            caseTypeSource: caseTypeSource,
+            caseTypeConfidence: inferred.confidence,
+            inferredCaseType: inferred.case_type,
+            channel: channel,
+            incident: incident,
+            amount: amount,
+            currency: currency,
+            merchant: this._trim(p.merchant, 200)
+        });
+    },
+
+    /** Builds an UNSAVED case record the engines can assess. */
+    _simCase: function (input) {
+        var sim = new GlideRecord(this.CASE_TABLE);
+        sim.initialize();
+        if (input.entities.customer) sim.setValue('customer', input.entities.customer.getUniqueValue());
+        if (input.entities.account) sim.setValue('account', input.entities.account.getUniqueValue());
+        if (input.entities.transaction) sim.setValue('transaction', input.entities.transaction.getUniqueValue());
+        sim.setValue('case_type', input.caseType);
+        sim.setValue('intake_channel', input.channel);
+        sim.setValue('customer_statement', input.statement);
+        sim.setValue('incident_date_time', input.incident);
+        sim.setValue('disputed_amount', input.amount);
+        if (input.currency) sim.setValue('currency', input.currency);
+        sim.setValue('case_status', 'new');
+        return sim;
+    },
+
+    /** Immediate containment the handler should consider right now. */
+    _containment: function (caseType, riskLevel, actions, txnGr) {
+        var high = riskLevel === 'high' || riskLevel === 'critical';
+        var list = actions || [];
+        var mentionsBlock = false;
+        for (var i = 0; i < list.length; i++) {
+            if (this._lower(list[i]).indexOf('block') !== -1) mentionsBlock = true;
+        }
+
+        if (caseType === 'card_not_received') {
+            return {
+                code: 'temporary_block',
+                label: 'Temporarily block the card and issue a replacement',
+                why: 'An undelivered card may be in a third party\u2019s hands, so block first and reissue.'
+            };
+        }
+        if (caseType === 'unauthorized_transaction' && (high || mentionsBlock)) {
+            return {
+                code: 'temporary_block',
+                label: 'Temporarily block the card to stop further loss',
+                why:
+                    'Confirmed or suspected unauthorised activity at ' +
+                    riskLevel +
+                    ' risk \u2014 stop the bleeding before investigating.'
+            };
+        }
+        if (caseType === 'atm_cash_withdrawal_issue') {
+            return {
+                code: 'none',
+                label: 'No card action \u2014 request the ATM journal and hold the disputed amount for review',
+                why: 'ATM disputes are normally resolved from the machine journal rather than by blocking the card.'
+            };
+        }
+        if (txnGr && this._bool(txnGr, 'fraud_indicator')) {
+            return {
+                code: 'temporary_block',
+                label: 'Temporarily block the card \u2014 the transaction carries a fraud indicator',
+                why: 'The underlying transaction is already flagged by fraud monitoring.'
+            };
+        }
+        return {
+            code: 'none',
+            label: 'No immediate card action \u2014 proceed with investigation',
+            why: 'Nothing in the assessment justifies restricting the customer\u2019s card at this point.'
+        };
+    },
+
+    /** Recommended investigation tasks, mapped onto real bfd_case_task types. */
+    _investigationTasks: function (actions) {
+        var support = new bfd_FlowSupport();
+        var seen = {};
+        var out = [];
+        var list = actions || [];
+        for (var i = 0; i < list.length; i++) {
+            var type = support.mapActionToTaskType(list[i]);
+            if (!type || seen[type]) continue;
+            seen[type] = true;
+            out.push({ task_type: type, from_action: this._s(list[i]) });
+        }
+        return out;
+    },
+
+    /** Plain-language risk factors, one per line, derived from the engine. */
+    _riskFactors: function (rationale) {
+        var raw = this._s(rationale);
+        if (!raw) return [];
+        var parts = raw.split(';');
+        var out = [];
+        for (var i = 0; i < parts.length; i++) {
+            var t = parts[i].replace(/^\s+|\s+$/g, '');
+            if (t) out.push(t);
+        }
+        return out;
+    },
+
+    _confidenceLabel: function (confidence) {
+        var c = this._n(confidence);
+        if (c >= 80) return 'high';
+        if (c >= 60) return 'medium';
+        return 'low';
+    },
+
+    _explainText: function (rec, factors, caseTypeSource) {
+        var lines = [];
+        lines.push(
+            'The issue was classified as "' +
+                this._s(rec.intent) +
+                '" (' +
+                (caseTypeSource === 'inferred_from_statement'
+                    ? 'case type inferred from the customer\u2019s own words'
+                    : 'case type supplied by the caller') +
+                ').'
+        );
+        lines.push(
+            'It scored ' +
+                this._n(rec.risk_score) +
+                ' out of 100, which falls in the ' +
+                this._s(rec.risk_level) +
+                ' risk band.'
+        );
+        if (factors.length) {
+            lines.push('That score comes from: ' + factors.join('; ') + '.');
+        }
+        lines.push(
+            'Because of that, it is treated as ' +
+                this._s(rec.urgency) +
+                ' urgency (' +
+                this._s(rec.priority).toUpperCase() +
+                ') and routed to ' +
+                this._s(rec.recommended_team).split('_').join(' ') +
+                '.'
+        );
+        if (rec.validation && rec.validation.issues && rec.validation.issues.length) {
+            lines.push('Data concerns that lower confidence: ' + rec.validation.issues.join('; ') + '.');
+        }
+        lines.push(
+            'Confidence in this recommendation is ' +
+                this._n(rec.confidence) +
+                '% (' +
+                this._confidenceLabel(rec.confidence) +
+                '). It is ADVISORY only \u2014 a human handler can override any part of it.'
+        );
+        return lines.join(' ');
+    },
+
+    /** Builds the full assessment object from an unsaved or saved case record. */
+    _assess: function (caseGr, input) {
+        var engine = new bfd_TriageEngine();
+        var rec = engine.buildRecommendation(caseGr);
+        var factors = this._riskFactors(rec.rationale);
+        var txnGr = input && input.entities ? input.entities.transaction : null;
+        var caseTypeSource = input ? input.caseTypeSource : 'supplied';
+
+        var routingTeam = rec.recommended_team;
+        var slaHours = 0;
+        try {
+            var routed = new bfd_RoutingEngine().route(caseGr);
+            if (routed && routed.team) routingTeam = routed.team;
+            if (routed && routed.sla_hours) slaHours = this._n(routed.sla_hours);
+        } catch (e) {
+            gs.warn('[bfd_TriageAgent._assess] routing preview failed: ' + e);
+        }
+
+        return {
+            intent: rec.intent,
+            case_type: this._v(caseGr, 'case_type'),
+            case_type_source: caseTypeSource,
+            case_type_confidence: input ? input.caseTypeConfidence : null,
+            risk_score: this._n(rec.risk_score),
+            risk_level: rec.risk_level,
+            urgency: rec.urgency,
+            priority: rec.priority,
+            recommended_team: routingTeam,
+            recommended_team_by_engine: rec.recommended_team,
+            target_sla_hours: slaHours,
+            immediate_containment_action: this._containment(
+                this._v(caseGr, 'case_type'),
+                rec.risk_level,
+                rec.recommended_actions,
+                txnGr
+            ),
+            recommended_actions: rec.recommended_actions,
+            recommended_investigation_tasks: this._investigationTasks(rec.recommended_actions),
+            policy_guidance: rec.policy_guidance,
+            handler_summary: rec.summary,
+            risk_factors: factors,
+            explanation: this._explainText(rec, factors, caseTypeSource),
+            confidence: this._n(rec.confidence),
+            confidence_label: this._confidenceLabel(rec.confidence),
+            validation: rec.validation,
+            advisory_only: true
+        };
+    },
+
+    // =====================================================================
+    // 1. classifyAndAssess — assessment only, nothing is written
+    // =====================================================================
+    /**
+     * Agent entry point #1. Accepts free text plus loose identifiers and
+     * returns the complete triage assessment WITHOUT creating a case.
+     *
+     * payload: {
+     *   statement, customer_email | customer_number, account_number_masked,
+     *   transaction_reference, amount, date, merchant, channel, case_type?
+     * }
+     */
+    classifyAndAssess: function (payload) {
+        var auth = this._authorizeScope();
+        if (auth.ok !== true) return auth;
+
+        var prepared = this._prepare(payload, auth.data);
+        if (prepared.ok !== true) return prepared;
+        var input = prepared.data;
+
+        var assessment;
+        try {
+            assessment = this._assess(this._simCase(input), input);
+        } catch (e) {
+            gs.error('[bfd_TriageAgent.classifyAndAssess] ' + e);
+            return this._err(500, 'assessment_failed', 'The assessment could not be completed.');
+        }
+
+        assessment.entities = this._entityReport(input.entities);
+        assessment.case_created = false;
+        assessment.dry_run = true;
+        return this._ok(assessment);
+    },
+
+    // =====================================================================
+    // 2. validateSubmission — entity validation + duplicate pre-check
+    // =====================================================================
+    /**
+     * Agent entry point #2. Confirms the customer / account / transaction hang
+     * together and that this is not a repeat of an existing case.
+     * Returns { valid, issues[], duplicate{...} }.
+     */
+    validateSubmission: function (payload) {
+        var auth = this._authorizeScope();
+        if (auth.ok !== true) return auth;
+
+        var p = payload || {};
+        var res = this.resolveEntities(p, auth.data);
+        var issues = [];
+
+        for (var u = 0; u < res.unresolved.length; u++) {
+            issues.push({
+                severity: 'error',
+                field: res.unresolved[u].entity,
+                message: res.unresolved[u].reason
+            });
+        }
+
+        var caseType = this._s(p.case_type);
+        if (!this._inList(this.CASE_TYPES, caseType)) {
+            var inferred = this.inferCaseType(p.statement || p.customer_statement, res.transaction);
+            caseType = inferred.case_type;
+        }
+
+        var sim = this._simCase({
+            entities: res,
+            caseType: caseType,
+            channel: this._inList(this.INTAKE_CHANNELS, this._s(p.channel)) ? this._s(p.channel) : 'online_banking',
+            statement: this._trim(p.statement || p.customer_statement, this.MAX_STATEMENT),
+            incident:
+                this._toDateTime(p.date || p.incident_date_time) ||
+                (res.transaction ? this._v(res.transaction, 'transaction_date_time') : new GlideDateTime().getValue()),
+            amount: this._n(p.amount || p.disputed_amount),
+            currency: res.transaction ? this._v(res.transaction, 'currency') : ''
+        });
+
+        // Entity validation is owned by bfd_TriageEngine — do not duplicate it.
+        var engineValidation = { valid: true, issues: [] };
+        try {
+            engineValidation = new bfd_TriageEngine().validateEntities(sim) || engineValidation;
+        } catch (e) {
+            gs.error('[bfd_TriageAgent.validateSubmission] ' + e);
+        }
+        for (var i = 0; i < engineValidation.issues.length; i++) {
+            issues.push({ severity: 'error', field: 'entities', message: engineValidation.issues[i] });
+        }
+
+        // Duplicate pre-check is owned by bfd_DuplicateDetector.
+        var duplicate = { is_duplicate: false, of_case_number: '', of_case_sys_id: '', reason: '', prior_count: 0 };
+        try {
+            var dup = new bfd_DuplicateDetector().findDuplicate(sim) || {};
+            if (dup.isDuplicate === true) {
+                duplicate.is_duplicate = true;
+                duplicate.of_case_sys_id = this._s(dup.originalCaseSysId);
+                duplicate.reason = this._s(dup.reason);
+                duplicate.prior_count = this._n(dup.priorCount);
+                var orig = this._getById(this.CASE_TABLE, duplicate.of_case_sys_id);
+                if (orig) duplicate.of_case_number = this._v(orig, 'case_number');
+                issues.push({
+                    severity: 'warning',
+                    field: 'duplicate',
+                    message:
+                        'A case already exists for this customer and transaction' +
+                        (duplicate.of_case_number ? ' (' + duplicate.of_case_number + ')' : '') +
+                        '. The new report will be linked to it instead of investigated twice.'
+                });
+            }
+        } catch (e2) {
+            gs.error('[bfd_TriageAgent.validateSubmission duplicate] ' + e2);
+        }
+
+        var hasError = false;
+        for (var k = 0; k < issues.length; k++) {
+            if (issues[k].severity === 'error') hasError = true;
+        }
+
+        return this._ok({
+            valid: !hasError,
+            issues: issues,
+            duplicate: duplicate,
+            entities: this._entityReport(res),
+            inferred_case_type: caseType
+        });
+    },
+
+    // =====================================================================
+    // 3. intakeCase — create the case, let the platform do the rest
+    // =====================================================================
+    /**
+     * Agent entry point #3. Creates the case and returns the case number plus a
+     * customer-safe assessment. Triage, routing, duplicate linking, task
+     * creation, SLA dates and notifications are all owned by the existing
+     * business rules and flows — none of that is re-implemented here.
+     */
+    intakeCase: function (payload) {
+        var auth = this._authorizeScope();
+        if (auth.ok !== true) return auth;
+
+        // A signed-in customer goes through bfd_PortalService.submitCase so the
+        // self-service validation and own-records-only rules stay in one place.
+        if (auth.data.staff === false) {
+            var portal = new bfd_PortalService();
+            var res = portal.submitCase(payload || {});
+            if (res.ok !== true) return res;
+            res.data.created_by_agent = true;
+            res.data.advisory_only = true;
+            return res;
+        }
+
+        var prepared = this._prepare(payload, auth.data);
+        if (prepared.ok !== true) return prepared;
+        var input = prepared.data;
+
+        if (!input.entities.customer) {
+            return this._err(400, 'customer_required', 'A resolvable customer is required to create a case.');
+        }
+        if (!input.entities.account) {
+            return this._err(400, 'account_required', 'A resolvable account is required to create a case.');
+        }
+
+        var statement = input.statement;
+        if (input.merchant) {
+            statement = this._trim(statement + '\n\nMerchant reported by customer: ' + input.merchant, this.MAX_STATEMENT);
+        }
+        statement = this._trim(
+            statement + '\n\nLogged via the BFD Fraud & Dispute Triage Agent.',
+            this.MAX_STATEMENT
+        );
+
+        var gr = new GlideRecord(this.CASE_TABLE);
+        gr.initialize();
+        gr.setValue('customer', input.entities.customer.getUniqueValue());
+        gr.setValue('account', input.entities.account.getUniqueValue());
+        if (input.entities.transaction) gr.setValue('transaction', input.entities.transaction.getUniqueValue());
+        gr.setValue('case_type', input.caseType);
+        gr.setValue('intake_channel', input.channel);
+        gr.setValue('customer_statement', statement);
+        gr.setValue('incident_date_time', input.incident);
+        gr.setValue('disputed_amount', input.amount);
+        if (input.currency) gr.setValue('currency', input.currency);
+        gr.setValue('case_status', 'new');
+
+        var newId = '';
+        try {
+            newId = this._s(gr.insert());
+        } catch (e) {
+            gs.error('[bfd_TriageAgent.intakeCase] ' + e);
+        }
+        if (!newId) {
+            return this._err(500, 'create_failed', 'The case could not be created.');
+        }
+
+        var saved = this._getById(this.CASE_TABLE, newId);
+        var duplicate = { is_duplicate: false, of_case_number: '', of_case_sys_id: '' };
+        var assessment = null;
+        try {
+            assessment = this._assess(saved || this._simCase(input), input);
+        } catch (e2) {
+            gs.warn('[bfd_TriageAgent.intakeCase assess] ' + e2);
+        }
+        if (saved) {
+            var dupId = this._v(saved, 'duplicate_of_case');
+            if (dupId) {
+                duplicate.is_duplicate = true;
+                duplicate.of_case_sys_id = dupId;
+                var orig = this._getById(this.CASE_TABLE, dupId);
+                if (orig) duplicate.of_case_number = this._v(orig, 'case_number');
+            }
+        }
+
+        return this._ok({
+            sys_id: newId,
+            case_number: saved ? this._v(saved, 'case_number') : '',
+            case_status: saved ? this._v(saved, 'case_status') : 'new',
+            case_type: saved ? this._v(saved, 'case_type') : input.caseType,
+            assigned_team: saved ? this._v(saved, 'assigned_team') : '',
+            priority: saved ? this._v(saved, 'priority') : '',
+            risk_level: saved ? this._v(saved, 'risk_level') : '',
+            risk_score: saved ? this._n(this._v(saved, 'risk_score')) : 0,
+            expected_resolution_date: saved ? this._v(saved, 'expected_resolution_date') : '',
+            duplicate: duplicate,
+            assessment: assessment,
+            entities: this._entityReport(input.entities),
+            case_created: true,
+            advisory_only: true
+        });
+    },
+
+    // =====================================================================
+    // 4. explainRecommendation — "why did you recommend this?"
+    // =====================================================================
+    explainRecommendation: function (caseSysId) {
+        var auth = this._authorizeScope();
+        if (auth.ok !== true) return auth;
+
+        if (!this._s(caseSysId)) {
+            return this._err(400, 'missing_case_id', 'A case sys_id is required.');
+        }
+        var caseGr = this._getById(this.CASE_TABLE, caseSysId);
+        if (!caseGr) {
+            return this._err(404, 'case_not_found', 'That case could not be found.');
+        }
+        if (auth.data.staff === false && this._v(caseGr, 'customer') !== auth.data.customerId) {
+            return this._err(403, 'not_authorized', 'You are not authorised to view that case.');
+        }
+
+        var engine = new bfd_TriageEngine();
+        var rec;
+        try {
+            rec = engine.buildRecommendation(caseGr);
+        } catch (e) {
+            gs.error('[bfd_TriageAgent.explainRecommendation] ' + e);
+            return this._err(500, 'explain_failed', 'The rationale could not be rebuilt.');
+        }
+        var factors = this._riskFactors(rec.rationale);
+
+        var stored = this._v(caseGr, 'ai_recommendation');
+        var currentTeam = this._v(caseGr, 'assigned_team');
+        var currentPriority = this._v(caseGr, 'priority');
+        var overridden = [];
+        if (currentTeam && currentTeam !== rec.recommended_team) overridden.push('assigned_team');
+        if (currentPriority && currentPriority !== rec.priority) overridden.push('priority');
+
+        return this._ok({
+            case_sys_id: caseGr.getUniqueValue(),
+            case_number: this._v(caseGr, 'case_number'),
+            intent: rec.intent,
+            stored_intent_classification: this._v(caseGr, 'intent_classification'),
+            risk_score: this._n(rec.risk_score),
+            risk_level: rec.risk_level,
+            urgency: rec.urgency,
+            priority: rec.priority,
+            recommended_team: rec.recommended_team,
+            risk_factors: factors,
+            explanation: this._explainText(rec, factors, 'supplied'),
+            handler_summary: rec.summary,
+            confidence: this._n(rec.confidence),
+            confidence_label: this._confidenceLabel(rec.confidence),
+            policy_guidance: rec.policy_guidance || this._v(caseGr, 'policy_guidance'),
+            current_values: {
+                assigned_team: currentTeam,
+                priority: currentPriority,
+                urgency: this._v(caseGr, 'urgency'),
+                risk_level: this._v(caseGr, 'risk_level')
+            },
+            human_overridden_fields: overridden,
+            audit_trail: stored,
+            advisory_only: true
+        });
+    },
+
+    // =====================================================================
+    // 5. overrideRecommendation — the human wins
+    // =====================================================================
+    _resolveGroup: function (value) {
+        var v = this._s(value);
+        if (!v) return '';
+        var byId = this._getById(this.GROUP_TABLE, v);
+        if (byId) return byId.getUniqueValue();
+        var byName = this._findOne(this.GROUP_TABLE, 'name', v);
+        return byName ? byName.getUniqueValue() : '';
+    },
+
+    _resolveUser: function (value) {
+        var v = this._s(value);
+        if (!v) return '';
+        var byId = this._getById('sys_user', v);
+        if (byId) return byId.getUniqueValue();
+        var byName = this._findOne('sys_user', 'user_name', v);
+        return byName ? byName.getUniqueValue() : '';
+    },
+
+    /**
+     * Agent entry point #5. Applies a HUMAN override on top of the AI output and
+     * writes the AI recommendation, the override, who made it, why, and the
+     * final decision to the case audit trail via
+     * bfd_TriageEngine.logAiDecision().
+     *
+     * AI output stays ADVISORY — this method is how a human wins.
+     */
+    overrideRecommendation: function (caseSysId, overrides, reason, user) {
+        if (!this.canOverride()) {
+            return this._err(403, 'not_authorized', 'A SafeTrace operations role is required to override triage.');
+        }
+        if (!this._s(caseSysId)) {
+            return this._err(400, 'missing_case_id', 'A case sys_id is required.');
+        }
+        var caseGr = this._getById(this.CASE_TABLE, caseSysId);
+        if (!caseGr) {
+            return this._err(404, 'case_not_found', 'That case could not be found.');
+        }
+
+        var o = overrides || {};
+        var why = this._trim(reason, 1000);
+        if (why.replace(/\s/g, '').length < 3) {
+            return this._err(400, 'reason_required', 'A reason for the override is required for the audit trail.');
+        }
+
+        var actor = this._s(user);
+        if (!actor) {
+            try {
+                actor = this._s(gs.getUserName());
+            } catch (e) {
+                actor = 'unknown';
+            }
+        }
+
+        // Capture the AI position BEFORE anything is changed.
+        var engine = new bfd_TriageEngine();
+        var aiRec = null;
+        try {
+            aiRec = engine.buildRecommendation(caseGr);
+        } catch (e2) {
+            gs.warn('[bfd_TriageAgent.overrideRecommendation] ' + e2);
+        }
+
+        var applied = [];
+        var rejected = [];
+        var before = {};
+
+        var choiceSets = {
+            case_type: this.CASE_TYPES,
+            urgency: this.URGENCIES,
+            priority: this.PRIORITIES,
+            risk_level: this.RISK_LEVELS,
+            assigned_team: this.TEAMS,
+            card_action: this.CARD_ACTIONS
+        };
+
+        for (var i = 0; i < this.OVERRIDABLE.length; i++) {
+            var field = this.OVERRIDABLE[i];
+            if (!o.hasOwnProperty(field)) continue;
+            var raw = this._s(o[field]);
+            if (!raw) continue;
+
+            if (choiceSets[field] && !this._inList(choiceSets[field], raw)) {
+                rejected.push({ field: field, value: raw, reason: 'Not an allowed value for this field.' });
+                continue;
+            }
+            var value = raw;
+            if (field === 'assigned_group') {
+                value = this._resolveGroup(raw);
+                if (!value) {
+                    rejected.push({ field: field, value: raw, reason: 'Group could not be resolved.' });
+                    continue;
+                }
+            }
+            if (field === 'assigned_agent') {
+                value = this._resolveUser(raw);
+                if (!value) {
+                    rejected.push({ field: field, value: raw, reason: 'User could not be resolved.' });
+                    continue;
+                }
+            }
+            if (field === 'intent_classification') {
+                value = this._trim(raw, 1000);
+            }
+
+            before[field] = this._v(caseGr, field);
+            if (before[field] === value) continue;
+            caseGr.setValue(field, value);
+            applied.push({ field: field, from: before[field], to: value });
+        }
+
+        if (!applied.length && !rejected.length) {
+            return this._err(400, 'no_overrides', 'No supported override fields were supplied.');
+        }
+
+        var changeText = [];
+        for (var a = 0; a < applied.length; a++) {
+            changeText.push(applied[a].field + ': ' + (applied[a].from || '(empty)') + ' \u2192 ' + applied[a].to);
+        }
+
+        // Audit trail: AI output + override + actor + reason + final decision.
+        try {
+            engine.logAiDecision(caseGr, {
+                recommendation: aiRec,
+                overriddenFields: (function (list) {
+                    var names = [];
+                    for (var n = 0; n < list.length; n++) names.push(list[n].field);
+                    return names;
+                })(applied),
+                note:
+                    'HUMAN OVERRIDE by ' +
+                    actor +
+                    '. Reason: ' +
+                    why +
+                    (changeText.length ? '. Changes: ' + changeText.join('; ') : '') +
+                    (rejected.length ? '. Rejected: ' + rejected.length + ' field(s)' : '') +
+                    '. AI output is advisory only; the human decision stands.',
+                finalDecision: changeText.length ? changeText.join('; ') : 'no field values changed'
+            });
+        } catch (e3) {
+            gs.warn('[bfd_TriageAgent.overrideRecommendation audit] ' + e3);
+        }
+
+        try {
+            caseGr.update();
+        } catch (e4) {
+            gs.error('[bfd_TriageAgent.overrideRecommendation update] ' + e4);
+            return this._err(500, 'override_failed', 'The override could not be saved.');
+        }
+
+        var fresh = this._getById(this.CASE_TABLE, caseSysId) || caseGr;
+        return this._ok({
+            case_sys_id: fresh.getUniqueValue(),
+            case_number: this._v(fresh, 'case_number'),
+            applied: applied,
+            rejected: rejected,
+            overridden_by: actor,
+            reason: why,
+            ai_recommendation_at_override: aiRec
+                ? {
+                      intent: aiRec.intent,
+                      risk_score: this._n(aiRec.risk_score),
+                      risk_level: aiRec.risk_level,
+                      urgency: aiRec.urgency,
+                      priority: aiRec.priority,
+                      recommended_team: aiRec.recommended_team,
+                      confidence: this._n(aiRec.confidence)
+                  }
+                : null,
+            final_values: {
+                case_type: this._v(fresh, 'case_type'),
+                intent_classification: this._v(fresh, 'intent_classification'),
+                urgency: this._v(fresh, 'urgency'),
+                priority: this._v(fresh, 'priority'),
+                risk_level: this._v(fresh, 'risk_level'),
+                assigned_team: this._v(fresh, 'assigned_team'),
+                assigned_group: this._v(fresh, 'assigned_group'),
+                assigned_agent: this._v(fresh, 'assigned_agent'),
+                card_action: this._v(fresh, 'card_action')
+            },
+            advisory_only: true
+        });
+    },
+
+    // =====================================================================
+    // 6. getPolicyFor — policy guidance lookup
+    // =====================================================================
+    getPolicyFor: function (caseType, riskLevel) {
+        var ct = this._s(caseType);
+        var rl = this._s(riskLevel);
+        if (ct && !this._inList(this.CASE_TYPES, ct) && ct !== 'any') {
+            return this._err(400, 'invalid_case_type', 'Unknown case type.');
+        }
+        if (rl && !this._inList(this.RISK_LEVELS, rl) && rl !== 'any') {
+            return this._err(400, 'invalid_risk_level', 'Unknown risk level.');
+        }
+        var text = '';
+        try {
+            text = this._s(new bfd_TriageEngine().getPolicyGuidance(ct || 'any', rl || 'any'));
+        } catch (e) {
+            gs.error('[bfd_TriageAgent.getPolicyFor] ' + e);
+            return this._err(500, 'policy_lookup_failed', 'Policy guidance could not be read.');
+        }
+        return this._ok({
+            case_type: ct || 'any',
+            risk_level: rl || 'any',
+            guidance: text,
+            found: text !== ''
+        });
+    },
+
+    type: 'bfd_TriageAgent'
+};
+]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 14:14:10</sys_created_on>
+        <sys_id>23b5ced5bace4883ad8f771bda4f2827</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>bfd_TriageAgent</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_script_include_23b5ced5bace4883ad8f771bda4f2827</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 14:14:10</sys_updated_on>
+    </sys_script_include>
+</record_update>

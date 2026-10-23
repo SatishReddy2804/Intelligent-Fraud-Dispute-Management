@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_atf_step">
+    <sys_atf_step action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <callable_outputs/>
+        <copied_from/>
+        <description/>
+        <display_name>Run Server Side Script</display_name>
+        <inputs/>
+        <mugshots_cache_json/>
+        <notes/>
+        <order>1</order>
+        <step_config display_value="Run Server Side Script">41de4a935332120028bc29cac2dc349a</step_config>
+        <sys_class_name>sys_atf_step</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 14:13:13</sys_created_on>
+        <sys_id>4f4e06df743e4e93babc600a1ec6ead4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Run Server Side Script</sys_name>
+        <sys_package display_value="SafeTrace Fraud and Dispute Resolution" source="x_1755386_safetr_0">56e77fc2838c5b103a19c7a6feaad3ba</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="SafeTrace Fraud and Dispute Resolution">56e77fc2838c5b103a19c7a6feaad3ba</sys_scope>
+        <sys_update_name>sys_atf_step_4f4e06df743e4e93babc600a1ec6ead4</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 14:13:13</sys_updated_on>
+        <table/>
+        <test display_value="bfd_atf_triage_agent_assessment">bbfc8d1b548641c488d84dcc8d038690</test>
+        <timeout/>
+        <warning_message/>
+    </sys_atf_step>
+    <sys_variable_value action="delete_multiple" query="document_key=4f4e06df743e4e93babc600a1ec6ead4"/>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>sys_atf_step</document>
+        <document_key>4f4e06df743e4e93babc600a1ec6ead4</document_key>
+        <order>100</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 17:55:50</sys_created_on>
+        <sys_id>065732fe83744f5d9475a7a332b12c9f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 17:55:50</sys_updated_on>
+        <value>3.1</value>
+        <variable display_value="Jasmine version">42f2564b73031300440211d8faf6a777</variable>
+    </sys_variable_value>
+    <sys_variable_value action="INSERT_OR_UPDATE">
+        <document>sys_atf_step</document>
+        <document_key>4f4e06df743e4e93babc600a1ec6ead4</document_key>
+        <order>200</order>
+        <sys_class_name>sys_variable_value</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2026-10-22 17:55:50</sys_created_on>
+        <sys_id>b9a32b37a904426db3bb48a0f83a58fd</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2026-10-22 17:55:50</sys_updated_on>
+        <value>(function (outputs, steps, params, stepResult, assertEqual) {
+var CUST='x_1755386_safetr_0_bfd_customer_profile',ACCT='x_1755386_safetr_0_bfd_bank_account',TXN='x_1755386_safetr_0_bfd_transaction',CASE='x_1755386_safetr_0_bfd_fraud_dispute_case',TASK='x_1755386_safetr_0_bfd_case_task',SNAP='x_1755386_safetr_0_bfd_case_metric_snapshot';
+var CASE_STATUSES=['new','triage','pending_customer_information','under_investigation','pending_approval','action_taken','resolved','closed','reopened'];
+var TEAMS=['fraud_operations','cards_operations','banking_operations'],LEVELS=['critical','high','medium','low'],PRIORITIES=['p1','p2','p3','p4'];
+function need(c,m){ if(!c){ throw new Error('ASSERTION FAILED: '+m); } }
+function uniq(){ return ''+new GlideDateTime().getNumericValue()+Math.floor(Math.random()*100000); }
+function hoursAgo(h){ var g=new GlideDateTime(); g.addSeconds(-1*h*3600); return g.getValue(); }
+function val(gr,f){ if(!gr){ return ''; } var v=gr.getValue(f); return (v===null||v===undefined)?'':(''+v); }
+function num(gr,f){ var n=parseFloat(val(gr,f)); return isNaN(n)?0:n; }
+function load(t,id){ var gr=new GlideRecord(t); return gr.get(id)?gr:null; }
+function inSet(v,a){ return a.indexOf(''+v)!==-1; }
+function mkCustomer(tier){ var u=uniq(); var gr=new GlideRecord(CUST); gr.initialize(); gr.setValue('customer_number','ATFC'+u); gr.setValue('full_name','ATF Fixture Customer '+u); gr.setValue('email','atf.'+u+'@safetrace-atf.invalid'); gr.setValue('mobile_phone','+15550000000'); gr.setValue('kyc_status','verified'); gr.setValue('risk_tier',tier||'low'); gr.setValue('preferred_contact_channel','email'); gr.setValue('active_flag',true); var id=''+gr.insert(); need(id,'fixture customer could not be inserted'); return id; }
+function mkAccount(cid,tier,hold){ var u=uniq(); var gr=new GlideRecord(ACCT); gr.initialize(); gr.setValue('customer',cid); gr.setValue('account_number_masked','ATF-****'+u); gr.setValue('account_type','checking'); gr.setValue('account_status','active'); gr.setValue('currency','USD'); gr.setValue('available_balance',5000); gr.setValue('risk_tier',tier||'low'); gr.setValue('fraud_hold_flag',hold===true); var id=''+gr.insert(); need(id,'fixture account could not be inserted'); return id; }
+function mkTxn(cid,aid,o){ o=o||{}; var u=uniq(); var gr=new GlideRecord(TXN); gr.initialize(); gr.setValue('transaction_reference','ATFTXN'+u); gr.setValue('account',aid); gr.setValue('customer',cid); gr.setValue('transaction_date_time',o.when||hoursAgo(12)); gr.setValue('merchant_name',o.merchant||('ATF Merchant '+u)); gr.setValue('merchant_category','retail'); gr.setValue('channel',o.channel||'pos'); gr.setValue('transaction_type','debit'); gr.setValue('amount',(o.amount===undefined||o.amount===null)?180:o.amount); gr.setValue('currency','USD'); gr.setValue('status',o.status||'posted'); gr.setValue('card_last_four',o.card||(''+u).slice(-4)); gr.setValue('country',o.country||'US'); gr.setValue('is_recurring',false); gr.setValue('fraud_indicator',o.fraud===true); gr.setValue('dispute_flag',false); var id=''+gr.insert(); need(id,'fixture transaction could not be inserted'); return id; }
+function mkCase(f){ var gr=new GlideRecord(CASE); gr.initialize(); for(var k in f){ if(f.hasOwnProperty(k)){ gr.setValue(k,f[k]); } } var id=''+gr.insert(); need(id,'fixture case could not be inserted'); return id; }
+function mkTask(cid,type,status){ var gr=new GlideRecord(TASK); gr.initialize(); gr.setValue('case',cid); gr.setValue('task_type',type); gr.setValue('status',status||'open'); gr.setValue('priority','p3'); var id=''+gr.insert(); need(id,'fixture task could not be inserted'); return id; }
+function completeOpenTasks(cid){ var gr=new GlideRecord(TASK); gr.addQuery('case',cid); gr.addQuery('status','IN','open,work_in_progress'); gr.query(); var n=0; while(gr.next()){ gr.setValue('status','complete'); gr.setValue('outcome','Completed by ATF fixture.'); gr.update(); n++; } return n; }
+
+    var customerId = mkCustomer('medium');
+    var accountId = mkAccount(customerId, 'low', false);
+    var txnId = mkTxn(customerId, accountId, { amount: 2450.5, when: hoursAgo(6), channel: 'online', country: 'GB' });
+
+    var customer = load(CUST, customerId);
+    var account = load(ACCT, accountId);
+    var txn = load(TXN, txnId);
+
+    var agent = new bfd_TriageAgent();
+    var res = agent.classifyAndAssess({
+        statement: 'I did not make this payment. I do not recognize the merchant and the money left my account last night.',
+        customer_number: val(customer, 'customer_number'),
+        account_number_masked: val(account, 'account_number_masked'),
+        transaction_reference: val(txn, 'transaction_reference'),
+        amount: 2450.5,
+        date: hoursAgo(6),
+        merchant: val(txn, 'merchant_name'),
+        channel: 'online_banking'
+    });
+
+    need(res &amp;&amp; res.ok === true, 'classifyAndAssess() failed: ' + (res ? (res.code + ' - ' + res.message) : 'no response'));
+    var d = res.data;
+    need(d, 'classifyAndAssess() returned no data');
+
+    need(('' + d.intent).length &gt; 0, 'intent should not be empty');
+    need(d.case_type === 'unauthorized_transaction', 'case_type should be inferred as unauthorized_transaction, got ' + d.case_type);
+
+    var score = parseFloat(d.risk_score);
+    need(!isNaN(score), 'risk_score should be numeric, got ' + d.risk_score);
+    need(score &gt;= 0 &amp;&amp; score &lt;= 100, 'risk_score should be between 0 and 100, got ' + score);
+    need(score &gt; 0, 'risk_score should be greater than 0 for an unauthorized transaction');
+
+    need(inSet(d.risk_level, LEVELS), 'risk_level should be critical/high/medium/low, got ' + d.risk_level);
+    need(inSet(d.urgency, LEVELS), 'urgency should be critical/high/medium/low, got ' + d.urgency);
+    need(inSet(d.priority, PRIORITIES), 'priority should be p1/p2/p3/p4, got ' + d.priority);
+    need(inSet(d.recommended_team, TEAMS), 'recommended_team should be a valid team, got ' + d.recommended_team);
+
+    need(d.recommended_actions &amp;&amp; d.recommended_actions.length &gt; 0, 'at least one recommended action is expected');
+    need(d.recommended_investigation_tasks &amp;&amp; d.recommended_investigation_tasks.length &gt; 0, 'at least one recommended investigation task is expected');
+    need(d.immediate_containment_action &amp;&amp; ('' + d.immediate_containment_action.label).length &gt; 0, 'an immediate containment recommendation is expected');
+
+    var confidence = parseFloat(d.confidence);
+    need(!isNaN(confidence), 'confidence should be numeric, got ' + d.confidence);
+    need(confidence &gt;= 0 &amp;&amp; confidence &lt;= 100, 'confidence should be between 0 and 100, got ' + confidence);
+    need(('' + d.confidence_label).length &gt; 0, 'confidence_label should be populated');
+
+    need(('' + d.explanation).length &gt; 20, 'a plain-language explanation of the risk factors is expected');
+    need(d.risk_factors &amp;&amp; d.risk_factors.length &gt; 0, 'at least one named risk factor is expected');
+    need(('' + d.handler_summary).length &gt; 0, 'a concise handler summary is expected');
+    need(d.advisory_only === true, 'the assessment must be flagged as advisory only');
+
+    need(d.entities &amp;&amp; d.entities.customer, 'the customer should have been resolved from customer_number');
+    need(d.entities.account, 'the account should have been resolved from the masked account number');
+    need(d.entities.transaction, 'the transaction should have been resolved from transaction_reference');
+    need(('' + d.entities.transaction.card_masked).indexOf(val(txn, 'card_last_four')) !== -1, 'the card should be returned masked with only the last four digits');
+    need(('' + d.entities.account.last_four).length === 4, 'the account should expose only a four digit last_four, got ' + d.entities.account.last_four);
+
+    // assessment only: nothing may have been written
+    need(d.case_created === false, 'classifyAndAssess() must not create a case');
+    var check = new GlideRecord(CASE);
+    check.addQuery('customer', customerId);
+    check.query();
+    need(check.getRowCount() === 0, 'classifyAndAssess() must not create a case, but ' + check.getRowCount() + ' case(s) exist for the fixture customer');
+
+    stepResult.setOutputMessage('Agent assessment OK (dry run): intent=' + d.intent + ' risk=' + d.risk_level + '(' + score + ') team=' + d.recommended_team + ' confidence=' + confidence);
+})(outputs, steps, params, stepResult, assertEqual);</value>
+        <variable display_value="Test script">989d9e235324220002c6435723dc3484</variable>
+    </sys_variable_value>
+</record_update>

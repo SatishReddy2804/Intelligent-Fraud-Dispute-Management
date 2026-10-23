@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element audit="true" db_object_id="2fcf2f2240d446369deaa2ab8e18b23b" label="Transaction" name="x_1755386_safetr_0_bfd_transaction" type="collection">
+        <element label="Transaction Date/Time" name="transaction_date_time" type="glide_date_time"/>
+        <element label="Amount" name="amount" type="decimal"/>
+        <element label="Account" name="account" reference="x_1755386_safetr_0_bfd_bank_account" type="reference"/>
+        <element label="Channel" name="channel" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Mobile" sequence="4" value="mobile"/>
+                <element inactive_on_update="false" label="Branch" sequence="5" value="branch"/>
+                <element inactive_on_update="false" label="POS" sequence="1" value="pos"/>
+                <element inactive_on_update="false" label="Online" sequence="2" value="online"/>
+                <element inactive_on_update="false" label="ATM" sequence="3" value="atm"/>
+                <element inactive_on_update="false" label="Recurring" sequence="6" value="recurring"/>
+            </choice>
+        </element>
+        <element label="Merchant Name" max_length="255" name="merchant_name" type="string"/>
+        <element default="USD" label="Currency" max_length="10" name="currency" type="string"/>
+        <element label="Dispute" name="dispute_flag" type="boolean"/>
+        <element label="Fraud Indicator" name="fraud_indicator" type="boolean"/>
+        <element label="Card Last Four" max_length="4" name="card_last_four" type="string"/>
+        <element label="Is Recurring" name="is_recurring" type="boolean"/>
+        <element label="Country" max_length="100" name="country" type="string"/>
+        <element default="javascript:getNextObjNumberPadded();" display="true" label="Transaction Reference" max_length="40" name="transaction_reference" type="string"/>
+        <element label="Original Transaction Reference" max_length="40" name="original_transaction_reference" type="string"/>
+        <element label="ATM Location" max_length="255" name="atm_location" type="string"/>
+        <element label="Customer" name="customer" reference="x_1755386_safetr_0_bfd_customer_profile" type="reference"/>
+        <element label="Status" name="status" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Reversed" sequence="3" value="reversed"/>
+                <element inactive_on_update="false" label="Posted" sequence="1" value="posted"/>
+                <element inactive_on_update="false" label="Failed" sequence="4" value="failed"/>
+                <element inactive_on_update="false" label="Pending" sequence="2" value="pending"/>
+                <element inactive_on_update="false" label="Declined" sequence="5" value="declined"/>
+            </choice>
+        </element>
+        <element label="Authorization Code" max_length="40" name="authorization_code" type="string"/>
+        <element label="Merchant Category" max_length="100" name="merchant_category" type="string"/>
+        <element label="Transaction Type" name="transaction_type" type="choice">
+            <choice>
+                <element inactive_on_update="false" label="Payment" sequence="5" value="payment"/>
+                <element inactive_on_update="false" label="Credit" sequence="2" value="credit"/>
+                <element inactive_on_update="false" label="Debit" sequence="1" value="debit"/>
+                <element inactive_on_update="false" label="Transfer" sequence="4" value="transfer"/>
+                <element inactive_on_update="false" label="Withdrawal" sequence="3" value="withdrawal"/>
+            </choice>
+        </element>
+        <index name="index">
+            <element name="account"/>
+        </index>
+        <index name="index2">
+            <element name="customer"/>
+        </index>
+    </element>
+</database>
